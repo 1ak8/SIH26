@@ -20,18 +20,28 @@ const AppRoutes = () => {
   const { user } = useAuth();
   return (
     <Routes>
+      <Route path="/" element={<Navigate to={user ? (roleHome[user.role] || '/login') : '/login'} replace />} />
       <Route path="/login" element={user ? <Navigate to={roleHome[user.role] || '/'} replace /> : <Login />} />
       <Route path="/register" element={user ? <Navigate to={roleHome[user.role] || '/'} replace /> : <Register />} />
+      
+      {/* Patient Routes */}
       <Route path="/patient" element={<ProtectedRoute roles={['patient']}><PatientDashboard /></ProtectedRoute>} />
       <Route path="/patient/doctors" element={<ProtectedRoute roles={['patient']}><DoctorList /></ProtectedRoute>} />
       <Route path="/patient/medicines" element={<ProtectedRoute roles={['patient']}><MedicineHistory /></ProtectedRoute>} />
-      <Route path="/health-worker" element={<ProtectedRoute roles={['health_worker']}><HealthWorkerDashboard /></ProtectedRoute>} />
+      
+      {/* Health Worker Routes */}
+      <Route path="/health-worker/*" element={<ProtectedRoute roles={['health_worker']}><HealthWorkerDashboard /></ProtectedRoute>} />
+      
+      {/* Doctor Routes */}
       <Route path="/doctor" element={<ProtectedRoute roles={['doctor']}><DoctorDashboard /></ProtectedRoute>} />
       <Route path="/doctor/queue" element={<ProtectedRoute roles={['doctor']}><PatientQueue /></ProtectedRoute>} />
       <Route path="/doctor/prescriptions" element={<ProtectedRoute roles={['doctor']}><Prescriptions /></ProtectedRoute>} />
       <Route path="/doctor/labs" element={<ProtectedRoute roles={['doctor']}><LabOrders /></ProtectedRoute>} />
       <Route path="/doctor/history" element={<ProtectedRoute roles={['doctor']}><ConsultationHistory /></ProtectedRoute>} />
-      <Route path="/admin" element={<ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+      
+      {/* Admin Routes */}
+      <Route path="/admin/*" element={<ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+      
       <Route path="*" element={<Navigate to={user ? (roleHome[user.role] || '/login') : '/login'} replace />} />
     </Routes>
   );
