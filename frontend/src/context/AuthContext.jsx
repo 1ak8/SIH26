@@ -79,6 +79,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setNotifications([]);
     if (socket) { socket.disconnect(); socket = null; }
+    window.location.href = '/login';
   };
 
   return (

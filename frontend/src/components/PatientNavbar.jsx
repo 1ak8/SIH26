@@ -48,8 +48,8 @@ export default function PatientNavbar({ activeTab, setActiveTab }) {
             <span className="material-symbols-outlined text-[20px]">call</span>
             <span>Emergency 108</span>
           </a>
-          <button onClick={logout} className="w-9 h-9 rounded-full bg-primary flex items-center justify-center" title="Logout">
-            <span className="material-symbols-outlined text-on-primary text-[18px]">person</span>
+          <button onClick={() => { if (window.confirm('Are you sure you want to logout?')) logout(); }} className="w-9 h-9 rounded-full bg-tertiary flex items-center justify-center hover:bg-tertiary/80 transition-colors" title="Logout">
+            <span className="material-symbols-outlined text-on-tertiary text-[18px]">logout</span>
           </button>
         </div>
       </div>
