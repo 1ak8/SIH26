@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://sih26-hbuc.onrender.com/api/:path*"
+    }
+  ]
+}
