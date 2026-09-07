@@ -49,7 +49,37 @@ const resources = {
       "noPortableDevices": "You have no portable medical devices synced to this account.",
       "connectBluetoothMonitor": "Connect Bluetooth Vitals Monitor",
       "logout": "Logout",
-      "emergency": "Emergency 108"
+      "emergency": "Emergency 108",
+      
+      // Auth Page
+      "govtPortal": "Govt Portal",
+      "nationalTeleHealth": "National Tele-Health Initiative",
+      "accessibleHealthcare": "Accessible Healthcare for",
+      "everyCitizen": "Every Citizen.",
+      "authDesc": "Connecting rural citizens, ASHA workers, and verified doctors seamlessly. Access specialist tele-consultations, prescription records, and primary care from anywhere.",
+      "liveClinics": "Live Panchayat Tele-Clinics Active",
+      "abdmIntegrated": "ABDM Integrated",
+      "languagesSupported": "22 Languages",
+      "lowNetworkReady": "Low 2G/3G Ready",
+      "encrypted": "256-Bit Encrypted",
+      "citizenAccess": "Portal Access",
+      "enterCredentials": "Enter credentials to access your portal",
+      "signIn": "Sign In",
+      "newCitizen": "New Citizen",
+      "selectPortal": "Select Portal",
+      "emailMobile": "Email / Mobile Number",
+      "passwordPin": "Password / Security PIN",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "authenticating": "Authenticating...",
+      "signInBtn": "Sign In to Portal",
+      "password": "Password",
+      "role": "Role",
+      "gender": "Gender",
+      "creatingAccount": "Creating Account...",
+      "createAccount": "Create Account",
+      "needHelp": "Need help logging in?",
+      "helpDesc": "Call Toll-Free 104 for Tele-Health or visit your nearest CSC Gram Center."
     }
   },
   hi: {
@@ -99,7 +129,37 @@ const resources = {
       "noPortableDevices": "इस खाते से कोई पोर्टेबल चिकित्सा उपकरण सिंक नहीं है।",
       "connectBluetoothMonitor": "ब्लूटूथ विटल्स मॉनिटर कनेक्ट करें",
       "logout": "लॉग आउट",
-      "emergency": "आपातकालीन 108"
+      "emergency": "आपातकालीन 108",
+      
+      // Auth Page
+      "govtPortal": "सरकारी पोर्टल",
+      "nationalTeleHealth": "राष्ट्रीय टेली-स्वास्थ्य पहल",
+      "accessibleHealthcare": "सुलभ स्वास्थ्य सेवा",
+      "everyCitizen": "हर नागरिक के लिए।",
+      "authDesc": "ग्रामीण नागरिकों, आशा कार्यकर्ताओं और सत्यापित डॉक्टरों को सहजता से जोड़ना। विशेषज्ञ टेली-परामर्श, नुस्खे के रिकॉर्ड और प्राथमिक देखभाल तक पहुंचें।",
+      "liveClinics": "लाइव पंचायत टेली-क्लिनिक सक्रिय",
+      "abdmIntegrated": "ABDM एकीकृत",
+      "languagesSupported": "22 भाषाएं",
+      "lowNetworkReady": "धीमे नेटवर्क (2G/3G) पर उपलब्ध",
+      "encrypted": "256-Bit एन्क्रिप्टेड",
+      "citizenAccess": "पोर्टल एक्सेस",
+      "enterCredentials": "अपने पोर्टल तक पहुंचने के लिए क्रेडेंशियल दर्ज करें",
+      "signIn": "साइन इन",
+      "newCitizen": "नया नागरिक",
+      "selectPortal": "पोर्टल चुनें",
+      "emailMobile": "ईमेल / मोबाइल नंबर",
+      "passwordPin": "पासवर्ड / सुरक्षा पिन",
+      "rememberMe": "मुझे याद रखें",
+      "forgotPassword": "पासवर्ड भूल गए?",
+      "authenticating": "प्रमाणीकरण हो रहा है...",
+      "signInBtn": "पोर्टल में साइन इन करें",
+      "password": "पासवर्ड",
+      "role": "भूमिका",
+      "gender": "लिंग",
+      "creatingAccount": "खाता बनाया जा रहा है...",
+      "createAccount": "खाता बनाएं",
+      "needHelp": "लॉग इन करने में सहायता चाहिए?",
+      "helpDesc": "टेली-स्वास्थ्य के लिए टोल-फ्री 104 पर कॉल करें या अपने नजदीकी CSC ग्राम केंद्र पर जाएं।"
     }
   }
 };
