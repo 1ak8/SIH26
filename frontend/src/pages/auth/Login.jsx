@@ -206,7 +206,7 @@ export default function Login() {
                   </div>
                   <div className="flex items-center justify-between text-[13px] pt-1">
                     <label className="flex items-center gap-2.5 cursor-pointer text-slate-600 font-medium">
-                      <input defaultChecked className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500" type="checkbox" />
+                      <input defaultChecked className="w-4 h-4 rounded border-slate-300 accent-amber-500 focus:ring-amber-500" type="checkbox" />
                       <span>{t('rememberMe')}</span>
                     </label>
                     <a className="font-bold text-amber-600 hover:text-amber-700 hover:underline" href="#">{t('forgotPassword')}</a>
