@@ -66,7 +66,7 @@ export default function Login() {
       </div>
 
       {/* HEADER */}
-      <header className="relative z-10 w-full px-5 lg:px-16 pt-3 pb-1 flex items-center gap-4">
+      <header className="relative z-10 w-full px-6 lg:px-24 pt-3 pb-1 flex items-center gap-4">
         <div className="flex items-center gap-3 shrink-0">
           <div className="w-14 h-14 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20 font-bold">
             <span className="material-symbols-outlined fill text-[36px]">health_and_safety</span>
@@ -80,23 +80,23 @@ export default function Login() {
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-auto">
-          <div className="flex items-center text-xs font-semibold bg-white border border-slate-200 rounded-full p-1 shadow-sm">
+          <div className="flex items-center text-sm font-semibold bg-white border border-slate-200 rounded-full p-1 shadow-sm">
             <button 
-              className={`px-3 py-1 rounded-full transition-colors ${i18n.language === 'en' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`} 
+              className={`px-4 py-1.5 rounded-full transition-colors ${i18n.language === 'en' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`} 
               onClick={() => i18n.changeLanguage('en')} type="button">English</button>
             <button 
-              className={`px-3 py-1 rounded-full transition-colors ${i18n.language === 'hi' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`} 
+              className={`px-4 py-1.5 rounded-full transition-colors ${i18n.language === 'hi' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`} 
               onClick={() => i18n.changeLanguage('hi')} type="button">हिंदी</button>
           </div>
-          <a href="tel:108" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-xs font-bold hover:bg-rose-100 transition-colors cursor-pointer">
-            <span className="material-symbols-outlined text-[16px] text-rose-600">call</span>
+          <a href="tel:108" className="hidden sm:flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-sm font-bold hover:bg-rose-100 transition-colors cursor-pointer">
+            <span className="material-symbols-outlined text-[18px] text-rose-600">call</span>
             <span>{t('emergency')}</span>
           </a>
         </div>
       </header>
 
       {/* MAIN */}
-      <main className="relative z-10 flex-1 flex items-center justify-center w-full px-5 lg:px-16 py-2 lg:py-3 overflow-hidden">
+      <main className="relative z-10 flex-1 flex items-center justify-center w-full px-6 lg:px-24 py-2 lg:py-3 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center w-full">
           {/* LEFT COLUMN */}
           <div className="lg:col-span-7 flex flex-col justify-center space-y-3">
@@ -144,7 +144,7 @@ export default function Login() {
 
           {/* RIGHT COLUMN: Auth Card */}
           <div className="lg:col-span-5 w-full flex justify-center">
-            <div className="w-full max-w-md bg-white border border-slate-200/90 rounded-3xl p-5 sm:p-6 shadow-xl shadow-slate-200/60 transition-all">
+            <div className={`bg-white border border-slate-200/90 rounded-3xl p-5 sm:p-6 shadow-xl shadow-slate-200/60 ${tab === 'register' ? 'form-card-register' : 'form-card-login'}`}>
               {/* Card Header */}
               <div className="flex items-center justify-between mb-3">
                 <div>
@@ -157,10 +157,11 @@ export default function Login() {
               </div>
 
               {/* Login / Register Tabs */}
-              <div className="flex bg-slate-100 p-1 rounded-xl mb-3">
-                <button className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${tab === 'login' ? 'text-slate-900 bg-white shadow-xs' : 'text-slate-500 hover:text-slate-900'}`}
+              <div className="flex bg-slate-100 p-1 rounded-xl mb-3 relative">
+                <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm transition-all duration-300 ease-out ${tab === 'register' ? 'translate-x-[calc(100%+4px)]' : 'translate-x-0'}`}></div>
+                <button className={`relative z-10 flex-1 py-2 text-xs font-bold rounded-lg transition-colors ${tab === 'login' ? 'text-slate-900 underline underline-offset-4 decoration-amber-500 decoration-2' : 'text-slate-400 hover:text-slate-600'}`}
                   onClick={() => setTab('login')} type="button">{t('signIn')}</button>
-                <button className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${tab === 'register' ? 'text-slate-900 bg-white shadow-xs' : 'text-slate-500 hover:text-slate-900'}`}
+                <button className={`relative z-10 flex-1 py-2 text-xs font-bold rounded-lg transition-colors ${tab === 'register' ? 'text-slate-900 underline underline-offset-4 decoration-amber-500 decoration-2' : 'text-slate-400 hover:text-slate-600'}`}
                   onClick={() => setTab('register')} type="button">{t('newCitizen')}</button>
               </div>
 
@@ -182,8 +183,9 @@ export default function Login() {
 
               {error && <div className="p-3 mb-3 rounded-xl bg-rose-50 text-rose-700 text-sm font-medium border border-rose-200">{error}</div>}
 
+              <div className="form-height-guard">
               {tab === 'login' && (
-                <form key="login" className="flex flex-col gap-3 animate-fadeIn" onSubmit={handleSubmit}>
+                <form key="login" className="flex flex-col gap-3 animate-form-morph" onSubmit={handleSubmit}>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[13px] font-bold text-slate-700">{t('emailMobile')}</label>
                     <div className="relative group">
@@ -221,31 +223,31 @@ export default function Login() {
               )}
 
               {tab === 'register' && (
-                <form key="register" className="flex flex-col gap-4 animate-fadeIn" onSubmit={handleRegisterSubmit}>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[13px] font-bold text-slate-700">{t('fullName')}</label>
-                    <input className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
-                      placeholder="Enter your name" required type="text" value={regForm.name} onChange={e => setRegForm({...regForm, name: e.target.value})} />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[13px] font-bold text-slate-700">Email Address</label>
-                    <input className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
-                      placeholder="your@email.com" required type="email" value={regForm.email} onChange={e => setRegForm({...regForm, email: e.target.value})} />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[13px] font-bold text-slate-700">{t('mobileNumber')}</label>
-                    <input className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
-                      placeholder="10 digit number" required type="text" value={regForm.phone} onChange={e => setRegForm({...regForm, phone: e.target.value})} />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[13px] font-bold text-slate-700">{t('password')}</label>
-                    <input className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
-                      placeholder="••••••••" required type="password" value={regForm.password} onChange={e => setRegForm({...regForm, password: e.target.value})} />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
+                <form key="register" className="animate-form-morph" onSubmit={handleRegisterSubmit}>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[13px] font-bold text-slate-700">{t('role')}</label>
-                      <select className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[15px] text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                      <label className="text-[12px] font-bold text-slate-700">{t('fullName')}</label>
+                      <input className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                        placeholder="Full name" required type="text" value={regForm.name} onChange={e => setRegForm({...regForm, name: e.target.value})} />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-slate-700">{t('emailMobile')}</label>
+                      <input className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                        placeholder="your@email.com" required type="email" value={regForm.email} onChange={e => setRegForm({...regForm, email: e.target.value})} />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-slate-700">{t('mobileNumber')}</label>
+                      <input className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                        placeholder="10 digit number" required type="text" value={regForm.phone} onChange={e => setRegForm({...regForm, phone: e.target.value})} />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-slate-700">{t('password')}</label>
+                      <input className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                        placeholder="••••••••" required type="password" value={regForm.password} onChange={e => setRegForm({...regForm, password: e.target.value})} />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-slate-700">{t('role')}</label>
+                      <select className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         value={regForm.role} onChange={e => setRegForm({...regForm, role: e.target.value})}>
                         <option value="patient">Citizen</option>
                         <option value="health_worker">ASHA Worker</option>
@@ -254,8 +256,8 @@ export default function Login() {
                       </select>
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[13px] font-bold text-slate-700">{t('gender')}</label>
-                      <select className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[15px] text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                      <label className="text-[12px] font-bold text-slate-700">{t('gender')}</label>
+                      <select className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         value={regForm.gender} onChange={e => setRegForm({...regForm, gender: e.target.value})}>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -263,7 +265,7 @@ export default function Login() {
                       </select>
                     </div>
                   </div>
-                  <button className="w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-[15px] rounded-xl shadow-lg shadow-amber-500/30 transition-all flex items-center justify-center gap-2 mt-3 disabled:opacity-70"
+                  <button className="w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-[14px] rounded-xl shadow-lg shadow-amber-500/30 transition-all flex items-center justify-center gap-2 mt-3 disabled:opacity-70"
                     type="submit" disabled={loading}>
                     {loading ? <span className="material-symbols-outlined animate-spin text-[20px]">progress_activity</span> : null}
                     <span>{loading ? t('creatingAccount') : t('createAccount')}</span>
@@ -271,6 +273,7 @@ export default function Login() {
                   </button>
                 </form>
               )}
+              </div>
 
               {/* Help Section */}
               <div className="mt-3 pt-3 border-t border-slate-100 flex items-start gap-3 bg-amber-50/50 -mx-2 -mb-4 p-2.5 rounded-b-2xl">
@@ -286,7 +289,7 @@ export default function Login() {
       </main>
 
       {/* FOOTER */}
-      <footer className="relative z-10 w-full border-t border-slate-200/80 bg-white/70 backdrop-blur-xs py-2 px-5 lg:px-16 text-center">
+      <footer className="relative z-10 w-full border-t border-slate-200/80 bg-white/70 backdrop-blur-xs py-2 px-6 lg:px-24 text-center">
         <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-slate-700">AarogyaNet Citizen Portal</span>

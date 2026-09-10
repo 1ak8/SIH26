@@ -10,3 +10,8 @@ body { margin: 0; background: #f9f9ff; color: #111c2d; -webkit-font-smoothing: a
 .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+@keyframes formMorphIn { from { opacity: 0; transform: scale(0.92) translateY(10px); filter: blur(4px); } 50% { opacity: 0.7; transform: scale(1.01) translateY(-1px); filter: blur(0); } to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); } }
+.animate-form-morph { animation: formMorphIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.form-height-guard { min-height: 280px; }
+.form-card-register { max-width: 520px !important; transition: max-width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.5s ease; }
+.form-card-login { max-width: 420px; transition: max-width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.5s ease; }
