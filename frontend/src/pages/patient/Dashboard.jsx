@@ -43,7 +43,7 @@ export default function PatientDashboard() {
                     <span>Ayushman Bharat Digital Health Grid</span>
                   </div>
                   <h1 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
-                    Hello, {user?.name?.split(' ')[0] || 'Patient'} <span className="text-3xl sm:text-4xl">👋</span>
+                    Hello, <span className="notranslate" translate="no">{user?.name?.split(' ')[0] || 'Patient'}</span> <span className="text-3xl sm:text-4xl">👋</span>
                   </h1>
                   <p className="text-base sm:text-lg text-slate-700 font-semibold mt-1">
                     Your health, our priority — <span className="text-amber-800 underline decoration-amber-400 decoration-2">Sitapur Rural Sub-Centre</span>
@@ -150,9 +150,9 @@ export default function PatientDashboard() {
                         </div>
                         <div>
                           <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-                            <span className="text-xl font-extrabold text-slate-900">{a.doctor?.name || 'Dr. Rajesh Sharma'}</span>
+                            <span className="text-xl font-extrabold text-slate-900 notranslate" translate="no">{a.doctor?.name || 'Dr. Rajesh Sharma'}</span>
                             <span className="bg-sky-100 text-sky-900 font-extrabold px-3 py-1 rounded-full text-xs border border-sky-300">Tele-Consult</span>
-                            <span className="bg-emerald-100 text-emerald-900 font-black px-3.5 py-1 rounded-full text-xs border-2 border-emerald-400 shadow-xs">Token #{a.tokenNumber}</span>
+                            <span className="bg-emerald-100 text-emerald-900 font-black px-3.5 py-1 rounded-full text-xs border-2 border-emerald-400 shadow-xs notranslate" translate="no">Token #{a.tokenNumber}</span>
                           </div>
                           <p className="text-sm text-slate-700 font-semibold">General Medicine • ABHA Linked Consultation</p>
                         </div>
@@ -175,9 +175,9 @@ export default function PatientDashboard() {
                       </div>
                       <div>
                         <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-                          <span className="text-xl font-extrabold text-slate-900">Dr. Rajesh Sharma</span>
+                          <span className="text-xl font-extrabold text-slate-900 notranslate" translate="no">Dr. Rajesh Sharma</span>
                           <span className="bg-sky-100 text-sky-900 font-extrabold px-3 py-1 rounded-full text-xs border border-sky-300">Tele-Consult</span>
-                          <span className="bg-emerald-100 text-emerald-900 font-black px-3.5 py-1 rounded-full text-xs border-2 border-emerald-400 shadow-xs">Token #04</span>
+                          <span className="bg-emerald-100 text-emerald-900 font-black px-3.5 py-1 rounded-full text-xs border-2 border-emerald-400 shadow-xs notranslate" translate="no">Token #04</span>
                         </div>
                         <p className="text-sm text-slate-700 font-semibold">General Medicine • CHC Sitapur Central • ABHA Linked Consultation</p>
                       </div>
@@ -257,7 +257,7 @@ export default function PatientDashboard() {
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-xl font-extrabold text-slate-900 leading-tight">Sunita Devi</h3>
+                          <h3 className="text-xl font-extrabold text-slate-900 leading-tight notranslate" translate="no">Sunita Devi</h3>
                           <span className="material-symbols-outlined text-amber-600 text-[20px]" title="Govt Certified ASHA">verified</span>
                         </div>
                         <p className="text-xs text-slate-600 font-semibold mt-0.5">Govt Certified Field Health Worker • Sitapur Ward 4</p>

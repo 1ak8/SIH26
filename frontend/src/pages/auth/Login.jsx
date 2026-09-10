@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import LanguageSelector from '../../components/LanguageSelector';
 
 export default function Login() {
   const { login, register } = useAuth();
@@ -66,29 +67,22 @@ export default function Login() {
       </div>
 
       {/* HEADER */}
-      <header className="relative z-10 w-full px-6 lg:px-24 pt-3 pb-1 flex items-center gap-4">
+      <header className="relative z-50 w-full px-6 lg:px-24 pt-3 pb-1 flex items-center gap-4">
         <div className="flex items-center gap-3 shrink-0">
           <div className="w-14 h-14 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20 font-bold">
             <span className="material-symbols-outlined fill text-[36px]">health_and_safety</span>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-900 tracking-tight text-3xl">AarogyaNet</span>
+              <span className="font-bold text-slate-900 tracking-tight text-3xl notranslate" translate="no">AarogyaNet</span>
               <span className="text-[11px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">{t('govtPortal')}</span>
             </div>
             <p className="text-sm text-slate-500 hidden sm:block">{t('nationalTeleHealth')}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 shrink-0 ml-auto">
-          <div className="flex items-center text-sm font-semibold bg-white border border-slate-200 rounded-full p-1 shadow-sm">
-            <button 
-              className={`px-4 py-1.5 rounded-full transition-colors ${i18n.language === 'en' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`} 
-              onClick={() => i18n.changeLanguage('en')} type="button">English</button>
-            <button 
-              className={`px-4 py-1.5 rounded-full transition-colors ${i18n.language === 'hi' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`} 
-              onClick={() => i18n.changeLanguage('hi')} type="button">हिंदी</button>
-          </div>
-          <a href="tel:108" className="hidden sm:flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-sm font-bold hover:bg-rose-100 transition-colors cursor-pointer">
+        <div className="flex items-center gap-3 shrink-0 ml-auto">
+          <LanguageSelector />
+          <a href="tel:108" className="hidden sm:flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-xs font-extrabold hover:bg-rose-100 transition-colors cursor-pointer shadow-xs">
             <span className="material-symbols-outlined text-[18px] text-rose-600">call</span>
             <span>{t('emergency')}</span>
           </a>

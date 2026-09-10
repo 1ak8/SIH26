@@ -1,6 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import LanguageSelector from './LanguageSelector';
 
 export default function PatientNavbar({ activeTab, setActiveTab }) {
   const { logout } = useAuth();
@@ -35,7 +36,7 @@ export default function PatientNavbar({ activeTab, setActiveTab }) {
             <span className="material-symbols-outlined fill text-[26px]">health_and_safety</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold text-slate-900 tracking-tight text-2xl leading-none group-hover:text-amber-700 transition-colors">AarogyaNet</span>
+            <span className="font-extrabold text-slate-900 tracking-tight text-2xl leading-none group-hover:text-amber-700 transition-colors notranslate" translate="no">AarogyaNet</span>
             <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 self-start mt-1">
               Govt Portal
             </span>
@@ -110,14 +111,7 @@ export default function PatientNavbar({ activeTab, setActiveTab }) {
         <div className="flex items-center gap-3 shrink-0">
           <div className="h-8 w-[2px] bg-slate-300 rounded-full hidden lg:block mr-1"></div>
 
-          <button 
-            onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'hi' : 'en')} 
-            className="h-10 px-3.5 flex items-center gap-2 bg-white border border-slate-200 rounded-xl text-slate-800 text-xs font-extrabold hover:border-amber-400 hover:bg-slate-50 transition-all shadow-xs" 
-            type="button"
-          >
-            <span className="material-symbols-outlined text-amber-600 text-[18px]">translate</span>
-            <span className="hidden sm:inline">{i18n.language === 'en' ? 'English' : 'हिंदी'}</span>
-          </button>
+          <LanguageSelector />
 
           <a 
             className="h-10 px-3.5 flex items-center gap-1.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-extrabold rounded-xl hover:bg-rose-100 transition-all shadow-xs" 

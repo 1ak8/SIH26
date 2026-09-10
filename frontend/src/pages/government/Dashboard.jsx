@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
+import LanguageSelector from '../../components/LanguageSelector';
 
 const INITIAL_ALERTS = [
   {
@@ -102,52 +103,107 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="bg-surface-container-lowest text-on-surface font-sans min-h-screen selection:bg-primary-container">
-      {/* ORIGINAL HEADER */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-surface-container-lowest border-b border-surface-variant">
-        <div className="max-w-7xl mx-auto px-6 py-2.5 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="w-8 h-8 rounded-lg overflow-hidden bg-primary-container flex items-center justify-center shadow-sm">
-              <span className="material-symbols-outlined text-on-primary-container text-[20px]">health_and_safety</span>
+    <div className="bg-[#fbfaf7] text-slate-900 font-sans min-h-screen">
+      {/* HEADER: Exactly matching Patient and ASHA Navbar */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs w-full">
+        <div className="w-full px-6 lg:px-12 xl:px-16 flex items-center justify-between gap-8 h-20">
+          {/* Logo with Govt Portal Badge Below */}
+          <div className="flex items-center gap-3.5 shrink-0 group">
+            <div className="w-11 h-11 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-bold shadow-sm shrink-0">
+              <span className="material-symbols-outlined fill text-[26px]">health_and_safety</span>
             </div>
-            <span className="text-headline-md font-bold text-on-surface tracking-tight leading-tight">AarogyaNet</span>
+            <div className="flex flex-col">
+              <span className="font-extrabold text-slate-900 tracking-tight text-2xl leading-none notranslate" translate="no">AarogyaNet</span>
+              <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 self-start mt-1">
+                Govt Portal • Mission MIS
+              </span>
+            </div>
           </div>
-          <nav className="hidden lg:flex items-center gap-2">
-            <button onClick={() => setActiveView('overview')} className={`px-3 py-1.5 inline-flex items-center gap-1.5 transition-colors rounded-lg ${activeView === 'overview' ? 'bg-surface-container text-on-surface font-bold text-body-md' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'}`}>
-              <span className="material-symbols-outlined text-[20px]">dashboard</span>
+
+          {/* Clean Navigation Items with Subtle Dividers */}
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-3">
+            <button 
+              onClick={() => setActiveView('overview')} 
+              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-2 ${
+                activeView === 'overview' 
+                  ? 'bg-amber-600 text-white shadow-sm' 
+                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">dashboard</span>
               <span>{t('National Overview', 'राष्ट्रीय अवलोकन')}</span>
             </button>
-            <button onClick={() => setActiveView('teleCenters')} className={`px-3 py-1.5 inline-flex items-center gap-1.5 transition-colors rounded-lg ${activeView === 'teleCenters' ? 'bg-surface-container text-on-surface font-bold text-body-md' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'}`}>
-              <span className="material-symbols-outlined text-[20px]">domain</span>
+
+            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+
+            <button 
+              onClick={() => setActiveView('teleCenters')} 
+              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-2 ${
+                activeView === 'teleCenters' 
+                  ? 'bg-amber-600 text-white shadow-sm' 
+                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">domain</span>
               <span>{t('Tele-Health Centers', 'टेली-हेल्थ केंद्र')}</span>
             </button>
-            <button onClick={() => setActiveView('fieldForce')} className={`px-3 py-1.5 inline-flex items-center gap-1.5 transition-colors rounded-lg ${activeView === 'fieldForce' ? 'bg-surface-container text-on-surface font-bold text-body-md' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'}`}>
-              <span className="material-symbols-outlined text-[20px]">diversity_1</span>
+
+            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+
+            <button 
+              onClick={() => setActiveView('fieldForce')} 
+              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-2 ${
+                activeView === 'fieldForce' 
+                  ? 'bg-amber-600 text-white shadow-sm' 
+                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">diversity_1</span>
               <span>{t('Field Force (ASHA)', 'फील्ड फोर्स (आशा)')}</span>
             </button>
-            <button onClick={() => setActiveView('inventory')} className={`px-3 py-1.5 inline-flex items-center gap-1.5 transition-colors rounded-lg ${activeView === 'inventory' ? 'bg-surface-container text-on-surface font-bold text-body-md' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'}`}>
-              <span className="material-symbols-outlined text-[20px]">medication</span>
+
+            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+
+            <button 
+              onClick={() => setActiveView('inventory')} 
+              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-2 ${
+                activeView === 'inventory' 
+                  ? 'bg-amber-600 text-white shadow-sm' 
+                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">medication</span>
               <span>{t('Drug Inventory', 'दवा सूची')}</span>
             </button>
           </nav>
+
+          {/* Right Action Controls */}
           <div className="flex items-center gap-3 shrink-0">
-            <button onClick={toggleLang} className="h-10 px-3 flex items-center gap-2 bg-surface-container-lowest border border-surface-variant rounded-lg text-on-surface text-label-md hover:bg-surface-container transition-colors" type="button">
-              <span className="material-symbols-outlined text-secondary text-[20px]">translate</span>
-              <span className="hidden sm:inline">Lang: {lang === 'en' ? 'English' : 'हिंदी'}</span>
-            </button>
-            <a className="h-10 px-4 flex items-center gap-2 bg-secondary text-on-secondary text-label-lg font-bold rounded-lg hover:bg-secondary-container hover:text-on-secondary-container transition-colors shadow-sm" href="tel:108">
-              <span className="material-symbols-outlined text-[20px]">call</span>
-              <span>{t('Emergency 108', 'आपातकालीन 108')}</span>
+            <div className="h-8 w-[2px] bg-slate-300 rounded-full hidden lg:block mr-1"></div>
+
+            <LanguageSelector />
+
+            <a 
+              className="h-10 px-3.5 flex items-center gap-1.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-extrabold rounded-xl hover:bg-rose-100 transition-all shadow-xs" 
+              href="tel:108"
+            >
+              <span className="material-symbols-outlined text-rose-600 text-[18px]">call</span>
+              <span>Emergency 108</span>
             </a>
-            <button onClick={logout} className="w-9 h-9 rounded-full bg-tertiary flex items-center justify-center hover:bg-tertiary/80 transition-colors" title="Logout">
-              <span className="material-symbols-outlined text-on-tertiary text-[18px]">logout</span>
+
+            <button 
+              onClick={() => { if (window.confirm('Are you sure you want to logout?')) logout(); }} 
+              className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 border border-slate-200 flex items-center justify-center transition-all shadow-xs" 
+              title="Logout"
+            >
+              <span className="material-symbols-outlined text-[18px]">logout</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* RE-DESIGNED MAIN CONTENT */}
-      <main className="w-full bg-surface-container-lowest max-w-7xl mx-auto px-4 lg:px-8 pt-20 animate-fadeIn min-h-[85vh]">
+      {/* RE-DESIGNED MAIN CONTENT: Full Width & Zero Overlap */}
+      <main className="w-full bg-[#fbfaf7] px-6 lg:px-12 xl:px-16 pt-28 pb-16 animate-fadeIn min-h-[85vh]">
         <div className="flex flex-col w-full pb-8">
           
           {/* Top Header */}
@@ -170,16 +226,16 @@ export default function AdminDashboard() {
             
             {/* Filter Bar */}
             <div className="flex flex-wrap items-center gap-3">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface-container rounded-xl shadow-sm border border-surface-variant">
-                <span className="material-symbols-outlined text-secondary text-[20px]">calendar_today</span>
-                <span className="text-label-md font-medium text-on-surface">{t('Today:', 'आज:')} {new Date().toLocaleDateString(lang === 'en' ? 'en' : 'hi-IN', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-slate-200 rounded-xl shadow-xs">
+                <span className="material-symbols-outlined text-slate-500 text-[18px]">calendar_today</span>
+                <span className="text-xs font-extrabold text-slate-800">{t('Today:', 'आज:')} {new Date().toLocaleDateString(lang === 'en' ? 'en' : 'hi-IN', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
               </div>
-              <button onClick={() => setActiveModal('districtFilter')} className="h-11 px-4 flex items-center gap-2 bg-surface-container-lowest border border-surface-variant rounded-xl text-label-md font-bold text-on-surface hover:bg-surface-container hover:shadow-sm transition-all transform hover:-translate-y-0.5" type="button">
-                <span className="material-symbols-outlined text-secondary text-[20px]">tune</span>
+              <button onClick={() => setActiveModal('districtFilter')} className="h-11 px-4 flex items-center gap-2 bg-white border-2 border-slate-300 rounded-xl text-xs font-extrabold text-slate-800 hover:border-amber-400 hover:bg-slate-50 transition-all shadow-xs" type="button">
+                <span className="material-symbols-outlined text-amber-600 text-[18px]">tune</span>
                 <span>{t('District Filter', 'जिला फ़िल्टर')}</span>
               </button>
-              <button onClick={handleExport} className="h-11 px-6 flex items-center gap-2 bg-inverse-surface text-inverse-on-surface text-label-lg font-bold rounded-xl hover:opacity-90 transition-all shadow-sm" type="button">
-                <span className="material-symbols-outlined text-[20px]">download</span>
+              <button onClick={handleExport} className="h-11 px-6 flex items-center gap-2 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-extrabold rounded-xl shadow-sm transition-all" type="button">
+                <span className="material-symbols-outlined text-[18px]">download</span>
                 <span>{t('Export MIS', 'MIS निर्यात करें')}</span>
               </button>
             </div>
@@ -189,17 +245,17 @@ export default function AdminDashboard() {
           {activeView === 'overview' && (
             <div className="animate-fadeIn">
               {/* Network Status Callout */}
-              <div className="w-full mt-6 p-5 bg-primary-container rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+              <div className="w-full mt-6 p-6 bg-gradient-to-r from-amber-500/15 via-amber-100/40 to-transparent border-2 border-amber-300 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary shrink-0 shadow-sm">
-                    <span className="material-symbols-outlined text-[28px] animate-pulse">hub</span>
+                  <div className="w-14 h-14 rounded-2xl bg-white border-2 border-amber-300 flex items-center justify-center text-amber-700 shrink-0 shadow-xs">
+                    <span className="material-symbols-outlined text-[30px] animate-pulse">hub</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-lg text-on-primary-container font-bold tracking-tight">{t('State Central Node Synchronized', 'राज्य केंद्रीय नोड सिंक्रनाइज़')}</span>
-                    <span className="text-sm text-on-primary-container font-medium mt-0.5">{t('142 Primary Health Centers connected. Satellite uplink latency: 34ms.', '142 प्राथमिक स्वास्थ्य केंद्र जुड़े हैं। सैटेलाइट अपलिंक विलंबता: 34ms')}</span>
+                    <span className="text-xl font-extrabold text-slate-900 tracking-tight">{t('State Central Node Synchronized', 'राज्य केंद्रीय नोड सिंक्रनाइज़')}</span>
+                    <span className="text-sm font-semibold text-slate-600 mt-0.5">{t('142 Primary Health Centers connected. Satellite uplink latency: 34ms.', '142 प्राथमिक स्वास्थ्य केंद्र जुड़े हैं। सैटेलाइट अपलिंक विलंबता: 34ms')}</span>
                   </div>
                 </div>
-                <span className="text-xs font-bold px-3 py-1.5 bg-surface-container-lowest text-primary rounded-lg shadow-sm whitespace-nowrap">NODE UP: 99.98%</span>
+                <span className="text-xs font-black px-3.5 py-1.5 bg-white text-amber-950 rounded-xl border border-amber-300 shadow-xs whitespace-nowrap">NODE UP: 99.98%</span>
               </div>
 
               {/* KPI Cards */}
@@ -559,26 +615,28 @@ export default function AdminDashboard() {
         </div>
       </main>
 
-      {/* ORIGINAL FOOTER */}
-      <footer className="w-full bg-surface border-t border-surface-variant mt-8">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+      {/* FOOTER: Exact same as Patient, ASHA, and Doctor Panels */}
+      <footer className="w-full bg-white border-t border-slate-200 mt-12">
+        <div className="w-full px-6 lg:px-12 xl:px-16 py-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div className="md:col-span-2 flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-[28px]">verified</span>
-                <span className="text-headline-sm text-on-surface font-bold">Ministry of Health & Family Welfare</span>
+                <span className="material-symbols-outlined text-amber-600 text-[28px]">verified</span>
+                <span className="text-lg text-slate-900 font-extrabold">Ministry of Health &amp; Family Welfare</span>
               </div>
-              <p className="text-body-md text-on-surface-variant max-w-xl">AarogyaNet delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.</p>
+              <p className="text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
+                AarogyaNet delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
+              </p>
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-label-md text-secondary uppercase">Emergency Helplines</span>
-              <span className="text-headline-sm font-bold text-tertiary">Toll-Free 1075 / 108</span>
-              <span className="text-label-sm text-on-surface-variant">24x7 National Tele-Consult & Dispatch</span>
+            <div className="flex flex-col gap-1.5 justify-center md:items-end">
+              <span className="text-xs text-slate-500 uppercase font-extrabold tracking-wider">National Emergency Helplines</span>
+              <span className="text-xl font-black text-rose-700">Toll-Free 1075 / 108</span>
+              <span className="text-xs text-slate-500 font-semibold">24x7 Tele-Consult &amp; Ambulance Dispatch</span>
             </div>
           </div>
-          <div className="mt-5 pt-3 border-t border-surface-variant flex flex-col sm:flex-row items-center justify-between gap-2 text-label-sm text-secondary">
-            <p>© 2025 Government Public Healthcare Infrastructure. All citizen rights reserved.</p>
-            <p>Radical Clarity & Rural Accessibility Compliant</p>
+          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-medium">
+            <p>© 2026 Government Public Healthcare Infrastructure. All citizen rights reserved.</p>
+            <p className="text-amber-900 font-bold">Radical Clarity &amp; Rural Accessibility Compliant</p>
           </div>
         </div>
       </footer>
