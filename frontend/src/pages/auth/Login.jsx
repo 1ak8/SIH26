@@ -57,7 +57,7 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-[#fbfaf7] text-slate-800 min-h-screen flex flex-col justify-between relative overflow-x-hidden selection:bg-amber-100 selection:text-amber-900">
+    <div className="bg-[#fbfaf7] text-slate-800 h-screen max-h-screen flex flex-col justify-between relative overflow-hidden selection:bg-amber-100 selection:text-amber-900">
       {/* Subtle ambient glow background */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-amber-200/35 rounded-full blur-3xl"></div>
@@ -66,20 +66,20 @@ export default function Login() {
       </div>
 
       {/* HEADER */}
-      <header className="relative z-10 w-full max-w-6xl mx-auto px-6 pt-5 pb-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20 font-bold">
-            <span className="material-symbols-outlined fill text-2xl">health_and_safety</span>
+      <header className="relative z-10 w-full px-5 lg:px-16 pt-3 pb-1 flex items-center gap-4">
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="w-14 h-14 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20 font-bold">
+            <span className="material-symbols-outlined fill text-[36px]">health_and_safety</span>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-900 tracking-tight text-xl">AarogyaNet</span>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">{t('govtPortal')}</span>
+              <span className="font-bold text-slate-900 tracking-tight text-3xl">AarogyaNet</span>
+              <span className="text-[11px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">{t('govtPortal')}</span>
             </div>
-            <p className="text-xs text-slate-500 hidden sm:block">{t('nationalTeleHealth')}</p>
+            <p className="text-sm text-slate-500 hidden sm:block">{t('nationalTeleHealth')}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 shrink-0 ml-auto">
           <div className="flex items-center text-xs font-semibold bg-white border border-slate-200 rounded-full p-1 shadow-sm">
             <button 
               className={`px-3 py-1 rounded-full transition-colors ${i18n.language === 'en' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`} 
@@ -88,25 +88,25 @@ export default function Login() {
               className={`px-3 py-1 rounded-full transition-colors ${i18n.language === 'hi' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`} 
               onClick={() => i18n.changeLanguage('hi')} type="button">हिंदी</button>
           </div>
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-xs font-bold">
+          <a href="tel:108" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-xs font-bold hover:bg-rose-100 transition-colors cursor-pointer">
             <span className="material-symbols-outlined text-[16px] text-rose-600">call</span>
             <span>{t('emergency')}</span>
-          </div>
+          </a>
         </div>
       </header>
 
       {/* MAIN */}
-      <main className="relative z-10 flex-1 flex items-center justify-center w-full max-w-6xl mx-auto px-6 py-4 lg:py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
+      <main className="relative z-10 flex-1 flex items-center justify-center w-full px-5 lg:px-16 py-2 lg:py-3 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center w-full">
           {/* LEFT COLUMN */}
-          <div className="lg:col-span-7 flex flex-col justify-center space-y-4">
+          <div className="lg:col-span-7 flex flex-col justify-center space-y-3">
             <div className="inline-flex items-center gap-2 self-start px-3.5 py-1.5 rounded-full bg-amber-50/90 border border-amber-200/80 text-amber-900 text-xs font-semibold shadow-xs">
               <span className="material-symbols-outlined text-amber-600 text-[18px]">verified</span>
               <span>राष्ट्रीय स्वास्थ्य मिशन | National Health Mission</span>
             </div>
             <div>
               <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-slate-900 tracking-tight leading-tight">
-                {t('accessibleHealthcare')} <span className="relative inline-block text-amber-600">{t('everyCitizen')}</span>
+                {t('accessibleHealthcare')}<br /><span className="relative inline-block text-amber-600">{t('everyCitizen')}</span>
               </h1>
               <p className="text-slate-600 text-base sm:text-lg mt-2 font-normal leading-relaxed max-w-xl">
                 {t('authDesc')}
@@ -144,9 +144,9 @@ export default function Login() {
 
           {/* RIGHT COLUMN: Auth Card */}
           <div className="lg:col-span-5 w-full flex justify-center">
-            <div className="w-full max-w-md bg-white border border-slate-200/90 rounded-3xl p-7 sm:p-8 shadow-xl shadow-slate-200/60 transition-all">
+            <div className="w-full max-w-md bg-white border border-slate-200/90 rounded-3xl p-5 sm:p-6 shadow-xl shadow-slate-200/60 transition-all">
               {/* Card Header */}
-              <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center justify-between mb-3">
                 <div>
                   <h2 className="text-xl font-bold text-slate-900">{t('citizenAccess')}</h2>
                   <p className="text-xs text-slate-500 mt-0.5">{t('enterCredentials')}</p>
@@ -157,7 +157,7 @@ export default function Login() {
               </div>
 
               {/* Login / Register Tabs */}
-              <div className="flex bg-slate-100 p-1 rounded-xl mb-5">
+              <div className="flex bg-slate-100 p-1 rounded-xl mb-3">
                 <button className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${tab === 'login' ? 'text-slate-900 bg-white shadow-xs' : 'text-slate-500 hover:text-slate-900'}`}
                   onClick={() => setTab('login')} type="button">{t('signIn')}</button>
                 <button className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${tab === 'register' ? 'text-slate-900 bg-white shadow-xs' : 'text-slate-500 hover:text-slate-900'}`}
@@ -166,9 +166,9 @@ export default function Login() {
 
               {/* Role Selector */}
               {tab === 'login' && (
-                <div className="mb-4">
+                <div className="mb-3">
                   <label className="block text-[11px] font-bold text-slate-700 mb-2 uppercase tracking-wider">{t('selectPortal')}</label>
-                  <div className="grid grid-cols-4 gap-1.5 p-1 bg-slate-50 border border-slate-200 rounded-xl">
+                  <div className="grid grid-cols-4 gap-1.5 p-1 bg-slate-50 border border-slate-200 rounded-xl animate-fadeIn">
                     {ROLES.map(r => (
                       <button key={r.key} onClick={() => setRole(r.key)} type="button"
                         className={`flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-lg text-[10px] font-bold transition-all ${role === r.key ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-900 hover:bg-white'}`}>
@@ -183,14 +183,14 @@ export default function Login() {
               {error && <div className="p-3 mb-3 rounded-xl bg-rose-50 text-rose-700 text-sm font-medium border border-rose-200">{error}</div>}
 
               {tab === 'login' && (
-                <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+                <form key="login" className="flex flex-col gap-3 animate-fadeIn" onSubmit={handleSubmit}>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[13px] font-bold text-slate-700">{t('emailMobile')}</label>
                     <div className="relative group">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 group-focus-within:text-amber-500 transition-colors">
                         <span className="material-symbols-outlined text-[20px]">badge</span>
                       </span>
-                      <input className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                      <input className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         placeholder="your@email.com or 9876543210" required type="text" value={email} onChange={e => setEmail(e.target.value)} />
                     </div>
                   </div>
@@ -200,7 +200,7 @@ export default function Login() {
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 group-focus-within:text-amber-500 transition-colors">
                         <span className="material-symbols-outlined text-[20px]">lock</span>
                       </span>
-                      <input className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                      <input className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         placeholder="••••••••" required type="password" value={password} onChange={e => setPassword(e.target.value)} />
                     </div>
                   </div>
@@ -211,7 +211,7 @@ export default function Login() {
                     </label>
                     <a className="font-bold text-amber-600 hover:text-amber-700 hover:underline" href="#">{t('forgotPassword')}</a>
                   </div>
-                  <button className="w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-[15px] rounded-xl shadow-lg shadow-amber-500/30 transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
+                  <button className="w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-[14px] rounded-xl shadow-lg shadow-amber-500/30 transition-all flex items-center justify-center gap-2 mt-1 disabled:opacity-70"
                     type="submit" disabled={loading}>
                     {loading ? <span className="material-symbols-outlined animate-spin text-[20px]">progress_activity</span> : null}
                     <span>{loading ? t('authenticating') : t('signInBtn')}</span>
@@ -221,7 +221,7 @@ export default function Login() {
               )}
 
               {tab === 'register' && (
-                <form className="flex flex-col gap-4" onSubmit={handleRegisterSubmit}>
+                <form key="register" className="flex flex-col gap-4 animate-fadeIn" onSubmit={handleRegisterSubmit}>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[13px] font-bold text-slate-700">{t('fullName')}</label>
                     <input className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
@@ -273,7 +273,7 @@ export default function Login() {
               )}
 
               {/* Help Section */}
-              <div className="mt-5 pt-4 border-t border-slate-100 flex items-start gap-3 bg-amber-50/50 -mx-3 -mb-3 p-3 rounded-b-2xl">
+              <div className="mt-3 pt-3 border-t border-slate-100 flex items-start gap-3 bg-amber-50/50 -mx-2 -mb-4 p-2.5 rounded-b-2xl">
                 <span className="material-symbols-outlined text-amber-700 text-xl shrink-0 mt-0.5">contact_support</span>
                 <div className="text-xs text-slate-600 leading-tight">
                   <span className="font-bold text-slate-800">{t('needHelp')}</span>
@@ -286,8 +286,8 @@ export default function Login() {
       </main>
 
       {/* FOOTER */}
-      <footer className="relative z-10 w-full border-t border-slate-200/80 bg-white/70 backdrop-blur-xs py-3 px-6 text-center">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+      <footer className="relative z-10 w-full border-t border-slate-200/80 bg-white/70 backdrop-blur-xs py-2 px-5 lg:px-16 text-center">
+        <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-slate-700">AarogyaNet Citizen Portal</span>
             <span className="hidden sm:inline">•</span>

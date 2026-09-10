@@ -56,7 +56,7 @@ const resources = {
       "nationalTeleHealth": "National Tele-Health Initiative",
       "accessibleHealthcare": "Accessible Healthcare for",
       "everyCitizen": "Every Citizen.",
-      "authDesc": "Connecting rural citizens, ASHA workers, and verified doctors seamlessly. Access specialist tele-consultations, prescription records, and primary care from anywhere.",
+      "authDesc": "Tele-health, prescriptions & primary care — connecting rural India to verified doctors.",
       "liveClinics": "Live Panchayat Tele-Clinics Active",
       "abdmIntegrated": "ABDM Integrated",
       "languagesSupported": "22 Languages",
