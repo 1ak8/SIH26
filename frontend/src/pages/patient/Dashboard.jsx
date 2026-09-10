@@ -31,8 +31,8 @@ export default function PatientDashboard() {
             <div className="w-full py-5">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
                 <div>
-                  <h1 className="text-headline-lg font-bold text-on-surface tracking-tight">{t('welcomeBack')}, {user?.name?.split(' ')[0] || 'Aditya'}</h1>
-                  <p className="text-body-md text-secondary mt-1">Sitapur Rural Sub-Centre • ABHA: {user?.abhaId || '91-4820-1940-2810'}</p>
+                  <h1 className="text-headline-lg font-bold text-on-surface tracking-tight">Namaste, {user?.name?.split(' ')[0] || 'Patient'} 🙏</h1>
+                  <p className="text-body-md text-secondary mt-1">Your health, our priority — Sitapur Rural Sub-Centre</p>
                 </div>
                 <div className="inline-flex items-center gap-2 bg-surface-container px-4 py-1.5 rounded-full border border-surface-variant text-on-surface text-label-md">
                   <span className="w-2.5 h-2.5 rounded-full bg-primary-container inline-block"></span>
