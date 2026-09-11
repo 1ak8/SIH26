@@ -74,7 +74,7 @@ export default function Login() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-900 tracking-tight text-3xl notranslate" translate="no">AarogyaNet</span>
+              <span className="font-bold text-slate-900 tracking-tight text-3xl notranslate" translate="no">SEHATSARTHI</span>
               <span className="text-[11px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">{t('govtPortal')}</span>
             </div>
             <p className="text-sm text-slate-500 hidden sm:block">{t('nationalTeleHealth')}</p>
@@ -286,7 +286,7 @@ export default function Login() {
       <footer className="relative z-10 w-full border-t border-slate-200/80 bg-white/70 backdrop-blur-xs py-2 px-6 lg:px-24 text-center">
         <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-700">AarogyaNet Citizen Portal</span>
+            <span className="font-semibold text-slate-700 notranslate" translate="no">SEHATSARTHI Citizen Portal</span>
             <span className="hidden sm:inline">•</span>
             <span>Ministry of Health &amp; Family Welfare, Govt. of India</span>
           </div>

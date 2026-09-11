@@ -10,7 +10,7 @@ export default function Sidebar({ links, activeKey, onNavigate }) {
             <span className="material-symbols-outlined text-white text-lg">health_and_safety</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-base font-bold text-primary tracking-tight">AarogyaNet</span>
+            <span className="text-base font-bold text-amber-700 tracking-tight notranslate" translate="no">SEHATSARTHI</span>
             <span className="text-[11px] text-on-surface-variant">Health Portal · MoHFW</span>
           </div>
         </div>

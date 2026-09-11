@@ -418,7 +418,7 @@ export default function PatientDashboard() {
                 <span className="text-lg text-slate-900 font-extrabold">Ministry of Health &amp; Family Welfare</span>
               </div>
               <p className="text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
-                AarogyaNet delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
+                <span className="notranslate" translate="no">SEHATSARTHI</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
               </p>
             </div>
             <div className="flex flex-col gap-1.5 justify-center md:items-end">

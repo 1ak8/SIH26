@@ -63,7 +63,7 @@ export default function AdminDashboard() {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `aarogyanet-report.json`;
+          a.download = `sehatsarthi-report.json`;
           a.click();
           URL.revokeObjectURL(url);
           setActiveModal(null);
@@ -113,7 +113,7 @@ export default function AdminDashboard() {
               <span className="material-symbols-outlined fill text-[26px]">health_and_safety</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-slate-900 tracking-tight text-2xl leading-none notranslate" translate="no">AarogyaNet</span>
+              <span className="font-extrabold text-slate-900 tracking-tight text-2xl leading-none notranslate" translate="no">SEHATSARTHI</span>
               <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 self-start mt-1">
                 Govt Portal • Mission MIS
               </span>
@@ -625,7 +625,7 @@ export default function AdminDashboard() {
                 <span className="text-lg text-slate-900 font-extrabold">Ministry of Health &amp; Family Welfare</span>
               </div>
               <p className="text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
-                AarogyaNet delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
+                <span className="notranslate" translate="no">SEHATSARTHI</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
               </p>
             </div>
             <div className="flex flex-col gap-1.5 justify-center md:items-end">

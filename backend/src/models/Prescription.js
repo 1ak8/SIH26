@@ -29,7 +29,7 @@ const prescriptionSchema = new mongoose.Schema({
 
 prescriptionSchema.pre('save', function (next) {
   if (!this.prescriptionId) {
-    this.prescriptionId = 'AAR-' + Math.floor(Math.random() * 9000 + 1000);
+    this.prescriptionId = 'SEHAT-' + Math.floor(Math.random() * 9000 + 1000);
   }
   next();
 });

@@ -5,7 +5,7 @@ import api from '../../services/api';
 
 const MOCK_PRESCRIPTIONS = [
   {
-    id: 'AAR-9699',
+    id: 'SEHAT-9699',
     date: '07 Sep 2026',
     doctor: 'Dr. Rajesh Sharma',
     facility: 'CHC Sitapur Central',
@@ -20,7 +20,7 @@ const MOCK_PRESCRIPTIONS = [
     digitallySigned: true,
   },
   {
-    id: 'AAR-8120',
+    id: 'SEHAT-8120',
     date: '14 Aug 2026',
     doctor: 'Dr. Ananya Gupta',
     facility: 'District Hospital Sitapur',
@@ -44,7 +44,7 @@ export default function MedicineHistory() {
       .then(res => {
         if (res.data?.data?.activePrescriptions?.length > 0) {
           const apiList = res.data.data.activePrescriptions.map(p => ({
-            id: p.prescriptionId || 'AAR-9699',
+            id: p.prescriptionId || 'SEHAT-9699',
             date: new Date(p.createdAt || Date.now()).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
             doctor: p.doctor?.name || 'Dr. Rajesh Sharma',
             facility: 'CHC Sitapur Central',
