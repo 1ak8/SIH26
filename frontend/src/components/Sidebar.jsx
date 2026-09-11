@@ -6,9 +6,7 @@ export default function Sidebar({ links, activeKey, onNavigate }) {
     <aside className="fixed left-0 top-0 h-full w-72 bg-white shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex flex-col justify-between">
       <div className="flex flex-col">
         <div className="h-16 px-5 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="material-symbols-outlined text-white text-lg">health_and_safety</span>
-          </div>
+          <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-8 h-8 rounded-lg object-cover notranslate" translate="no" />
           <div className="flex flex-col">
             <span className="font-brand font-black text-lg text-amber-700 tracking-tight notranslate" translate="no">SehatSaarthi</span>
             <span className="text-[11px] text-on-surface-variant">Health Portal · MoHFW</span>

@@ -243,9 +243,7 @@ export default function PatientDashboard() {
                   <div>
                     <div className="flex items-start gap-4 mb-4">
                       <div className="relative shrink-0">
-                        <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-800 border-2 border-amber-400 flex items-center justify-center font-bold shadow-xs">
-                          <span className="material-symbols-outlined text-[32px] text-amber-600">health_and_safety</span>
-                        </div>
+                        <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-14 h-14 rounded-2xl object-cover border-2 border-amber-400 shadow-xs notranslate" translate="no" />
                         <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white shadow-xs" title="Active in Village"></span>
                       </div>
                       <div className="flex-1">
@@ -303,9 +301,7 @@ export default function PatientDashboard() {
               <div className="relative z-10">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-white/20 mb-5">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
-                      <span className="material-symbols-outlined text-white text-[28px]">health_and_safety</span>
-                    </div>
+                      <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-12 h-12 rounded-2xl object-cover border border-white/30 notranslate" translate="no" />
                     <div>
                       <span className="text-xs font-black uppercase tracking-wider text-amber-100 block">National Health Authority • ABDM</span>
                       <h3 className="text-xl font-black text-white">Digital Ayushman Health Card</h3>

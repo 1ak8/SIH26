@@ -69,9 +69,7 @@ export default function Login() {
       {/* HEADER */}
       <header className="relative z-50 w-full px-6 lg:px-24 pt-3 pb-1 flex items-center gap-4">
         <div className="flex items-center gap-3 shrink-0">
-          <div className="w-14 h-14 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20 font-bold">
-            <span className="material-symbols-outlined fill text-[36px]">health_and_safety</span>
-          </div>
+          <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-14 h-14 rounded-xl object-cover shadow-md shadow-amber-500/20 notranslate" translate="no" />
           <div>
             <div className="flex items-center gap-2">
               <span className="font-brand font-black text-slate-900 tracking-tight text-3xl notranslate" translate="no">SehatSaarthi</span>

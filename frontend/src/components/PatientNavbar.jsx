@@ -32,9 +32,7 @@ export default function PatientNavbar({ activeTab, setActiveTab }) {
       <div className="w-full px-6 lg:px-12 xl:px-16 flex items-center justify-between gap-8 h-20">
         {/* Logo with Govt Portal Badge Below */}
         <Link to="/patient" className="flex items-center gap-3.5 shrink-0 group">
-          <div className="w-11 h-11 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-bold shadow-sm shrink-0">
-            <span className="material-symbols-outlined fill text-[26px]">health_and_safety</span>
-          </div>
+          <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-11 h-11 rounded-2xl object-cover notranslate" translate="no" />
           <div className="flex flex-col">
             <span className="font-brand font-black text-slate-900 tracking-tight text-2xl leading-none group-hover:text-amber-700 transition-colors notranslate" translate="no">SehatSaarthi</span>
             <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 self-start mt-1">
