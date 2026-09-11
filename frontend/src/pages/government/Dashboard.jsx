@@ -63,7 +63,7 @@ export default function AdminDashboard() {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `sehatsarthi-report.json`;
+          a.download = `sehatsaarthi-report.json`;
           a.click();
           URL.revokeObjectURL(url);
           setActiveModal(null);
@@ -113,7 +113,7 @@ export default function AdminDashboard() {
               <span className="material-symbols-outlined fill text-[26px]">health_and_safety</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-slate-900 tracking-tight text-2xl leading-none notranslate" translate="no">SEHATSARTHI</span>
+              <span className="font-brand font-black text-slate-900 tracking-tight text-2xl leading-none notranslate" translate="no">SehatSaarthi</span>
               <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 self-start mt-1">
                 Govt Portal • Mission MIS
               </span>
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
                 <span className="inline-flex items-center justify-center w-2 h-2 rounded-full bg-primary animate-pulse"></span>
                 <span className="text-label-sm text-secondary uppercase tracking-wider font-bold">Mission Directorate MIS • Live Telemetry</span>
               </div>
-              <h1 className="text-4xl font-extrabold text-on-surface tracking-tight">
+              <h1 className="font-heading text-4xl font-black text-on-surface tracking-tight">
                 {activeView === 'overview' && t('National Health Overview', 'राष्ट्रीय स्वास्थ्य अवलोकन')}
                 {activeView === 'teleCenters' && t('Tele-Health Centers Network', 'टेली-हेल्थ केंद्र नेटवर्क')}
                 {activeView === 'fieldForce' && t('Field Force (ASHA) Tracking', 'फील्ड फोर्स (आशा) ट्रैकिंग')}
@@ -625,7 +625,7 @@ export default function AdminDashboard() {
                 <span className="text-lg text-slate-900 font-extrabold">Ministry of Health &amp; Family Welfare</span>
               </div>
               <p className="text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
-                <span className="notranslate" translate="no">SEHATSARTHI</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
+                <span className="notranslate" translate="no">SehatSaarthi</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
               </p>
             </div>
             <div className="flex flex-col gap-1.5 justify-center md:items-end">

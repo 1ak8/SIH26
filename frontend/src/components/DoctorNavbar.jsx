@@ -26,7 +26,7 @@ export default function DoctorNavbar() {
             <span className="material-symbols-outlined fill text-[26px]">health_and_safety</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold text-slate-900 tracking-tight text-2xl leading-none group-hover:text-amber-700 transition-colors notranslate" translate="no">SEHATSARTHI</span>
+            <span className="font-brand font-black text-slate-900 tracking-tight text-2xl leading-none group-hover:text-amber-700 transition-colors notranslate" translate="no">SehatSaarthi</span>
             <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 self-start mt-1">
               Govt Portal • Doctor Desk
             </span>

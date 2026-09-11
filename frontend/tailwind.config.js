@@ -53,7 +53,10 @@ export default {
         'on-primary-fixed-variant': '#653e00',
       },
       fontFamily: {
-        sans: ['"Atkinson Hyperlegible Next"', 'system-ui', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Outfit"', '"Plus Jakarta Sans"', 'sans-serif'],
+        brand: ['"Outfit"', 'sans-serif'],
+        heading: ['"Outfit"', '"Plus Jakarta Sans"', 'sans-serif'],
       },
       spacing: {
         'inset-xs': '0.5rem',

@@ -171,7 +171,7 @@ export default function HealthWorkerDashboard() {
               <span className="material-symbols-outlined fill text-[26px]">health_and_safety</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-slate-900 tracking-tight text-2xl leading-none group-hover:text-amber-700 transition-colors notranslate" translate="no">SEHATSARTHI</span>
+              <span className="font-brand font-black text-slate-900 tracking-tight text-2xl leading-none group-hover:text-amber-700 transition-colors notranslate" translate="no">SehatSaarthi</span>
               <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 self-start mt-1">
                 Govt Portal • ASHA Grid
               </span>
@@ -275,7 +275,7 @@ export default function HealthWorkerDashboard() {
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span>National Rural Health Mission • Gram Swasthya Grid</span>
                   </div>
-                  <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                  <h1 className="font-heading text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
                     Village Rampur &amp; Sitapur Sub-Centre
                   </h1>
                   <p className="text-base text-slate-700 font-semibold mt-1">
@@ -769,7 +769,7 @@ export default function HealthWorkerDashboard() {
                 <span className="text-lg text-slate-900 font-extrabold">Ministry of Health &amp; Family Welfare</span>
               </div>
               <p className="text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
-                <span className="notranslate" translate="no">SEHATSARTHI</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
+                <span className="notranslate" translate="no">SehatSaarthi</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
               </p>
             </div>
             <div className="flex flex-col gap-1.5 justify-center md:items-end">

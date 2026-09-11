@@ -33,7 +33,7 @@ export default function Register() {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-on-surface">Create Account</h2>
-            <p className="text-[13px] text-secondary">Join <span className="notranslate" translate="no">SEHATSARTHI</span> Health Grid</p>
+            <p className="text-[13px] text-secondary">Join <span className="notranslate" translate="no">SehatSaarthi</span> Health Grid</p>
           </div>
         </div>
         {error && <div className="p-3 mb-4 rounded-xl bg-error-container text-[#93000a] text-sm font-medium">{error}</div>}

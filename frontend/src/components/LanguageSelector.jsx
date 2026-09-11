@@ -73,7 +73,7 @@ export default function LanguageSelector() {
 
   // Sync with Google Translate on mount if saved in localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('sehatsarthi_lang') || localStorage.getItem('aarogyanet_lang');
+    const saved = localStorage.getItem('sehatsaarthi_lang') || localStorage.getItem('aarogyanet_lang');
     if (saved && saved !== 'en') {
       const gCode = GOOGLE_LANG_MAP[saved] || saved;
       let tries = 0;
@@ -95,7 +95,7 @@ export default function LanguageSelector() {
 
   const handleSelectLanguage = (code) => {
     i18n.changeLanguage(code);
-    localStorage.setItem('sehatsarthi_lang', code);
+    localStorage.setItem('sehatsaarthi_lang', code);
     localStorage.removeItem('aarogyanet_lang');
     
     const googleCode = GOOGLE_LANG_MAP[code] || code;

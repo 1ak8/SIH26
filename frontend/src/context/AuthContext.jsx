@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem('sehatsarthi_user') || localStorage.getItem('aarogyanet_user');
+    const stored = localStorage.getItem('sehatsaarthi_user') || localStorage.getItem('aarogyanet_user');
     if (stored) {
       const parsed = JSON.parse(stored);
       setUser(parsed);
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const { data } = await api.post('/auth/login', { email, password });
     const userData = data.data;
-    localStorage.setItem('sehatsarthi_user', JSON.stringify(userData));
+    localStorage.setItem('sehatsaarthi_user', JSON.stringify(userData));
     localStorage.removeItem('aarogyanet_user');
     setUser(userData);
     connectSocket(userData);
@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (formData) => {
     const { data } = await api.post('/auth/register', formData);
     const userData = data.data;
-    localStorage.setItem('sehatsarthi_user', JSON.stringify(userData));
+    localStorage.setItem('sehatsaarthi_user', JSON.stringify(userData));
     localStorage.removeItem('aarogyanet_user');
     setUser(userData);
     connectSocket(userData);
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('sehatsarthi_user');
+    localStorage.removeItem('sehatsaarthi_user');
     localStorage.removeItem('aarogyanet_user');
     setUser(null);
     setNotifications([]);

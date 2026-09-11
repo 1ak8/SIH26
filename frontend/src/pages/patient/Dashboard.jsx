@@ -42,7 +42,7 @@ export default function PatientDashboard() {
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span>Ayushman Bharat Digital Health Grid</span>
                   </div>
-                  <h1 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+                  <h1 className="font-heading text-3xl sm:text-4xl lg:text-[40px] font-black text-slate-900 tracking-tight flex items-center gap-2.5">
                     Hello, <span className="notranslate" translate="no">{user?.name?.split(' ')[0] || 'Patient'}</span> <span className="text-3xl sm:text-4xl">👋</span>
                   </h1>
                   <p className="text-base sm:text-lg text-slate-700 font-semibold mt-1">
@@ -68,7 +68,7 @@ export default function PatientDashboard() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">{t('primaryCareServices')}</h2>
+                      <h2 className="font-heading text-2xl font-extrabold text-slate-900 tracking-tight">{t('primaryCareServices')}</h2>
                       <span className="bg-amber-100 text-amber-900 text-xs px-2.5 py-0.5 rounded-full border border-amber-300 font-extrabold hidden sm:inline">{t('fastAccess')}</span>
                     </div>
                     <p className="text-xs sm:text-sm text-slate-600 font-medium">{t('selectAnyServiceToBegin')}</p>
@@ -129,7 +129,7 @@ export default function PatientDashboard() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Your Upcoming Care</h2>
+                        <h2 className="font-heading text-2xl font-extrabold text-slate-900 tracking-tight">Your Upcoming Care</h2>
                         <span className="bg-amber-600 text-white text-xs font-extrabold px-3 py-0.5 rounded-full uppercase tracking-wider shadow-xs">Next 48 Hours</span>
                       </div>
                       <p className="text-xs sm:text-sm text-slate-600 font-medium">Verified doctor tele-consultation queue</p>
@@ -418,7 +418,7 @@ export default function PatientDashboard() {
                 <span className="text-lg text-slate-900 font-extrabold">Ministry of Health &amp; Family Welfare</span>
               </div>
               <p className="text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
-                <span className="notranslate" translate="no">SEHATSARTHI</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
+                <span className="notranslate" translate="no">SehatSaarthi</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
               </p>
             </div>
             <div className="flex flex-col gap-1.5 justify-center md:items-end">

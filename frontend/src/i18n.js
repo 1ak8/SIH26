@@ -447,7 +447,7 @@ const resources = {
   sa: { translation: sharedSa },
 };
 
-const savedLang = typeof window !== 'undefined' ? localStorage.getItem('sehatsarthi_lang') || localStorage.getItem('aarogyanet_lang') || 'en' : 'en';
+const savedLang = typeof window !== 'undefined' ? localStorage.getItem('sehatsaarthi_lang') || localStorage.getItem('aarogyanet_lang') || 'en' : 'en';
 
 i18n
   .use(initReactI18next)

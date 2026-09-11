@@ -74,7 +74,7 @@ export default function Login() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-900 tracking-tight text-3xl notranslate" translate="no">SEHATSARTHI</span>
+              <span className="font-brand font-black text-slate-900 tracking-tight text-3xl notranslate" translate="no">SehatSaarthi</span>
               <span className="text-[11px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">{t('govtPortal')}</span>
             </div>
             <p className="text-sm text-slate-500 hidden sm:block">{t('nationalTeleHealth')}</p>
@@ -99,8 +99,8 @@ export default function Login() {
               <span>राष्ट्रीय स्वास्थ्य मिशन | National Health Mission</span>
             </div>
             <div>
-              <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-slate-900 tracking-tight leading-tight">
-                {t('accessibleHealthcare')}<br /><span className="relative inline-block text-amber-600">{t('everyCitizen')}</span>
+              <h1 className="font-heading text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-slate-900 tracking-tight leading-[1.18]">
+                {t('accessibleHealthcare')}<br /><span className="relative inline-block text-amber-600 font-black">{t('everyCitizen')}</span>
               </h1>
               <p className="text-slate-600 text-base sm:text-lg mt-2 font-normal leading-relaxed max-w-xl">
                 {t('authDesc')}
@@ -142,7 +142,7 @@ export default function Login() {
               {/* Card Header */}
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">{t('citizenAccess')}</h2>
+                  <h2 className="font-heading text-xl font-bold text-slate-900">{t('citizenAccess')}</h2>
                   <p className="text-xs text-slate-500 mt-0.5">{t('enterCredentials')}</p>
                 </div>
                 <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200">
@@ -286,7 +286,7 @@ export default function Login() {
       <footer className="relative z-10 w-full border-t border-slate-200/80 bg-white/70 backdrop-blur-xs py-2 px-6 lg:px-24 text-center">
         <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-700 notranslate" translate="no">SEHATSARTHI Citizen Portal</span>
+            <span className="font-semibold text-slate-700 notranslate" translate="no">SehatSaarthi Citizen Portal</span>
             <span className="hidden sm:inline">•</span>
             <span>Ministry of Health &amp; Family Welfare, Govt. of India</span>
           </div>
