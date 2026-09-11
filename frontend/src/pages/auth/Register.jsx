@@ -25,8 +25,8 @@ export default function Register() {
   };
 
   return (
-    <main className="w-full min-h-screen flex items-center justify-center p-6 bg-surface">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl p-8 animate-fadeIn">
+    <main className="w-full min-h-[100dvh] flex items-center justify-center p-3.5 sm:p-6 bg-surface">
+      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl p-5 sm:p-8 animate-fadeIn">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-surface-container-high text-primary flex items-center justify-center">
             <span className="material-symbols-outlined text-2xl" style={{fontVariationSettings:"'FILL' 1"}}>badge</span>

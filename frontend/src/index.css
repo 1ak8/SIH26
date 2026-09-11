@@ -25,9 +25,23 @@ body { margin: 0; background: #f9f9ff; color: #111c2d; -webkit-font-smoothing: a
 .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
 @keyframes formMorphIn { from { opacity: 0; transform: scale(0.92) translateY(10px); filter: blur(4px); } 50% { opacity: 0.7; transform: scale(1.01) translateY(-1px); filter: blur(0); } to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); } }
 .animate-form-morph { animation: formMorphIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-.form-height-guard { min-height: 280px; }
-.form-card-register { max-width: 520px !important; transition: max-width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.5s ease; }
-.form-card-login { max-width: 420px; transition: max-width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.5s ease; }
+.form-height-guard { min-height: 260px; }
+.form-card-register { 
+  width: 100%;
+  max-width: 100% !important; 
+  transition: max-width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease; 
+}
+@media (min-width: 640px) {
+  .form-card-register { max-width: 520px !important; }
+}
+.form-card-login { 
+  width: 100%;
+  max-width: 100%; 
+  transition: max-width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease; 
+}
+@media (min-width: 640px) {
+  .form-card-login { max-width: 440px; }
+}
 
 /* Google Translate Frame clean-up: completely eliminate top bar & banner */
 .goog-te-banner-frame,
