@@ -71,18 +71,16 @@ export default function Login() {
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-xl object-cover shadow-sm notranslate shrink-0" translate="no" />
           <div className="flex flex-col">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="font-brand font-black text-slate-900 tracking-tight text-xl sm:text-2xl lg:text-3xl leading-none notranslate" translate="no">SehatSaarthi</span>
-              <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">{t('govtPortal')}</span>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-500 hidden md:block mt-0.5">{t('nationalTeleHealth')}</p>
+            <span className="font-brand font-black text-slate-900 tracking-tight text-xl sm:text-2xl lg:text-3xl leading-none notranslate" translate="no">SehatSaarthi</span>
+            <p className="text-[10px] sm:text-xs text-slate-500 font-semibold tracking-tight mt-0.5">{t('nationalTeleHealth')}</p>
           </div>
         </div>
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <LanguageSelector />
-          <a href="tel:108" className="flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-[11px] sm:text-xs font-extrabold hover:bg-rose-100 transition-colors cursor-pointer shadow-xs">
+          <a href="tel:108" className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-xs font-black hover:bg-rose-100 transition-colors cursor-pointer shadow-xs shrink-0" title="Emergency 108">
             <span className="material-symbols-outlined text-[16px] sm:text-[18px] text-rose-600">call</span>
-            <span className="hidden xs:inline sm:inline">{t('emergency')}</span>
+            <span>108</span>
+            <span className="hidden sm:inline font-bold">• {t('emergency')}</span>
           </a>
         </div>
       </header>
@@ -104,13 +102,13 @@ export default function Login() {
                 {t('authDesc')}
               </p>
             </div>
-            {/* Illustration: shown on lg desktop, hidden on mobile */}
-            <div className="hidden lg:block relative w-full max-w-xl bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
-              <div className="w-full h-[260px] sm:h-[300px] rounded-xl overflow-hidden bg-gradient-to-br from-amber-50 via-sky-50 to-emerald-50 flex items-center justify-center">
+            {/* Illustration: visible on all screen sizes with responsive height */}
+            <div className="relative w-full max-w-xl bg-white p-2 sm:p-2.5 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
+              <div className="w-full h-[180px] sm:h-[240px] lg:h-[300px] rounded-xl overflow-hidden bg-gradient-to-br from-amber-50 via-sky-50 to-emerald-50 flex items-center justify-center">
                 <img src="/images/auth-hero.jpg" alt="Tele-Consultation in Progress" className="w-full h-full object-cover" />
               </div>
-              <div className="absolute bottom-4 left-5 right-5 bg-white/95 backdrop-blur-xs border border-slate-200/90 rounded-xl px-4 py-2.5 shadow-sm flex items-center justify-between text-xs text-slate-700">
-                <div className="flex items-center gap-2">
+              <div className="absolute bottom-3 sm:bottom-4 left-4 right-4 sm:left-5 sm:right-5 bg-white/95 backdrop-blur-xs border border-slate-200/90 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 shadow-sm flex items-center justify-between text-[11px] sm:text-xs text-slate-700">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                   <span className="font-semibold text-slate-800">{t('liveClinics')}</span>
                 </div>
@@ -118,17 +116,17 @@ export default function Login() {
               </div>
             </div>
             {/* Value Badges */}
-            <div className="hidden sm:grid grid-cols-3 gap-2 sm:gap-3 pt-1 max-w-xl">
-              <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-600 font-medium">
-                <span className="material-symbols-outlined text-amber-600 text-[18px] shrink-0">translate</span>
+            <div className="grid grid-cols-3 gap-1.5 sm:gap-3 pt-1 max-w-xl">
+              <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-slate-600 font-medium">
+                <span className="material-symbols-outlined text-amber-600 text-[16px] sm:text-[18px] shrink-0">translate</span>
                 <span>{t('languagesSupported')}</span>
               </div>
-              <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-600 font-medium">
-                <span className="material-symbols-outlined text-amber-600 text-[18px] shrink-0">wifi_tethering</span>
+              <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-slate-600 font-medium">
+                <span className="material-symbols-outlined text-amber-600 text-[16px] sm:text-[18px] shrink-0">wifi_tethering</span>
                 <span>{t('lowNetworkReady')}</span>
               </div>
-              <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-600 font-medium">
-                <span className="material-symbols-outlined text-amber-600 text-[18px] shrink-0">lock</span>
+              <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-slate-600 font-medium">
+                <span className="material-symbols-outlined text-amber-600 text-[16px] sm:text-[18px] shrink-0">lock</span>
                 <span>{t('encrypted')}</span>
               </div>
             </div>
