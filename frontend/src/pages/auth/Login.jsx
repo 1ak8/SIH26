@@ -67,17 +67,17 @@ export default function Login() {
       </div>
 
       {/* HEADER */}
-      <header className="relative z-50 w-full px-3 sm:px-6 lg:px-24 pt-2.5 sm:pt-3 pb-1.5 flex items-center justify-between gap-2 sm:gap-4 max-w-7xl mx-auto">
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-          <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-9 h-9 xs:w-10 xs:h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-xl object-cover shadow-sm notranslate shrink-0" translate="no" />
-          <div className="flex flex-col min-w-0">
-            <span className="font-brand font-black text-slate-900 tracking-tight text-lg xs:text-xl sm:text-2xl lg:text-3xl leading-none truncate notranslate" translate="no">SehatSaarthi</span>
-            <p className="text-[9px] xs:text-[10px] sm:text-xs text-slate-500 font-semibold tracking-tight mt-0.5 truncate">{t('nationalTeleHealth')}</p>
+      <header className="relative z-50 w-full px-4 sm:px-6 lg:px-24 pt-3 pb-1 flex items-center justify-between gap-3 lg:gap-4">
+        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-xl object-cover shadow-md shadow-amber-500/20 notranslate shrink-0" translate="no" />
+          <div className="flex flex-col">
+            <span className="font-brand font-black text-slate-900 tracking-tight text-xl sm:text-2xl lg:text-3xl leading-none notranslate" translate="no">SehatSaarthi</span>
+            <p className="text-[10px] sm:text-xs lg:text-sm text-slate-500 font-medium tracking-tight mt-0.5">{t('nationalTeleHealth')}</p>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-auto">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <LanguageSelector />
-          <a href="tel:108" className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-xs font-black hover:bg-rose-100 transition-colors cursor-pointer shadow-xs shrink-0" title="Emergency 108">
+          <a href="tel:108" className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-xs font-extrabold hover:bg-rose-100 transition-colors cursor-pointer shadow-xs">
             <span className="material-symbols-outlined text-[16px] sm:text-[18px] text-rose-600">call</span>
             <span>108</span>
             <span className="hidden sm:inline font-bold">• {t('emergency')}</span>
@@ -86,158 +86,158 @@ export default function Login() {
       </header>
 
       {/* MAIN */}
-      <main className="relative z-10 flex-1 flex items-center justify-center w-full px-3 sm:px-6 lg:px-16 xl:px-24 py-3 sm:py-6 lg:py-3 pb-8 sm:pb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-10 items-center w-full max-w-6xl mx-auto">
+      <main className="relative z-10 flex-1 flex items-center justify-center w-full px-4 sm:px-6 lg:px-24 py-3 lg:py-3 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center w-full">
           {/* LEFT COLUMN */}
-          <div className="lg:col-span-7 flex flex-col justify-center space-y-2.5 sm:space-y-4 w-full min-w-0">
-            <div className="inline-flex items-center gap-1.5 sm:gap-2 self-start px-2.5 sm:px-3 py-1 rounded-full bg-amber-50/90 border border-amber-200/80 text-amber-900 text-[11px] sm:text-xs font-semibold shadow-xs max-w-full">
-              <span className="material-symbols-outlined text-amber-600 text-[15px] sm:text-[18px] shrink-0">verified</span>
-              <span className="truncate">राष्ट्रीय स्वास्थ्य मिशन | National Health Mission</span>
+          <div className="lg:col-span-7 flex flex-col justify-center space-y-3">
+            <div className="inline-flex items-center gap-2 self-start px-3.5 py-1.5 rounded-full bg-amber-50/90 border border-amber-200/80 text-amber-900 text-xs font-semibold shadow-xs">
+              <span className="material-symbols-outlined text-amber-600 text-[18px]">verified</span>
+              <span>राष्ट्रीय स्वास्थ्य मिशन | National Health Mission</span>
             </div>
             <div>
               <h1 className="font-heading text-2xl sm:text-4xl lg:text-[42px] font-extrabold text-slate-900 tracking-tight leading-[1.18]">
-                {t('accessibleHealthcare')}<br className="hidden sm:inline" /><span className="relative inline-block text-amber-600 font-black ml-1 sm:ml-0">{t('everyCitizen')}</span>
+                {t('accessibleHealthcare')}<br /><span className="relative inline-block text-amber-600 font-black">{t('everyCitizen')}</span>
               </h1>
-              <p className="text-slate-600 text-xs sm:text-base lg:text-lg mt-1 sm:mt-2 font-normal leading-relaxed max-w-xl">
+              <p className="text-slate-600 text-sm sm:text-base lg:text-lg mt-2 font-normal leading-relaxed max-w-xl">
                 {t('authDesc')}
               </p>
             </div>
-            {/* Illustration: visible on all screen sizes with responsive height */}
-            <div className="relative w-full max-w-xl bg-white p-2 sm:p-2.5 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md overflow-hidden">
-              <div className="w-full h-[160px] xs:h-[190px] sm:h-[240px] lg:h-[300px] rounded-xl overflow-hidden bg-gradient-to-br from-amber-50 via-sky-50 to-emerald-50 flex items-center justify-center">
+            {/* Illustration */}
+            <div className="relative w-full max-w-xl bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
+              <div className="w-full h-[180px] sm:h-[260px] lg:h-[300px] rounded-xl overflow-hidden bg-gradient-to-br from-amber-50 via-sky-50 to-emerald-50 flex items-center justify-center">
                 <img src="/images/auth-hero.jpg" alt="Tele-Consultation in Progress" className="w-full h-full object-cover" />
               </div>
-              <div className="absolute bottom-2.5 sm:bottom-4 left-3.5 right-3.5 sm:left-5 sm:right-5 bg-white/95 backdrop-blur-xs border border-slate-200/90 rounded-xl px-2.5 sm:px-4 py-1.5 sm:py-2.5 shadow-sm flex items-center justify-between gap-2 text-[10px] sm:text-xs text-slate-700">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-                  <span className="font-semibold text-slate-800 truncate">{t('liveClinics')}</span>
+              <div className="absolute bottom-3 sm:bottom-4 left-4 right-4 sm:left-5 sm:right-5 bg-white/95 backdrop-blur-xs border border-slate-200/90 rounded-xl px-3.5 sm:px-4 py-2 sm:py-2.5 shadow-sm flex items-center justify-between text-xs text-slate-700">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="font-semibold text-slate-800">{t('liveClinics')}</span>
                 </div>
-                <span className="text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200 shrink-0 text-[10px] sm:text-xs">{t('abdmIntegrated')}</span>
+                <span className="text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">{t('abdmIntegrated')}</span>
               </div>
             </div>
             {/* Value Badges */}
-            <div className="grid grid-cols-3 gap-1.5 sm:gap-3 pt-0.5 sm:pt-1 max-w-xl w-full">
-              <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-slate-600 font-medium min-w-0">
-                <span className="material-symbols-outlined text-amber-600 text-[15px] sm:text-[18px] shrink-0">translate</span>
-                <span className="truncate">{t('languagesSupported')}</span>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-1 max-w-xl">
+              <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-600 font-medium">
+                <span className="material-symbols-outlined text-amber-600 text-[18px] shrink-0">translate</span>
+                <span>{t('languagesSupported')}</span>
               </div>
-              <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-slate-600 font-medium min-w-0">
-                <span className="material-symbols-outlined text-amber-600 text-[15px] sm:text-[18px] shrink-0">wifi_tethering</span>
-                <span className="truncate">{t('lowNetworkReady')}</span>
+              <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-600 font-medium">
+                <span className="material-symbols-outlined text-amber-600 text-[18px] shrink-0">wifi_tethering</span>
+                <span>{t('lowNetworkReady')}</span>
               </div>
-              <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-slate-600 font-medium min-w-0">
-                <span className="material-symbols-outlined text-amber-600 text-[15px] sm:text-[18px] shrink-0">lock</span>
-                <span className="truncate">{t('encrypted')}</span>
+              <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-600 font-medium">
+                <span className="material-symbols-outlined text-amber-600 text-[18px] shrink-0">lock</span>
+                <span>{t('encrypted')}</span>
               </div>
             </div>
           </div>
 
           {/* RIGHT COLUMN: Auth Card */}
-          <div className="lg:col-span-5 w-full flex justify-center min-w-0">
-            <div className={`w-full max-w-full sm:max-w-md lg:max-w-[440px] xl:max-w-[480px] bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-xl shadow-slate-200/60 overflow-hidden ${tab === 'register' ? 'form-card-register' : 'form-card-login'}`}>
+          <div className="lg:col-span-5 w-full flex justify-center">
+            <div className={`w-full bg-white border border-slate-200/90 rounded-3xl p-5 sm:p-6 shadow-xl shadow-slate-200/60 ${tab === 'register' ? 'form-card-register' : 'form-card-login'}`}>
               {/* Card Header */}
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <h2 className="font-heading text-lg sm:text-xl font-bold text-slate-900">{t('citizenAccess')}</h2>
-                  <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5">{t('enterCredentials')}</p>
+                  <h2 className="font-heading text-xl font-bold text-slate-900">{t('citizenAccess')}</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">{t('enterCredentials')}</p>
                 </div>
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 shrink-0">
-                  <span className="material-symbols-outlined text-lg sm:text-xl">shield_person</span>
+                <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 shrink-0">
+                  <span className="material-symbols-outlined text-xl">shield_person</span>
                 </div>
               </div>
 
               {/* Login / Register Tabs */}
               <div className="flex bg-slate-100 p-1 rounded-xl mb-3 relative">
                 <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm transition-all duration-300 ease-out ${tab === 'register' ? 'translate-x-[calc(100%+4px)]' : 'translate-x-0'}`}></div>
-                <button className={`relative z-10 flex-1 py-1.5 sm:py-2 text-xs font-bold rounded-lg transition-colors ${tab === 'login' ? 'text-slate-900 underline underline-offset-4 decoration-amber-500 decoration-2' : 'text-slate-400 hover:text-slate-600'}`}
+                <button className={`relative z-10 flex-1 py-2 text-xs font-bold rounded-lg transition-colors ${tab === 'login' ? 'text-slate-900 underline underline-offset-4 decoration-amber-500 decoration-2' : 'text-slate-400 hover:text-slate-600'}`}
                   onClick={() => setTab('login')} type="button">{t('signIn')}</button>
-                <button className={`relative z-10 flex-1 py-1.5 sm:py-2 text-xs font-bold rounded-lg transition-colors ${tab === 'register' ? 'text-slate-900 underline underline-offset-4 decoration-amber-500 decoration-2' : 'text-slate-400 hover:text-slate-600'}`}
+                <button className={`relative z-10 flex-1 py-2 text-xs font-bold rounded-lg transition-colors ${tab === 'register' ? 'text-slate-900 underline underline-offset-4 decoration-amber-500 decoration-2' : 'text-slate-400 hover:text-slate-600'}`}
                   onClick={() => setTab('register')} type="button">{t('newCitizen')}</button>
               </div>
 
               {/* Role Selector */}
               {tab === 'login' && (
                 <div className="mb-3">
-                  <label className="block text-[10px] sm:text-[11px] font-bold text-slate-700 mb-1.5 uppercase tracking-wider">{t('selectPortal')}</label>
-                  <div className="grid grid-cols-4 gap-1 sm:gap-1.5 p-1 bg-slate-50 border border-slate-200 rounded-xl animate-fadeIn">
+                  <label className="block text-[11px] font-bold text-slate-700 mb-2 uppercase tracking-wider">{t('selectPortal')}</label>
+                  <div className="grid grid-cols-4 gap-1.5 p-1 bg-slate-50 border border-slate-200 rounded-xl animate-fadeIn">
                     {ROLES.map(r => (
                       <button key={r.key} onClick={() => setRole(r.key)} type="button"
-                        className={`min-w-0 flex flex-col items-center justify-center gap-0.5 sm:gap-1 py-1.5 sm:py-2 px-0.5 sm:px-1 rounded-lg text-[9px] sm:text-[10px] font-bold transition-all ${role === r.key ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-900 hover:bg-white'}`}>
-                        <span className="material-symbols-outlined text-[16px] sm:text-[18px] shrink-0">{r.icon}</span>
-                        <span className="truncate w-full text-center leading-tight">{r.label}</span>
+                        className={`flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-lg text-[10px] font-bold transition-all ${role === r.key ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-900 hover:bg-white'}`}>
+                        <span className="material-symbols-outlined text-[16px]">{r.icon}</span>
+                        <span className="truncate">{r.label}</span>
                       </button>
                     ))}
                   </div>
                 </div>
               )}
 
-              {error && <div className="p-2.5 sm:p-3 mb-3 rounded-xl bg-rose-50 text-rose-700 text-xs sm:text-sm font-medium border border-rose-200">{error}</div>}
+              {error && <div className="p-3 mb-3 rounded-xl bg-rose-50 text-rose-700 text-sm font-medium border border-rose-200">{error}</div>}
 
               <div className="form-height-guard">
               {tab === 'login' && (
-                <form key="login" className="flex flex-col gap-2.5 sm:gap-3 animate-form-morph" onSubmit={handleSubmit}>
-                  <div className="flex flex-col gap-1 sm:gap-1.5">
-                    <label className="text-[12px] sm:text-[13px] font-bold text-slate-700">{t('emailMobile')}</label>
+                <form key="login" className="flex flex-col gap-3 animate-form-morph" onSubmit={handleSubmit}>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[13px] font-bold text-slate-700">{t('emailMobile')}</label>
                     <div className="relative group">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 group-focus-within:text-amber-500 transition-colors">
-                        <span className="material-symbols-outlined text-[18px] sm:text-[20px]">badge</span>
+                        <span className="material-symbols-outlined text-[20px]">badge</span>
                       </span>
-                      <input className="w-full min-w-0 pl-10 sm:pl-11 pr-3.5 py-2.5 sm:py-2.5 bg-white border border-slate-300 rounded-xl text-base sm:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                      <input className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         placeholder="your@email.com or 9876543210" required type="text" value={email} onChange={e => setEmail(e.target.value)} />
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1 sm:gap-1.5">
-                    <label className="text-[12px] sm:text-[13px] font-bold text-slate-700">{t('passwordPin')}</label>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[13px] font-bold text-slate-700">{t('passwordPin')}</label>
                     <div className="relative group">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 group-focus-within:text-amber-500 transition-colors">
-                        <span className="material-symbols-outlined text-[18px] sm:text-[20px]">lock</span>
+                        <span className="material-symbols-outlined text-[20px]">lock</span>
                       </span>
-                      <input className="w-full min-w-0 pl-10 sm:pl-11 pr-3.5 py-2.5 sm:py-2.5 bg-white border border-slate-300 rounded-xl text-base sm:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                      <input className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         placeholder="••••••••" required type="password" value={password} onChange={e => setPassword(e.target.value)} />
                     </div>
                   </div>
-                  <div className="flex items-center justify-between text-xs sm:text-[13px] pt-0.5">
-                    <label className="flex items-center gap-2 cursor-pointer text-slate-600 font-medium">
+                  <div className="flex items-center justify-between text-[13px] pt-1">
+                    <label className="flex items-center gap-2.5 cursor-pointer text-slate-600 font-medium">
                       <input defaultChecked className="w-4 h-4 rounded border-slate-300 accent-amber-500 focus:ring-amber-500" type="checkbox" />
                       <span>{t('rememberMe')}</span>
                     </label>
                     <a className="font-bold text-amber-600 hover:text-amber-700 hover:underline" href="#">{t('forgotPassword')}</a>
                   </div>
-                  <button className="w-full py-3 sm:py-2.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-sm sm:text-[14px] rounded-xl shadow-lg shadow-amber-500/30 transition-all flex items-center justify-center gap-2 mt-1 disabled:opacity-70"
+                  <button className="w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-[14px] rounded-xl shadow-lg shadow-amber-500/30 transition-all flex items-center justify-center gap-2 mt-1 disabled:opacity-70"
                     type="submit" disabled={loading}>
-                    {loading ? <span className="material-symbols-outlined animate-spin text-[18px] sm:text-[20px]">progress_activity</span> : null}
+                    {loading ? <span className="material-symbols-outlined animate-spin text-[20px]">progress_activity</span> : null}
                     <span>{loading ? t('authenticating') : t('signInBtn')}</span>
-                    {!loading && <span className="material-symbols-outlined text-[18px] sm:text-[20px]">arrow_forward</span>}
+                    {!loading && <span className="material-symbols-outlined text-[20px]">arrow_forward</span>}
                   </button>
                 </form>
               )}
 
               {tab === 'register' && (
                 <form key="register" className="animate-form-morph" onSubmit={handleRegisterSubmit}>
-                  <div className="grid grid-cols-2 gap-2 sm:gap-x-3 sm:gap-y-2.5 w-full">
-                    <div className="col-span-2 sm:col-span-1 flex flex-col gap-1 min-w-0">
-                      <label className="text-[11px] sm:text-[12px] font-bold text-slate-700">{t('fullName')}</label>
-                      <input className="w-full min-w-0 px-3 py-2 bg-white border border-slate-300 rounded-xl text-base sm:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-slate-700">{t('fullName')}</label>
+                      <input className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         placeholder="Full name" required type="text" value={regForm.name} onChange={e => setRegForm({...regForm, name: e.target.value})} />
                     </div>
-                    <div className="col-span-2 sm:col-span-1 flex flex-col gap-1 min-w-0">
-                      <label className="text-[11px] sm:text-[12px] font-bold text-slate-700">{t('emailMobile')}</label>
-                      <input className="w-full min-w-0 px-3 py-2 bg-white border border-slate-300 rounded-xl text-base sm:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-slate-700">{t('emailMobile')}</label>
+                      <input className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         placeholder="your@email.com" required type="email" value={regForm.email} onChange={e => setRegForm({...regForm, email: e.target.value})} />
                     </div>
-                    <div className="col-span-2 sm:col-span-1 flex flex-col gap-1 min-w-0">
-                      <label className="text-[11px] sm:text-[12px] font-bold text-slate-700">{t('mobileNumber')}</label>
-                      <input className="w-full min-w-0 px-3 py-2 bg-white border border-slate-300 rounded-xl text-base sm:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-slate-700">{t('mobileNumber')}</label>
+                      <input className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         placeholder="10 digit number" required type="text" value={regForm.phone} onChange={e => setRegForm({...regForm, phone: e.target.value})} />
                     </div>
-                    <div className="col-span-2 sm:col-span-1 flex flex-col gap-1 min-w-0">
-                      <label className="text-[11px] sm:text-[12px] font-bold text-slate-700">{t('password')}</label>
-                      <input className="w-full min-w-0 px-3 py-2 bg-white border border-slate-300 rounded-xl text-base sm:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-slate-700">{t('password')}</label>
+                      <input className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         placeholder="••••••••" required type="password" value={regForm.password} onChange={e => setRegForm({...regForm, password: e.target.value})} />
                     </div>
-                    <div className="col-span-1 flex flex-col gap-1 min-w-0">
-                      <label className="text-[11px] sm:text-[12px] font-bold text-slate-700">{t('role')}</label>
-                      <select className="w-full min-w-0 px-2 sm:px-3 py-2 bg-white border border-slate-300 rounded-xl text-base sm:text-[14px] text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-slate-700">{t('role')}</label>
+                      <select className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         value={regForm.role} onChange={e => setRegForm({...regForm, role: e.target.value})}>
                         <option value="patient">Citizen</option>
                         <option value="health_worker">ASHA Worker</option>
@@ -245,9 +245,9 @@ export default function Login() {
                         <option value="admin">Admin</option>
                       </select>
                     </div>
-                    <div className="col-span-1 flex flex-col gap-1 min-w-0">
-                      <label className="text-[11px] sm:text-[12px] font-bold text-slate-700">{t('gender')}</label>
-                      <select className="w-full min-w-0 px-2 sm:px-3 py-2 bg-white border border-slate-300 rounded-xl text-base sm:text-[14px] text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-bold text-slate-700">{t('gender')}</label>
+                      <select className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         value={regForm.gender} onChange={e => setRegForm({...regForm, gender: e.target.value})}>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -255,20 +255,20 @@ export default function Login() {
                       </select>
                     </div>
                   </div>
-                  <button className="w-full py-3 sm:py-2.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-sm sm:text-[14px] rounded-xl shadow-lg shadow-amber-500/30 transition-all flex items-center justify-center gap-2 mt-2.5 disabled:opacity-70"
+                  <button className="w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-[14px] rounded-xl shadow-lg shadow-amber-500/30 transition-all flex items-center justify-center gap-2 mt-3 disabled:opacity-70"
                     type="submit" disabled={loading}>
-                    {loading ? <span className="material-symbols-outlined animate-spin text-[18px] sm:text-[20px]">progress_activity</span> : null}
+                    {loading ? <span className="material-symbols-outlined animate-spin text-[20px]">progress_activity</span> : null}
                     <span>{loading ? t('creatingAccount') : t('createAccount')}</span>
-                    {!loading && <span className="material-symbols-outlined text-[18px] sm:text-[20px]">how_to_reg</span>}
+                    {!loading && <span className="material-symbols-outlined text-[20px]">how_to_reg</span>}
                   </button>
                 </form>
               )}
               </div>
 
               {/* Help Section */}
-              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-start gap-2.5 bg-amber-50/60 -mx-3.5 -mb-3.5 sm:-mx-6 sm:-mb-6 p-3 sm:p-4">
-                <span className="material-symbols-outlined text-amber-700 text-lg sm:text-xl shrink-0 mt-0.5">contact_support</span>
-                <div className="text-[11px] sm:text-xs text-slate-600 leading-tight">
+              <div className="mt-3 pt-3 border-t border-slate-100 flex items-start gap-3 bg-amber-50/50 -mx-5 -mb-5 sm:-mx-6 sm:-mb-6 p-3 rounded-b-3xl">
+                <span className="material-symbols-outlined text-amber-700 text-xl shrink-0 mt-0.5">contact_support</span>
+                <div className="text-xs text-slate-600 leading-tight">
                   <span className="font-bold text-slate-800">{t('needHelp')}</span>
                   <p className="mt-0.5">{t('helpDesc')}</p>
                 </div>
@@ -279,14 +279,14 @@ export default function Login() {
       </main>
 
       {/* FOOTER */}
-      <footer className="relative z-10 w-full border-t border-slate-200/80 bg-white/80 backdrop-blur-xs py-2 px-3 sm:px-6 lg:px-24 text-center mt-auto">
-        <div className="flex flex-col sm:flex-row items-center justify-between text-[11px] sm:text-xs text-slate-500 gap-1 sm:gap-2 max-w-6xl mx-auto">
-          <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
+      <footer className="relative z-10 w-full border-t border-slate-200/80 bg-white/70 backdrop-blur-xs py-2 px-4 sm:px-6 lg:px-24 text-center">
+        <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+          <div className="flex items-center gap-2">
             <span className="font-semibold text-slate-700 notranslate" translate="no">SehatSaarthi Citizen Portal</span>
             <span className="hidden sm:inline">•</span>
-            <span>MoHFW, Govt. of India</span>
+            <span>Ministry of Health &amp; Family Welfare, Govt. of India</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <span>Emergency Helplines: <strong className="text-slate-800 font-semibold">108 / 104 / 112</strong></span>
           </div>
         </div>

@@ -156,21 +156,21 @@ export default function LanguageSelector() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-8 sm:h-10 px-2 sm:px-3.5 flex items-center gap-1 sm:gap-2 bg-white border-2 border-slate-200 hover:border-amber-400 rounded-xl text-slate-800 text-[11px] sm:text-xs font-extrabold hover:bg-slate-50 transition-all shadow-xs shrink-0"
+        className="h-9 sm:h-10 px-2.5 sm:px-3.5 flex items-center gap-1.5 sm:gap-2 bg-white border-2 border-slate-200 hover:border-amber-400 rounded-xl text-slate-800 text-xs font-extrabold hover:bg-slate-50 transition-all shadow-xs shrink-0 cursor-pointer"
         title="Select Language / भाषा चुनें (22 Indian Languages)"
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
-        <span className="material-symbols-outlined text-amber-600 text-[16px] sm:text-[18px]">translate</span>
-        <span className="font-extrabold text-slate-900 max-w-[48px] xs:max-w-[70px] sm:max-w-none truncate">{currentLang.native}</span>
-        <span className="material-symbols-outlined text-slate-400 text-[14px] sm:text-[16px] transition-transform duration-200 shrink-0" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+        <span className="material-symbols-outlined text-amber-600 text-[18px]">translate</span>
+        <span className="font-extrabold text-slate-900">{currentLang.native}</span>
+        <span className="material-symbols-outlined text-slate-400 text-[16px] transition-transform duration-200 shrink-0" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
           arrow_drop_down
         </span>
       </button>
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-[calc(100vw-24px)] max-w-[300px] sm:w-84 sm:max-w-none bg-white border-2 border-amber-400 rounded-2xl sm:rounded-3xl shadow-2xl z-[9999] p-3 animate-fadeIn flex flex-col max-h-[380px] sm:max-h-[460px] overflow-hidden drop-shadow-2xl">
+        <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 max-w-[calc(100vw-24px)] bg-white border-2 border-amber-400 rounded-2xl sm:rounded-3xl shadow-2xl z-[9999] p-3 animate-fadeIn flex flex-col max-h-[420px] sm:max-h-[460px] overflow-hidden drop-shadow-2xl">
           {/* Header */}
           <div className="pb-3 border-b border-slate-100 px-2 pt-1">
             <div className="flex items-center justify-between mb-2">
