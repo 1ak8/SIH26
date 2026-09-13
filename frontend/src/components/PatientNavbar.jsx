@@ -80,7 +80,7 @@ export default function PatientNavbar({ activeTab, setActiveTab }) {
             }`}
           >
             <span className="material-symbols-outlined text-[18px]">medication</span>
-            <span>{t('myMedicines')}</span>
+            <span>My Medicines</span>
           </Link>
           
           <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>

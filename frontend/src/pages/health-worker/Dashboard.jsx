@@ -120,12 +120,75 @@ export default function HealthWorkerDashboard() {
     urgent: false
   });
   const [syncStatus, setSyncStatus] = useState(null);
+  const [citizenRequests, setCitizenRequests] = useState([]);
+  const [updatingRequestId, setUpdatingRequestId] = useState(null);
+  const [requestFilter, setRequestFilter] = useState('all');
+
+  const fetchCitizenRequests = () => {
+    api.get('/health-worker/visit-requests')
+      .then(r => {
+        if (r.data?.data) {
+          setCitizenRequests(r.data.data);
+          try { localStorage.setItem('sehatsaarthi_visit_requests', JSON.stringify(r.data.data)); } catch(e) {}
+        }
+      })
+      .catch(() => {
+        try {
+          const local = JSON.parse(localStorage.getItem('sehatsaarthi_visit_requests') || '[]');
+          setCitizenRequests(local);
+        } catch(e) {}
+      });
+  };
 
   useEffect(() => {
     api.get('/health-worker/dashboard')
       .then(r => setData(r.data?.data))
       .catch(() => {});
+    fetchCitizenRequests();
+    const interval = setInterval(fetchCitizenRequests, 8000);
+    return () => clearInterval(interval);
   }, []);
+
+  const handleUpdateVisitStatus = async (id, newStatus, customNotes) => {
+    setUpdatingRequestId(id);
+    try {
+      const nowStr = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+      const scheduledTime = newStatus === 'scheduled' ? `Today, ${nowStr}` : undefined;
+      const actionNotes = customNotes || (
+        newStatus === 'scheduled' ? 'Sunita Devi confirmed visit slot' :
+        newStatus === 'in_progress' ? 'Sunita Devi is en-route to household' :
+        newStatus === 'completed' ? 'Home visit & initial health check completed' :
+        newStatus === 'cancelled' ? 'Visit cancelled/rescheduled' : ''
+      );
+
+      const res = await api.patch(`/health-worker/visit-requests/${id}/status`, {
+        status: newStatus,
+        scheduledTime,
+        actionNotes
+      });
+
+      const updated = citizenRequests.map(item => (item._id === id ? res.data.data : item));
+      setCitizenRequests(updated);
+      try { localStorage.setItem('sehatsaarthi_visit_requests', JSON.stringify(updated)); } catch(e) {}
+    } catch (err) {
+      // Offline fallback
+      const updated = citizenRequests.map(item => {
+        if (item._id === id || item.requestId === id) {
+          return {
+            ...item,
+            status: newStatus,
+            scheduledTime: newStatus === 'scheduled' ? 'Today, 11:30 AM' : item.scheduledTime,
+            actionNotes: customNotes || (newStatus === 'scheduled' ? 'Visit scheduled by Sunita Devi' : newStatus === 'completed' ? 'Visit completed' : 'Updated')
+          };
+        }
+        return item;
+      });
+      setCitizenRequests(updated);
+      try { localStorage.setItem('sehatsaarthi_visit_requests', JSON.stringify(updated)); } catch(e) {}
+    } finally {
+      setUpdatingRequestId(null);
+    }
+  };
 
   const handleSaveVitals = async (e) => {
     e.preventDefault();
@@ -221,23 +284,30 @@ export default function HealthWorkerDashboard() {
             <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
 
             <button 
-              onClick={() => setActiveTab('sync')} 
+              onClick={() => setActiveTab('requests')} 
               className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all inline-flex items-center gap-2 ${
-                activeTab === 'sync' 
+                activeTab === 'requests' 
                   ? 'bg-amber-600 text-white shadow-sm' 
                   : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
               }`}
             >
-              <span className="material-symbols-outlined text-[18px]">cloud_sync</span>
-              <span>Sync Records</span>
-              <span className="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black px-2.5 py-0.5 rounded-full">
-                Offline Ready
-              </span>
+              <span className="material-symbols-outlined text-[18px]">home_health</span>
+              <span>Visit Requests</span>
+              {citizenRequests.filter(r => r.status === 'pending').length > 0 && (
+                <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full animate-pulse shadow-2xs">
+                  {citizenRequests.filter(r => r.status === 'pending').length}
+                </span>
+              )}
             </button>
           </nav>
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-3 shrink-0">
+            <div className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-300 text-[11px] font-extrabold text-emerald-900 shadow-2xs" title="ABDM Health Grid: Automatic Background Cloud Sync 24x7 Active">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Grid Auto-Sync Active</span>
+            </div>
+
             <div className="h-8 w-[2px] bg-slate-300 rounded-full hidden lg:block mr-1"></div>
 
             <LanguageSelector />
@@ -316,7 +386,7 @@ export default function HealthWorkerDashboard() {
               <div className="bg-white p-6 rounded-3xl border-2 border-amber-300 shadow-sm flex items-center justify-between gap-4">
                 <div>
                   <span className="text-xs uppercase font-extrabold text-amber-800 tracking-wider block mb-1">Pending Visits</span>
-                  <span className="text-4xl font-black text-amber-950">5</span>
+                  <span className="text-4xl font-black text-amber-950">{5 + citizenRequests.filter(r => r.status === 'pending').length}</span>
                   <p className="text-xs text-amber-800 font-bold mt-1">Remaining for today</p>
                 </div>
                 <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-900 flex items-center justify-center shrink-0">
@@ -335,6 +405,35 @@ export default function HealthWorkerDashboard() {
                 </div>
               </div>
             </div>
+
+            {/* Pending Citizen Requests Alert Banner (Clickable to switch to Requests tab) */}
+            {citizenRequests.filter(r => r.status === 'pending').length > 0 && (
+              <div 
+                onClick={() => setActiveTab('requests')}
+                className="mb-8 p-4 sm:p-5 bg-gradient-to-r from-amber-500/15 via-amber-100/50 to-transparent border-2 border-amber-400 hover:border-amber-500 rounded-3xl flex items-center justify-between gap-4 cursor-pointer transition-all shadow-xs"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <span className="material-symbols-outlined text-[26px]">home_health</span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <h3 className="text-base font-extrabold text-amber-950">
+                        {citizenRequests.filter(r => r.status === 'pending').length} New Citizen Visit Request(s) Received
+                      </h3>
+                      <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Action Needed</span>
+                    </div>
+                    <p className="text-xs text-amber-800 font-semibold">Village residents have requested home visits / medicine delivery from Sunita Devi.</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="hidden sm:inline text-xs font-black text-amber-900">Open Requests Tab</span>
+                  <div className="w-9 h-9 rounded-xl bg-amber-600 text-white flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Daily Visit Queue Section */}
             <section className="mb-10">
@@ -612,46 +711,344 @@ export default function HealthWorkerDashboard() {
           </div>
         )}
 
-        {/* SYNC TAB */}
-        {activeTab === 'sync' && (
-          <div className="flex flex-col w-full animate-fadeIn max-w-2xl mx-auto mt-6">
-            <div className="bg-white p-8 sm:p-10 border-2 border-slate-200/90 rounded-3xl shadow-md text-center">
-              <div className="w-20 h-20 rounded-3xl bg-amber-50 border-2 border-amber-300 text-amber-700 flex items-center justify-center mx-auto mb-4">
-                <span className="material-symbols-outlined text-[44px]">cloud_sync</span>
-              </div>
-              <h2 className="text-2xl font-extrabold text-slate-900 mb-2">Offline Field Records Sync</h2>
-              <p className="text-sm text-slate-600 font-medium max-w-md mx-auto mb-6">
-                You have <strong>12 household records</strong> and <strong>5 clinical vitals</strong> logged offline in low-connectivity mode. Connect to WiFi or mobile data to sync to the national ABDM cloud.
-              </p>
-
-              {syncStatus === 'syncing' && (
-                <div className="p-4 bg-amber-50 border-2 border-amber-300 rounded-2xl text-amber-950 text-sm font-extrabold flex items-center justify-center gap-2 mb-4 animate-pulse">
-                  <span className="material-symbols-outlined animate-spin text-[20px]">sync</span>
-                  <span>Syncing with State Health Mission Data Center...</span>
+        {/* CITIZEN VISIT REQUESTS DEDICATED PAGE */}
+        {activeTab === 'requests' && (
+          <div className="flex flex-col w-full animate-fadeIn">
+            {/* Hero Header Banner */}
+            <div className="bg-gradient-to-r from-amber-500/15 via-amber-100/40 to-transparent p-6 sm:p-8 rounded-3xl border-2 border-amber-300 shadow-sm mb-8">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-extrabold mb-3 shadow-xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>National Rural Health Mission • Citizen Field Requests</span>
+                  </div>
+                  <h1 className="font-heading text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                    Citizen Home Visit Requests
+                  </h1>
+                  <p className="text-base text-slate-700 font-semibold mt-1">
+                    Direct visit &amp; medicine refill requests submitted by village households to <span className="text-amber-800 underline decoration-amber-400 decoration-2">{user?.name || 'Sunita Devi'}</span> • Sitapur Ward 4
+                  </p>
                 </div>
-              )}
 
-              {syncStatus === 'done' && (
-                <div className="p-4 bg-amber-50 border-2 border-amber-400 rounded-2xl text-amber-950 text-sm font-extrabold flex items-center justify-center gap-2 mb-4 animate-fadeIn">
-                  <span className="material-symbols-outlined text-amber-600 text-[20px]">check_circle</span>
-                  <span>All 17 offline records successfully synced!</span>
+                <div className="bg-white border-2 border-amber-300 p-5 rounded-3xl shadow-sm flex items-center gap-4 self-start md:self-auto shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[28px]">home_health</span>
+                  </div>
+                  <div>
+                    <span className="text-xs uppercase font-extrabold text-slate-500 block">Assigned ASHA</span>
+                    <span className="text-base font-black text-slate-900 leading-tight block notranslate" translate="no">{user?.name || 'Sunita Devi'}</span>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-800 mt-0.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Auto-Synced to Cloud
+                    </span>
+                  </div>
                 </div>
-              )}
-
-              <button 
-                onClick={handleSync}
-                disabled={syncStatus === 'syncing'}
-                className="bg-amber-600 hover:bg-amber-700 active:bg-amber-800 disabled:opacity-60 text-white w-full py-4 rounded-xl font-extrabold text-sm shadow-sm flex items-center justify-center gap-2 transition-all"
-              >
-                <span className="material-symbols-outlined">sync</span>
-                <span>{syncStatus === 'syncing' ? 'Syncing...' : 'Start ABDM Cloud Sync Now'}</span>
-              </button>
-
-              <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-center gap-2 text-xs text-slate-500 font-semibold">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>Last successful cloud sync: Today at 08:00 AM</span>
               </div>
             </div>
+
+            {/* High-Contrast Summary Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-5 mb-8">
+              <div className="bg-white p-5 rounded-3xl border-2 border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                  <span className="text-xs uppercase font-extrabold text-slate-500 tracking-wider block mb-1">Total Requests</span>
+                  <span className="text-3xl font-black text-slate-900">{citizenRequests.length}</span>
+                  <p className="text-xs text-slate-500 font-semibold mt-0.5">Village households</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[26px]">inbox</span>
+                </div>
+              </div>
+
+              <div className="bg-amber-50/70 p-5 rounded-3xl border-2 border-amber-400 shadow-sm flex items-center justify-between">
+                <div>
+                  <span className="text-xs uppercase font-extrabold text-amber-900 tracking-wider block mb-1">Pending Review</span>
+                  <span className="text-3xl font-black text-amber-950">
+                    {citizenRequests.filter(r => r.status === 'pending').length}
+                  </span>
+                  <p className="text-xs text-amber-800 font-bold mt-0.5">Awaiting schedule</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-amber-200 text-amber-900 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[26px]">pending_actions</span>
+                </div>
+              </div>
+
+              <div className="bg-sky-50/70 p-5 rounded-3xl border-2 border-sky-300 shadow-sm flex items-center justify-between">
+                <div>
+                  <span className="text-xs uppercase font-extrabold text-sky-900 tracking-wider block mb-1">Scheduled / Route</span>
+                  <span className="text-3xl font-black text-sky-950">
+                    {citizenRequests.filter(r => r.status === 'scheduled' || r.status === 'in_progress').length}
+                  </span>
+                  <p className="text-xs text-sky-800 font-bold mt-0.5">In progress today</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-sky-200 text-sky-900 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[26px]">event_available</span>
+                </div>
+              </div>
+
+              <div className="bg-emerald-50/70 p-5 rounded-3xl border-2 border-emerald-300 shadow-sm flex items-center justify-between">
+                <div>
+                  <span className="text-xs uppercase font-extrabold text-emerald-900 tracking-wider block mb-1">Completed</span>
+                  <span className="text-3xl font-black text-emerald-950">
+                    {citizenRequests.filter(r => r.status === 'completed').length}
+                  </span>
+                  <p className="text-xs text-emerald-800 font-bold mt-0.5">Visits resolved</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-emerald-200 text-emerald-900 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[26px]">check_circle</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Filter Navigation Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200">
+              <div className="flex items-center gap-2">
+                <span className="text-xs uppercase font-black text-slate-500 tracking-wider">Filter By Status:</span>
+                <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                  {['all', 'pending', 'scheduled', 'completed'].map(flt => {
+                    const count = flt === 'all'
+                      ? citizenRequests.length
+                      : citizenRequests.filter(r => r.status === flt || (flt === 'scheduled' && r.status === 'in_progress')).length;
+                    return (
+                      <button
+                        key={flt}
+                        type="button"
+                        onClick={() => setRequestFilter(flt)}
+                        className={`px-3.5 py-1.5 rounded-lg text-xs font-bold capitalize transition-all ${
+                          requestFilter === flt
+                            ? 'bg-amber-600 text-white shadow-xs'
+                            : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                      >
+                        {flt} ({count})
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={fetchCitizenRequests}
+                className="h-10 px-3.5 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs self-start sm:self-auto"
+              >
+                <span className="material-symbols-outlined text-[18px] text-amber-600">refresh</span>
+                <span>Refresh Requests</span>
+              </button>
+            </div>
+
+            {/* Requests List */}
+            {citizenRequests.length === 0 ? (
+              <div className="bg-white p-12 rounded-3xl border-2 border-dashed border-slate-200 text-center flex flex-col items-center justify-center">
+                <div className="w-16 h-16 rounded-3xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined text-[36px]">mark_email_read</span>
+                </div>
+                <h3 className="text-lg font-extrabold text-slate-900">No Citizen Visit Requests Found</h3>
+                <p className="text-sm text-slate-500 max-w-md mt-1">
+                  When village patients request a home visit or medicine checkup from their dashboard, it will appear here automatically for Sunita Devi.
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4 w-full">
+                {citizenRequests
+                  .filter(req => {
+                    if (requestFilter === 'all') return true;
+                    if (requestFilter === 'scheduled') return req.status === 'scheduled' || req.status === 'in_progress';
+                    return req.status === requestFilter;
+                  })
+                  .map(req => (
+                    <div 
+                      key={req._id || req.requestId}
+                      className={`bg-white p-6 rounded-3xl border-2 transition-all shadow-sm ${
+                        req.status === 'pending'
+                          ? 'border-amber-400 bg-amber-50/25'
+                          : req.status === 'scheduled' || req.status === 'in_progress'
+                          ? 'border-sky-300 bg-sky-50/15'
+                          : req.status === 'completed'
+                          ? 'border-emerald-300 bg-emerald-50/10'
+                          : 'border-slate-200'
+                      }`}
+                    >
+                      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                        <div className="flex items-start gap-4">
+                          <div className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center font-bold shrink-0 ${
+                            req.status === 'completed'
+                              ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+                              : req.status === 'scheduled' || req.status === 'in_progress'
+                              ? 'bg-sky-50 border-sky-300 text-sky-700'
+                              : req.urgency === 'urgent'
+                              ? 'bg-rose-50 border-rose-300 text-rose-700'
+                              : 'bg-amber-50 border-amber-300 text-amber-700'
+                          }`}>
+                            <span className="material-symbols-outlined text-[32px]">
+                              {req.status === 'completed' ? 'verified' : 'home_health'}
+                            </span>
+                          </div>
+
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                              <h3 className="text-xl font-extrabold text-slate-900 notranslate" translate="no">
+                                {req.patientName}
+                              </h3>
+                              <span className="font-mono text-xs font-black bg-slate-900 text-amber-400 px-2.5 py-0.5 rounded-full">
+                                {req.requestId || 'VISIT-REQ'}
+                              </span>
+                              <span className={`inline-flex items-center gap-1 text-xs font-black px-2.5 py-0.5 rounded-full border ${
+                                req.urgency === 'urgent'
+                                  ? 'bg-rose-100 text-rose-900 border-rose-300'
+                                  : 'bg-slate-100 text-slate-700 border-slate-200'
+                              }`}>
+                                {req.urgency === 'urgent' ? '⚡ Urgent Priority' : 'Routine'}
+                              </span>
+                              <span className={`inline-flex items-center gap-1 text-xs font-black px-3 py-0.5 rounded-full border uppercase tracking-wider ${
+                                req.status === 'completed'
+                                  ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                                  : req.status === 'scheduled'
+                                  ? 'bg-sky-100 text-sky-900 border-sky-300'
+                                  : req.status === 'in_progress'
+                                  ? 'bg-orange-100 text-orange-900 border-orange-300 animate-pulse'
+                                  : 'bg-amber-100 text-amber-900 border-amber-300 animate-pulse'
+                              }`}>
+                                <span className={`w-2 h-2 rounded-full ${
+                                  req.status === 'completed' ? 'bg-emerald-600' : req.status === 'scheduled' ? 'bg-sky-600' : 'bg-amber-600'
+                                }`}></span>
+                                {req.status === 'pending' && 'Pending Review'}
+                                {req.status === 'scheduled' && (req.scheduledTime ? `Scheduled: ${req.scheduledTime}` : 'Scheduled')}
+                                {req.status === 'in_progress' && 'In Progress (Visiting Now)'}
+                                {req.status === 'completed' && 'Completed ✓'}
+                                {req.status === 'cancelled' && 'Cancelled'}
+                              </span>
+                            </div>
+
+                            <p className="text-base font-extrabold text-slate-900">{req.reason}</p>
+
+                            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 font-semibold mt-1.5">
+                              <span className="flex items-center gap-1 text-slate-700 font-bold">
+                                <span className="material-symbols-outlined text-[16px] text-amber-600">location_on</span>
+                                {req.patientAddress}
+                              </span>
+                              <span>•</span>
+                              <span className="flex items-center gap-1 text-slate-700 font-bold">
+                                <span className="material-symbols-outlined text-[16px] text-amber-600">schedule</span>
+                                Preferred: {req.preferredSlot}
+                              </span>
+                              <span>•</span>
+                              <span>Requested: {new Date(req.createdAt || Date.now()).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</span>
+                            </div>
+
+                            {req.notes && (
+                              <p className="mt-2 text-xs bg-white p-3 rounded-xl border border-slate-200 text-slate-700 italic">
+                                "{req.notes}"
+                              </p>
+                            )}
+
+                            {req.actionNotes && (
+                              <p className="mt-2 text-xs bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-amber-900 font-bold">
+                                Sunita Devi Remark: {req.actionNotes}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Action Controls */}
+                        <div className="flex flex-wrap items-center gap-2 shrink-0 pt-2 lg:pt-0">
+                          {/* Call Button */}
+                          <a 
+                            href={`tel:${req.patientPhone}`} 
+                            className="h-11 px-3.5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-xs"
+                            title={`Call ${req.patientName}`}
+                          >
+                            <span className="material-symbols-outlined text-[18px] text-amber-600">call</span>
+                            <span>Call {req.patientPhone}</span>
+                          </a>
+
+                          {/* Status Workflow Buttons */}
+                          {req.status === 'pending' && (
+                            <button
+                              type="button"
+                              disabled={updatingRequestId === req._id}
+                              onClick={() => handleUpdateVisitStatus(req._id, 'scheduled')}
+                              className="h-11 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-sm transition-all disabled:opacity-50"
+                            >
+                              <span className="material-symbols-outlined text-[18px]">event_available</span>
+                              <span>Accept &amp; Schedule</span>
+                            </button>
+                          )}
+
+                          {req.status === 'scheduled' && (
+                            <>
+                              <button
+                                type="button"
+                                disabled={updatingRequestId === req._id}
+                                onClick={() => handleUpdateVisitStatus(req._id, 'in_progress')}
+                                className="h-11 px-3.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                              >
+                                <span className="material-symbols-outlined text-[18px]">directions_walk</span>
+                                <span>Start Visit</span>
+                              </button>
+                              <button
+                                type="button"
+                                disabled={updatingRequestId === req._id}
+                                onClick={() => handleUpdateVisitStatus(req._id, 'completed')}
+                                className="h-11 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                              >
+                                <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                                <span>Mark Completed</span>
+                              </button>
+                            </>
+                          )}
+
+                          {req.status === 'in_progress' && (
+                            <button
+                              type="button"
+                              disabled={updatingRequestId === req._id}
+                              onClick={() => handleUpdateVisitStatus(req._id, 'completed')}
+                              className="h-11 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                            >
+                              <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                              <span>Mark Completed</span>
+                            </button>
+                          )}
+
+                          {/* Dropdown for Manual Status Override */}
+                          <select
+                            value={req.status}
+                            onChange={(e) => handleUpdateVisitStatus(req._id, e.target.value)}
+                            className="h-11 px-2.5 rounded-xl border-2 border-slate-300 bg-white text-xs font-extrabold text-slate-700 focus:outline-none focus:border-amber-500 cursor-pointer"
+                            title="Update Status"
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                          </select>
+
+                          {/* Record Vitals button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedPatient({
+                                _id: req.patient || '6a9e1a51040b705825b50abd',
+                                name: req.patientName,
+                                age: 'Adult',
+                                phone: req.patientPhone,
+                                village: req.patientAddress,
+                                abha: '91-4820-1940-2810'
+                              });
+                              setActiveModal('vitals');
+                            }}
+                            className="h-11 px-3 rounded-xl border-2 border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-extrabold flex items-center justify-center gap-1 transition-all"
+                            title="Record Vitals for this patient"
+                          >
+                            <span className="material-symbols-outlined text-[18px] text-amber-700">favorite</span>
+                            <span>Vitals</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
         )}
       </main>

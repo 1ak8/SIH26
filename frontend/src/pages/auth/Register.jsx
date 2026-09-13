@@ -8,6 +8,7 @@ export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '', role: 'patient', gender: 'male' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const set = (key, val) => setForm(p => ({ ...p, [key]: val }));
 
@@ -41,7 +42,19 @@ export default function Register() {
           <input className="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Full Name" required value={form.name} onChange={e => set('name', e.target.value)} />
           <input className="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary" type="email" placeholder="Email Address" required value={form.email} onChange={e => set('email', e.target.value)} />
           <input className="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Mobile Number (10 digits)" required value={form.phone} onChange={e => set('phone', e.target.value)} />
-          <input className="w-full bg-surface-container-low px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary" type="password" placeholder="Password (min 6 chars)" required value={form.password} onChange={e => set('password', e.target.value)} />
+          <div className="relative">
+            <input className="w-full bg-surface-container-low pl-4 pr-11 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary" type={showPassword ? "text" : "password"} placeholder="Password (min 6 chars)" required value={form.password} onChange={e => set('password', e.target.value)} />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-amber-600 focus:outline-none cursor-pointer"
+              title={showPassword ? "Hide password" : "Show password"}
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                {showPassword ? 'visibility_off' : 'visibility'}
+              </span>
+            </button>
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <select className="bg-surface-container-low px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary" value={form.role} onChange={e => set('role', e.target.value)}>
               <option value="patient">Patient</option>

@@ -4,6 +4,7 @@ const Referral = require('../models/Referral');
 const Appointment = require('../models/Appointment');
 const User = require('../models/User');
 const PatientProfile = require('../models/PatientProfile');
+const VisitRequest = require('../models/VisitRequest');
 
 const submitTriage = asyncHandler(async (req, res) => {
   const { patientId, vitals, symptoms, riskLevel, notes, tags, requiresReferral, requiresAmbulance, followUpDate } = req.body;
@@ -84,4 +85,31 @@ const bookForPatient = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, data: appointment });
 });
 
-module.exports = { submitTriage, createReferral, getAssignedPatients, getHWDashboard, bookForPatient };
+const getVisitRequests = asyncHandler(async (req, res) => {
+  const visits = await VisitRequest.find().sort('-createdAt');
+  res.json({ success: true, data: visits });
+});
+
+const updateVisitStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status, scheduledTime, actionNotes } = req.body;
+  
+  const updateData = { status };
+  if (scheduledTime) updateData.scheduledTime = scheduledTime;
+  if (actionNotes) updateData.actionNotes = actionNotes;
+
+  const visit = await VisitRequest.findByIdAndUpdate(id, updateData, { new: true });
+  if (!visit) {
+    res.status(404);
+    throw new Error('Visit request not found');
+  }
+
+  const io = req.app.get('io');
+  if (io) {
+    io.to('patient').emit('visit:status_updated', visit);
+    io.to('health_worker').emit('visit:status_updated', visit);
+  }
+  res.json({ success: true, data: visit });
+});
+
+module.exports = { submitTriage, createReferral, getAssignedPatients, getHWDashboard, bookForPatient, getVisitRequests, updateVisitStatus };

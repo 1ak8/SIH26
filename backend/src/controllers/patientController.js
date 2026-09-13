@@ -4,6 +4,7 @@ const PatientProfile = require('../models/PatientProfile');
 const Prescription = require('../models/Prescription');
 const Referral = require('../models/Referral');
 const User = require('../models/User');
+const VisitRequest = require('../models/VisitRequest');
 
 const getProfile = asyncHandler(async (req, res) => {
   let profile = await PatientProfile.findOne({ user: req.user._id }).populate('user', 'name email phone gender dateOfBirth address profileImage abhaId');
@@ -78,4 +79,30 @@ const getDashboard = asyncHandler(async (req, res) => {
   res.json({ success: true, data: { profile, upcomingAppointments: appointments, activePrescriptions: prescriptions, activeReferrals: referrals } });
 });
 
-module.exports = { getProfile, updateProfile, bookAppointment, getAppointments, getPrescriptions, getReferrals, getDashboard };
+const requestVisit = asyncHandler(async (req, res) => {
+  const { patientName, patientPhone, patientAddress, reason, urgency, preferredSlot, notes } = req.body;
+  const visit = await VisitRequest.create({
+    patient: req.user._id,
+    patientName: patientName || req.user.name || 'Patient',
+    patientPhone: patientPhone || req.user.phone || '9876543211',
+    patientAddress: patientAddress || 'Sitapur Ward 4',
+    ashaName: 'Sunita Devi',
+    reason: reason || 'Routine Health Checkup',
+    urgency: urgency || 'routine',
+    preferredSlot: preferredSlot || 'Morning (9 AM - 12 PM)',
+    notes: notes || '',
+    status: 'pending',
+  });
+  const io = req.app.get('io');
+  if (io) {
+    io.to('health_worker').emit('visit:new', visit);
+  }
+  res.status(201).json({ success: true, data: visit });
+});
+
+const getPatientVisits = asyncHandler(async (req, res) => {
+  const visits = await VisitRequest.find({ patient: req.user._id }).sort('-createdAt');
+  res.json({ success: true, data: visits });
+});
+
+module.exports = { getProfile, updateProfile, bookAppointment, getAppointments, getPrescriptions, getReferrals, getDashboard, requestVisit, getPatientVisits };

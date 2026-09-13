@@ -15,6 +15,8 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRegPassword, setShowRegPassword] = useState(false);
   const [regForm, setRegForm] = useState({ name: '', phone: '', gender: 'male', role: 'patient', email: '', password: '' });
 
   const ROLES = [
@@ -192,8 +194,19 @@ export default function Login() {
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 group-focus-within:text-amber-500 transition-colors">
                         <span className="material-symbols-outlined text-[20px]">lock</span>
                       </span>
-                      <input className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
-                        placeholder="••••••••" required type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                      <input className="w-full pl-11 pr-11 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                        placeholder="••••••••" required type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-amber-600 focus:outline-none transition-colors cursor-pointer"
+                        title={showPassword ? "Hide password" : "Show password"}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        <span className="material-symbols-outlined text-[20px]">
+                          {showPassword ? 'visibility_off' : 'visibility'}
+                        </span>
+                      </button>
                     </div>
                   </div>
                   <div className="flex items-center justify-between text-[13px] pt-1">
@@ -232,8 +245,21 @@ export default function Login() {
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[12px] font-bold text-slate-700">{t('password')}</label>
-                      <input className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
-                        placeholder="••••••••" required type="password" value={regForm.password} onChange={e => setRegForm({...regForm, password: e.target.value})} />
+                      <div className="relative group">
+                        <input className="w-full pl-3 pr-10 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
+                          placeholder="••••••••" required type={showRegPassword ? "text" : "password"} value={regForm.password} onChange={e => setRegForm({...regForm, password: e.target.value})} />
+                        <button
+                          type="button"
+                          onClick={() => setShowRegPassword(!showRegPassword)}
+                          className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-amber-600 focus:outline-none transition-colors cursor-pointer"
+                          title={showRegPassword ? "Hide password" : "Show password"}
+                          aria-label={showRegPassword ? "Hide password" : "Show password"}
+                        >
+                          <span className="material-symbols-outlined text-[18px]">
+                            {showRegPassword ? 'visibility_off' : 'visibility'}
+                          </span>
+                        </button>
+                      </div>
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[12px] font-bold text-slate-700">{t('role')}</label>

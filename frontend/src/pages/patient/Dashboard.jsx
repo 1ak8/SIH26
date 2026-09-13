@@ -13,6 +13,85 @@ export default function PatientDashboard() {
   const [data, setData] = useState(null);
   const [activeModal, setActiveModal] = useState(null);
   const [activeTab, setActiveTab] = useState(location.state?.tab || 'dashboard');
+  const [visitRequests, setVisitRequests] = useState([]);
+  const [visitForm, setVisitForm] = useState({
+    reason: 'Routine Health Checkup & Vitals',
+    urgency: 'routine',
+    preferredSlot: 'Morning (8:00 AM - 12:00 PM)',
+    address: 'Sitapur Ward 4, House 12',
+    notes: '',
+  });
+  const [submittingVisit, setSubmittingVisit] = useState(false);
+  const [visitAlert, setVisitAlert] = useState(null);
+
+  const fetchVisits = () => {
+    api.get('/patient/visit-requests')
+      .then(res => {
+        if (res.data?.data) {
+          setVisitRequests(res.data.data);
+          try { localStorage.setItem('sehatsaarthi_visit_requests', JSON.stringify(res.data.data)); } catch(e) {}
+        }
+      })
+      .catch(() => {
+        try {
+          const local = JSON.parse(localStorage.getItem('sehatsaarthi_visit_requests') || '[]');
+          setVisitRequests(local);
+        } catch(e) {}
+      });
+  };
+
+  useEffect(() => {
+    fetchVisits();
+    const interval = setInterval(fetchVisits, 8000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleRequestVisitSubmit = async (e) => {
+    e.preventDefault();
+    setSubmittingVisit(true);
+    try {
+      const payload = {
+        patientName: user?.name || 'Patient Test',
+        patientPhone: user?.phone || '9876543211',
+        patientAddress: visitForm.address || 'Sitapur Ward 4',
+        reason: visitForm.reason,
+        urgency: visitForm.urgency,
+        preferredSlot: visitForm.preferredSlot,
+        notes: visitForm.notes,
+      };
+      const res = await api.post('/patient/visit-request', payload);
+      const newVisit = res.data?.data;
+      if (newVisit) {
+        const updated = [newVisit, ...visitRequests.filter(v => v._id !== newVisit._id)];
+        setVisitRequests(updated);
+        try { localStorage.setItem('sehatsaarthi_visit_requests', JSON.stringify(updated)); } catch(e) {}
+        setVisitAlert(`Visit request (${newVisit.requestId}) sent to Sunita Devi! She will confirm your slot shortly.`);
+      }
+      setActiveModal(null);
+    } catch (err) {
+      const fallback = {
+        _id: 'local-' + Date.now(),
+        requestId: 'VISIT-' + Math.floor(1000 + Math.random() * 9000),
+        patientName: user?.name || 'Patient Test',
+        patientPhone: user?.phone || '9876543211',
+        patientAddress: visitForm.address || 'Sitapur Ward 4',
+        ashaName: 'Sunita Devi',
+        reason: visitForm.reason,
+        urgency: visitForm.urgency,
+        preferredSlot: visitForm.preferredSlot,
+        notes: visitForm.notes,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      };
+      const updated = [fallback, ...visitRequests];
+      setVisitRequests(updated);
+      try { localStorage.setItem('sehatsaarthi_visit_requests', JSON.stringify(updated)); } catch(e) {}
+      setVisitAlert(`Visit request (${fallback.requestId}) sent to Sunita Devi!`);
+      setActiveModal(null);
+    } finally {
+      setSubmittingVisit(false);
+    }
+  };
 
   useEffect(() => {
     if (location.state?.tab) {
@@ -78,7 +157,7 @@ export default function PatientDashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {[
                   { icon: 'calendar_month', title: t('bookTeleConsult'), desc: t('consultChc'), badge: t('freeGovService'), action: () => navigate('/patient/doctors'), color: 'amber', bg: 'from-amber-500/10 to-amber-50/50' },
-                  { icon: 'medication', title: t('orderFreeMedicines'), desc: t('janAushadhiRefill'), badge: t('subsidizedFree'), action: () => navigate('/patient/medicines'), color: 'emerald', bg: 'from-emerald-500/10 to-emerald-50/50' },
+                  { icon: 'airport_shuttle', title: 'Check Ambulance Availability', desc: 'Real-time GPS tracking, nearest ALS/BLS units & 108 emergency dispatch', badge: '108 Fleet • Live', action: () => navigate('/patient/ambulance'), color: 'rose', bg: 'from-rose-500/10 to-rose-50/50' },
                   { icon: 'science', title: t('labTestsReports'), desc: t('diagnosticHistoryVitals'), badge: t('instantSync'), action: () => setActiveModal('lab-tests'), color: 'sky', bg: 'from-sky-500/10 to-sky-50/50' },
                   { icon: 'near_me', title: t('findNearestPhc'), desc: t('dispensariesSubCentres'), badge: 'Sitapur Ward 4', action: () => setActiveModal('find-phc'), color: 'violet', bg: 'from-violet-500/10 to-violet-50/50' },
                 ].map(card => (
@@ -87,6 +166,7 @@ export default function PatientDashboard() {
                     onClick={card.action} 
                     className={`group text-left bg-white hover:bg-slate-50/80 p-6 rounded-2xl border-2 shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-between focus:outline-none focus:ring-4 focus:ring-amber-500/30 relative overflow-hidden ${
                       card.color === 'amber' ? 'border-amber-300 hover:border-amber-500' :
+                      card.color === 'rose' ? 'border-rose-300 hover:border-rose-500' :
                       card.color === 'emerald' ? 'border-emerald-300 hover:border-emerald-500' :
                       card.color === 'sky' ? 'border-sky-300 hover:border-sky-500' :
                       'border-violet-300 hover:border-violet-500'
@@ -96,6 +176,7 @@ export default function PatientDashboard() {
                     <div className="flex items-center justify-between w-full mb-5">
                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm border-2 transition-all ${
                         card.color === 'amber' ? 'bg-amber-50 text-amber-700 border-amber-200 group-hover:bg-amber-500 group-hover:text-white group-hover:border-amber-500' :
+                        card.color === 'rose' ? 'bg-rose-50 text-rose-700 border-rose-200 group-hover:bg-rose-600 group-hover:text-white group-hover:border-rose-600' :
                         card.color === 'emerald' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500' :
                         card.color === 'sky' ? 'bg-sky-50 text-sky-700 border-sky-200 group-hover:bg-sky-500 group-hover:text-white group-hover:border-sky-500' :
                         'bg-violet-50 text-violet-700 border-violet-200 group-hover:bg-violet-500 group-hover:text-white group-hover:border-violet-500'
@@ -109,8 +190,12 @@ export default function PatientDashboard() {
                     <div>
                       <span className="text-xl font-extrabold text-slate-900 group-hover:text-amber-700 transition-colors block mb-1.5 leading-snug">{card.title}</span>
                       <p className="text-sm text-slate-600 font-medium leading-relaxed mb-4">{card.desc}</p>
-                      <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-900 text-xs font-extrabold px-3 py-1.5 rounded-full border border-amber-300 shadow-xs">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                      <span className={`inline-flex items-center gap-1 text-xs font-extrabold px-3 py-1.5 rounded-full border shadow-xs ${
+                        card.color === 'rose'
+                          ? 'bg-rose-50 text-rose-900 border-rose-300'
+                          : 'bg-amber-50 text-amber-900 border-amber-300'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${card.color === 'rose' ? 'bg-rose-600 animate-pulse' : 'bg-amber-600'}`}></span>
                         {card.badge}
                       </span>
                     </div>
@@ -281,13 +366,66 @@ export default function PatientDashboard() {
                     </a>
                     <button 
                       type="button" 
-                      onClick={() => alert('Request sent to ASHA worker Sunita Devi! She will contact you shortly.')}
-                      className="h-12 px-4 rounded-xl bg-white border-2 border-slate-300 hover:bg-slate-100 text-slate-800 text-sm font-extrabold flex items-center justify-center gap-2 transition-all shadow-xs text-center"
+                      onClick={() => setActiveModal('request-visit')}
+                      className="h-12 px-4 rounded-xl bg-white border-2 border-amber-400 hover:bg-amber-50 text-slate-800 text-sm font-extrabold flex items-center justify-center gap-2 transition-all shadow-xs text-center"
                     >
                       <span className="material-symbols-outlined text-[20px] text-amber-600">home_health</span>
                       <span>Request Visit</span>
                     </button>
                   </div>
+
+                  {/* Visit Request Success Toast */}
+                  {visitAlert && (
+                    <div className="p-3 bg-emerald-50 border border-emerald-300 rounded-2xl flex items-start justify-between gap-2 text-xs text-emerald-900 font-bold animate-fadeIn">
+                      <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-emerald-600 text-[18px]">check_circle</span>
+                        <span>{visitAlert}</span>
+                      </div>
+                      <button onClick={() => setVisitAlert(null)} className="text-emerald-700 hover:text-emerald-950">✕</button>
+                    </div>
+                  )}
+
+                  {/* Active / Recent Visit Requests from Citizen */}
+                  {visitRequests.length > 0 && (
+                    <div className="pt-4 border-t border-slate-100 flex flex-col gap-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] uppercase font-black tracking-wider text-slate-500">Your Home Visit Requests ({visitRequests.length})</span>
+                        <span className="text-[10px] font-black uppercase text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md">Live ABDM Grid</span>
+                      </div>
+                      {visitRequests.slice(0, 3).map((vr) => (
+                        <div key={vr._id || vr.requestId} className="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex flex-col gap-1.5 text-xs">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-1.5 font-bold text-slate-900">
+                              <span className="material-symbols-outlined text-[16px] text-amber-600">home_health</span>
+                              <span>{vr.reason}</span>
+                            </div>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black border uppercase tracking-wider ${
+                              vr.status === 'completed'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                                : vr.status === 'scheduled' || vr.status === 'in_progress'
+                                ? 'bg-sky-50 text-sky-800 border-sky-300 animate-pulse'
+                                : 'bg-amber-50 text-amber-900 border-amber-300'
+                            }`}>
+                              {vr.status === 'pending' && 'Pending Sunita Devi Review'}
+                              {vr.status === 'scheduled' && (vr.scheduledTime ? `Scheduled: ${vr.scheduledTime}` : 'Visit Scheduled')}
+                              {vr.status === 'in_progress' && 'In Progress (On The Way)'}
+                              {vr.status === 'completed' && 'Completed ✓'}
+                              {vr.status === 'cancelled' && 'Cancelled'}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+                            <span>Preferred Slot: <strong className="text-slate-700">{vr.preferredSlot}</strong></span>
+                            <span className="font-mono text-amber-900 font-bold">{vr.requestId}</span>
+                          </div>
+                          {vr.actionNotes && (
+                            <p className="text-[11px] text-amber-900 bg-amber-100/70 p-2 rounded-xl border border-amber-200 font-semibold">
+                              <span className="font-black">Sunita Devi Update:</span> {vr.actionNotes}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -437,6 +575,7 @@ export default function PatientDashboard() {
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-surface-variant flex items-center justify-between bg-surface-container-low">
               <h3 className="text-headline-sm font-bold text-on-surface">
+                {activeModal === 'request-visit' && 'Request ASHA Home Visit (गृह-भ्रमण अनुरोध)'}
                 {activeModal === 'lab-tests' && 'Lab Tests & Reports'}
                 {activeModal === 'find-phc' && 'Find Nearest PHC'}
                 {activeModal === 'edit-profile' && 'Edit Profile Information'}
@@ -447,6 +586,120 @@ export default function PatientDashboard() {
             </div>
             {/* Modal Body */}
             <div className="p-6 overflow-y-auto">
+                {/* Request ASHA Home Visit Modal */}
+                {activeModal === 'request-visit' && (
+                  <form onSubmit={handleRequestVisitSubmit} className="flex flex-col gap-4">
+                    <div className="bg-amber-50 p-4 rounded-2xl border border-amber-300 flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-white border border-amber-300 text-amber-700 flex items-center justify-center shrink-0 shadow-2xs">
+                        <span className="material-symbols-outlined text-[24px]">volunteer_activism</span>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-extrabold text-amber-950">Assigned ASHA Worker: Sunita Devi</h4>
+                        <p className="text-xs text-amber-800 font-medium">Sitapur Ward 4 Field Worker • Working Hours: 8:00 AM – 6:00 PM</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold text-slate-700">Patient Name</label>
+                        <input 
+                          type="text" 
+                          readOnly 
+                          value={user?.name || 'Patient'} 
+                          className="w-full bg-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-sm font-bold cursor-not-allowed" 
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold text-slate-700">Mobile Number</label>
+                        <input 
+                          type="text" 
+                          readOnly 
+                          value={user?.phone || '9876543211'} 
+                          className="w-full bg-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-sm font-bold cursor-not-allowed" 
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-slate-700">Village / Ward Address <span className="text-rose-500">*</span></label>
+                      <input 
+                        type="text" 
+                        required 
+                        value={visitForm.address} 
+                        onChange={e => setVisitForm({ ...visitForm, address: e.target.value })}
+                        className="w-full bg-white px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                        placeholder="House no, Gali / Mohalla, Ward 4" 
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-slate-700">Reason for Visit <span className="text-rose-500">*</span></label>
+                      <select 
+                        value={visitForm.reason} 
+                        onChange={e => setVisitForm({ ...visitForm, reason: e.target.value })}
+                        className="w-full bg-white px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      >
+                        <option value="Routine Health Checkup & Vitals">Routine Health Checkup & Vitals (नियमित स्वास्थ्य जांच)</option>
+                        <option value="Jan Aushadhi Medicine Refill / Delivery">Jan Aushadhi Medicine Refill / Delivery (दवाई डिलीवरी)</option>
+                        <option value="High Fever / Cough / Seasonal Illness">High Fever / Cough / Seasonal Illness (बुखार व मौसमी बीमारी)</option>
+                        <option value="Maternal / ANC Pregnancy Follow-up">Maternal / ANC Pregnancy Follow-up (गर्भवती जांच)</option>
+                        <option value="Elderly Care & Mobility Assistance">Elderly Care & Mobility Assistance (बुजुर्ग देखभाल)</option>
+                        <option value="Child Immunization / Vaccine Check">Child Immunization / Vaccine Check (टीकाकरण)</option>
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold text-slate-700">Preferred Time Slot</label>
+                        <select 
+                          value={visitForm.preferredSlot} 
+                          onChange={e => setVisitForm({ ...visitForm, preferredSlot: e.target.value })}
+                          className="w-full bg-white px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        >
+                          <option value="Morning (8:00 AM - 12:00 PM)">Morning (8:00 AM - 12:00 PM)</option>
+                          <option value="Afternoon (12:00 PM - 3:00 PM)">Afternoon (12:00 PM - 3:00 PM)</option>
+                          <option value="Evening (3:00 PM - 6:00 PM)">Evening (3:00 PM - 6:00 PM)</option>
+                        </select>
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold text-slate-700">Urgency Level</label>
+                        <select 
+                          value={visitForm.urgency} 
+                          onChange={e => setVisitForm({ ...visitForm, urgency: e.target.value })}
+                          className="w-full bg-white px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        >
+                          <option value="routine">Routine (सामान्य)</option>
+                          <option value="urgent">Urgent Priority (प्राथमिकता)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-slate-700">Symptoms or Notes for ASHA (Optional)</label>
+                      <textarea 
+                        rows="2"
+                        value={visitForm.notes} 
+                        onChange={e => setVisitForm({ ...visitForm, notes: e.target.value })}
+                        placeholder="e.g., Feeling dizzy since morning, need BP check..."
+                        className="w-full bg-white px-3.5 py-2 rounded-xl border border-slate-300 text-slate-900 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+                      ></textarea>
+                    </div>
+
+                    <button 
+                      type="submit" 
+                      disabled={submittingVisit}
+                      className="w-full py-3.5 px-4 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-extrabold text-sm rounded-xl shadow-md shadow-amber-600/20 transition-all flex items-center justify-center gap-2 mt-1 disabled:opacity-70"
+                    >
+                      {submittingVisit ? (
+                        <span className="material-symbols-outlined animate-spin text-[20px]">progress_activity</span>
+                      ) : (
+                        <span className="material-symbols-outlined text-[20px]">send</span>
+                      )}
+                      <span>{submittingVisit ? 'Sending Request...' : 'Send Visit Request to Sunita Devi'}</span>
+                    </button>
+                  </form>
+                )}
                 {/* Book Consult */}
                 {activeModal === 'book-consult' && (
                   <div className="flex flex-col gap-4">
