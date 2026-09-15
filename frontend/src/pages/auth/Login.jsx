@@ -11,13 +11,28 @@ export default function Login() {
   
   const [tab, setTab] = useState('login');
   const [role, setRole] = useState('patient');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('patient@test.com');
+  const [password, setPassword] = useState('123456');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRegPassword, setShowRegPassword] = useState(false);
   const [regForm, setRegForm] = useState({ name: '', phone: '', gender: 'male', role: 'patient', email: '', password: '' });
+
+  const ROLE_CREDS = {
+    patient: { email: 'patient@test.com', pass: '123456' },
+    health_worker: { email: 'asha@test.com', pass: '123456' },
+    doctor: { email: 'doctor@test.com', pass: '123456' },
+    admin: { email: 'admin@test.com', pass: '123456' },
+  };
+
+  const handleRoleSelect = (roleKey) => {
+    setRole(roleKey);
+    if (ROLE_CREDS[roleKey]) {
+      setEmail(ROLE_CREDS[roleKey].email);
+      setPassword(ROLE_CREDS[roleKey].pass);
+    }
+  };
 
   const ROLES = [
     { key: 'patient', label: t('citizen') || 'Citizen', icon: 'person' },
@@ -31,7 +46,7 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      const user = await login(email, password);
+      const user = await login(email.trim(), password.trim());
       const homes = { patient: '/patient', health_worker: '/health-worker', doctor: '/doctor', admin: '/admin' };
       navigate(homes[user.role] || '/login');
     } catch (err) {
@@ -163,7 +178,7 @@ export default function Login() {
                   <label className="block text-[11px] font-bold text-slate-700 mb-2 uppercase tracking-wider">{t('selectPortal')}</label>
                   <div className="grid grid-cols-4 gap-1.5 p-1 bg-slate-50 border border-slate-200 rounded-xl animate-fadeIn">
                     {ROLES.map(r => (
-                      <button key={r.key} onClick={() => setRole(r.key)} type="button"
+                      <button key={r.key} onClick={() => handleRoleSelect(r.key)} type="button"
                         className={`flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-lg text-[10px] font-bold transition-all ${role === r.key ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-900 hover:bg-white'}`}>
                         <span className="material-symbols-outlined text-[16px]">{r.icon}</span>
                         <span className="truncate">{r.label}</span>

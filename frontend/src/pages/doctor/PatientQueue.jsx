@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import DoctorNavbar from '../../components/DoctorNavbar';
 import { Link } from 'react-router-dom';
+import api from '../../services/api';
 
 const QUEUE_DATA = [
   { id: 4, name: 'Aditya Verma', age: '32 yrs', gender: 'Male', location: 'Rampur Sub-Centre', status: 'IN CONSULTATION', asha: 'Sunita Devi', time: '10:30 AM', abha: '91-4820-1940-2810' },
@@ -15,8 +16,58 @@ const QUEUE_DATA = [
 export default function PatientQueue() {
   const { user } = useAuth();
   const [filter, setFilter] = useState('All');
+  const [queue, setQueue] = useState([]);
+  const [actionLoading, setActionLoading] = useState(null);
 
-  const filteredQueue = QUEUE_DATA.filter(p => {
+  const fetchQueue = () => {
+    api.get('/doctor/queue')
+      .then(res => {
+        if (res.data?.data?.length > 0) {
+          const formatted = res.data.data.map((item, idx) => ({
+            _id: item._id,
+            id: item.tokenNumber || idx + 1,
+            name: item.patient?.name || 'Citizen',
+            age: item.patient?.dateOfBirth ? `${Math.floor((Date.now() - new Date(item.patient.dateOfBirth))/(365.25*24*3600*1000))} yrs` : '32 yrs',
+            gender: item.patient?.gender ? (item.patient.gender.charAt(0).toUpperCase() + item.patient.gender.slice(1)) : 'Male',
+            location: item.facility?.name || 'Sitapur Rural SC',
+            status: item.status === 'in_consultation' ? 'IN CONSULTATION' : item.status === 'in_queue' ? 'Next in Line' : item.status === 'completed' ? 'Completed' : 'Waiting',
+            rawStatus: item.status,
+            asha: 'Sunita Devi',
+            time: item.timeSlot || '10:30 AM',
+            abha: item.patient?.abhaId || '91-4820-1940-2810',
+            patientId: item.patient?._id,
+            reason: item.reason || 'General Consultation'
+          }));
+          setQueue(formatted);
+        } else {
+          setQueue(QUEUE_DATA);
+        }
+      })
+      .catch(() => setQueue(QUEUE_DATA));
+  };
+
+  useEffect(() => {
+    fetchQueue();
+    const interval = setInterval(fetchQueue, 6000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleStatusUpdate = async (item, newStatus) => {
+    if (!item._id) return;
+    setActionLoading(item._id);
+    try {
+      await api.put(`/doctor/queue/${item._id}/status`, { status: newStatus });
+      fetchQueue();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const currentList = queue.length > 0 ? queue : QUEUE_DATA;
+
+  const filteredQueue = currentList.filter(p => {
     if (filter === 'All') return true;
     if (filter === 'Waiting') return p.status === 'Waiting' || p.status === 'Next in Line';
     if (filter === 'Active') return p.status === 'IN CONSULTATION';
@@ -132,24 +183,36 @@ export default function PatientQueue() {
                         <div className="flex items-center justify-end gap-2">
                           <Link 
                             to="/doctor/prescriptions" 
-                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white border-2 border-slate-300 hover:bg-slate-100 text-slate-800 rounded-xl font-extrabold text-xs transition-all shadow-xs"
+                            state={{
+                              patientId: p.patientId,
+                              patientName: p.name,
+                              abhaId: p.abha,
+                              appointmentId: p._id,
+                              reason: p.reason,
+                              location: p.location,
+                              token: p.id
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border-2 border-slate-300 hover:bg-slate-100 text-slate-800 rounded-xl font-extrabold text-xs transition-all shadow-xs"
                           >
                             <span className="material-symbols-outlined text-[16px] text-amber-600">medication</span>
                             Prescribe
                           </Link>
                           {isCurrent ? (
                             <button 
-                              onClick={() => alert(`Entering Live Video Consultation room with ${p.name}...`)}
-                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-extrabold text-xs shadow-sm transition-all"
+                              onClick={() => handleStatusUpdate(p, 'completed')}
+                              disabled={actionLoading === p._id}
+                              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-extrabold text-xs shadow-sm transition-all"
                             >
-                              <span className="material-symbols-outlined text-[16px]">videocam</span>
-                              Join Room
+                              <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                              Complete
                             </button>
                           ) : (
                             <button 
-                              onClick={() => alert(`Calling in Token #${p.id} (${p.name})`)}
-                              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-all"
+                              onClick={() => handleStatusUpdate(p, 'in_consultation')}
+                              disabled={actionLoading === p._id}
+                              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-extrabold text-xs shadow-sm transition-all"
                             >
+                              <span className="material-symbols-outlined text-[16px]">videocam</span>
                               Call In
                             </button>
                           )}

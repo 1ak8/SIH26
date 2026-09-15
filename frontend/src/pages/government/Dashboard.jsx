@@ -39,8 +39,11 @@ export default function AdminDashboard() {
   const toggleLang = () => setLang(l => l === 'en' ? 'hi' : 'en');
   const t = (enText, hiText) => lang === 'en' ? enText : (hiText || enText);
 
+  const [facilities, setFacilities] = useState([]);
+
   useEffect(() => {
-    api.get('/admin/analytics').then(r => setData(r.data.data)).catch(() => {});
+    api.get('/admin/analytics').then(r => setData(r.data?.data)).catch(() => {});
+    api.get('/admin/facilities').then(r => setFacilities(r.data?.data || [])).catch(() => {});
   }, []);
 
   const showToast = (message) => {
@@ -497,35 +500,41 @@ export default function AdminDashboard() {
           {activeView === 'teleCenters' && (
             <div className="animate-fadeIn mt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3, 4, 5, 6].map(i => (
-                  <div key={i} className="bg-surface-container-lowest border border-surface-variant rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                {(facilities.length > 0 ? facilities : [
+                  { name: 'CHC Sitapur Central', type: 'CHC', capacity: { beds: 30, opdRooms: 6 }, contactPhone: '05862-242108' },
+                  { name: 'District Hospital Sitapur', type: 'district_hospital', capacity: { beds: 120, opdRooms: 18 }, contactPhone: '05862-243108' },
+                  { name: 'Rampur Sub-Centre', type: 'sub_centre', capacity: { beds: 5, opdRooms: 2 }, contactPhone: '05862-245108' },
+                  { name: 'Sitapur Ward 4 Health Post', type: 'sub_centre', capacity: { beds: 4, opdRooms: 1 }, contactPhone: '05862-246108' },
+                  { name: 'State Medical College Tele-Hub', type: 'tertiary', capacity: { beds: 500, opdRooms: 40 }, contactPhone: '05862-248108' },
+                ]).map((fac, i) => (
+                  <div key={fac._id || i} className="bg-surface-container-lowest border border-surface-variant rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-center gap-3">
                         <span className="material-symbols-outlined text-secondary text-[32px]">domain</span>
                         <div>
-                          <h3 className="font-bold text-on-surface text-lg">PHC Block {String.fromCharCode(64 + i)}</h3>
-                          <p className="text-sm text-on-surface-variant">Rural Outpost</p>
+                          <h3 className="font-bold text-on-surface text-lg">{fac.name}</h3>
+                          <p className="text-sm text-on-surface-variant capitalize">{fac.type?.replace('_', ' ') || 'Healthcare Post'}</p>
                         </div>
                       </div>
-                      <span className={`px-2 py-1 text-xs font-bold rounded-lg ${i === 3 ? 'bg-error-container text-on-error-container' : 'bg-primary-container text-on-primary-container'}`}>
-                        {i === 3 ? t('Offline', 'ऑफ़लाइन') : t('Online', 'ऑनलाइन')}
+                      <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-primary-container text-on-primary-container">
+                        {t('Online', 'ऑनलाइन')}
                       </span>
                     </div>
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm">
-                        <span className="text-on-surface-variant">{t('Current Queue', 'वर्तमान कतार')}</span>
-                        <span className="font-bold text-on-surface">{i * 3 + 2} {t('Patients', 'मरीज़')}</span>
+                        <span className="text-on-surface-variant">{t('Capacity Beds', 'बेड क्षमता')}</span>
+                        <span className="font-bold text-on-surface">{fac.capacity?.beds || 20} {t('Beds', 'बेड')}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-on-surface-variant">{t('Assigned Doctor', 'नियुक्त डॉक्टर')}</span>
-                        <span className="font-bold text-on-surface">Dr. Sharma</span>
+                        <span className="text-on-surface-variant">{t('OPD Rooms', 'ओपीडी कक्ष')}</span>
+                        <span className="font-bold text-on-surface">{fac.capacity?.opdRooms || 4} {t('Rooms', 'कक्ष')}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-on-surface-variant">{t('Last Sync', 'अंतिम सिंक')}</span>
-                        <span className="font-bold text-on-surface">2 mins ago</span>
+                        <span className="text-on-surface-variant">{t('Contact Desk', 'संपर्क')}</span>
+                        <span className="font-bold text-on-surface">{fac.contactPhone || '05862-242108'}</span>
                       </div>
                     </div>
-                    <button className="w-full mt-5 py-2.5 bg-surface-container text-on-surface font-bold rounded-xl border border-surface-variant hover:bg-surface-variant transition-colors">
+                    <button onClick={() => showToast(`Connecting Telemetry Link to ${fac.name}...`)} className="w-full mt-5 py-2.5 bg-surface-container text-on-surface font-bold rounded-xl border border-surface-variant hover:bg-surface-variant transition-colors">
                       {t('View Telemetry', 'टेलीमेट्री देखें')}
                     </button>
                   </div>
@@ -582,28 +591,38 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-surface-variant">
-                    {[
-                      { name: 'Paracetamol 500mg', stock: 1200, thresh: 5000, status: 'Critical', color: 'error' },
-                      { name: 'Amoxicillin 250mg', stock: 8500, thresh: 4000, status: 'Healthy', color: 'primary' },
-                      { name: 'ORS Packets', stock: 450, thresh: 1000, status: 'Low', color: 'tertiary' },
-                      { name: 'Ibuprofen 400mg', stock: 12000, thresh: 5000, status: 'Healthy', color: 'primary' },
-                    ].map((drug, i) => (
-                      <tr key={i} className="hover:bg-surface-container-lowest transition-colors">
-                        <td className="p-5 font-bold text-on-surface">{drug.name}</td>
-                        <td className="p-5 font-black text-on-surface">{drug.stock.toLocaleString()}</td>
-                        <td className="p-5 font-medium text-on-surface-variant">{drug.thresh.toLocaleString()}</td>
-                        <td className="p-5">
-                          <span className={`px-2 py-1 text-xs font-bold rounded-lg bg-${drug.color}-container text-on-${drug.color}-container`}>
-                            {t(drug.status, drug.status)}
-                          </span>
-                        </td>
-                        <td className="p-5">
-                          <button onClick={() => showToast(`Requisition sent for ${drug.name}`)} className="px-4 py-2 bg-surface-container border border-surface-variant rounded-xl font-bold text-xs hover:bg-surface-variant transition-colors">
-                            {t('Auto Requisition', 'स्वतः मांग')}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {(
+                      facilities.find(f => f.medicineInventory && f.medicineInventory.length > 0)?.medicineInventory || [
+                        { name: 'Paracetamol 500mg (Tab)', quantity: 1200, status: 'low_stock' },
+                        { name: 'Amoxicillin 250mg (Cap)', quantity: 8500, status: 'in_stock' },
+                        { name: 'ORS Electrolyte Sachet', quantity: 450, status: 'low_stock' },
+                        { name: 'Ibuprofen 400mg (Tab)', quantity: 12000, status: 'in_stock' },
+                        { name: 'Cetirizine 10mg (Tab)', quantity: 3400, status: 'in_stock' },
+                        { name: 'Metformin 500mg (Tab)', quantity: 5600, status: 'in_stock' },
+                        { name: 'Amlodipine 5mg (Tab)', quantity: 4100, status: 'in_stock' },
+                        { name: 'Iron Folic Acid (IFA)', quantity: 9800, status: 'in_stock' },
+                      ]
+                    ).map((drug, i) => {
+                      const isLow = drug.status === 'low_stock' || drug.quantity < 2000;
+                      const statusLabel = isLow ? 'Critical / Low' : 'Healthy';
+                      return (
+                        <tr key={i} className="hover:bg-surface-container-lowest transition-colors">
+                          <td className="p-5 font-bold text-on-surface">{drug.name}</td>
+                          <td className="p-5 font-black text-on-surface">{Number(drug.quantity || 1000).toLocaleString()} {drug.unit || 'units'}</td>
+                          <td className="p-5 font-medium text-on-surface-variant">5,000</td>
+                          <td className="p-5">
+                            <span className={`px-2.5 py-1 text-xs font-bold rounded-lg ${isLow ? 'bg-rose-100 text-rose-900 border border-rose-300' : 'bg-emerald-100 text-emerald-900 border border-emerald-300'}`}>
+                              {statusLabel}
+                            </span>
+                          </td>
+                          <td className="p-5">
+                            <button onClick={() => showToast(`Auto-requisition ticket generated for ${drug.name}`)} className="px-4 py-2 bg-surface-container border border-surface-variant rounded-xl font-bold text-xs hover:bg-surface-variant transition-colors">
+                              {t('Auto Requisition', 'स्वतः मांग')}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

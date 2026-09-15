@@ -40,8 +40,15 @@ const login = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Please provide email and password');
   }
-  const user = await User.findOne({ email }).select('+password');
-  if (!user || !(await user.matchPassword(password))) {
+  const clean = String(email).trim();
+  const user = await User.findOne({
+    $or: [
+      { email: clean.toLowerCase() },
+      { phone: clean },
+    ],
+  }).select('+password');
+
+  if (!user || !(await user.matchPassword(String(password).trim()))) {
     res.status(401);
     throw new Error('Invalid credentials');
   }

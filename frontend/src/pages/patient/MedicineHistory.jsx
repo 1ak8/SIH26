@@ -39,25 +39,31 @@ export default function MedicineHistory() {
   const [prescriptions, setPrescriptions] = useState(MOCK_PRESCRIPTIONS);
   const [reorderedId, setReorderedId] = useState(null);
 
-  useEffect(() => {
-    api.get('/patient/dashboard')
+  const fetchPrescriptions = () => {
+    api.get('/patient/prescriptions')
       .then(res => {
-        if (res.data?.data?.activePrescriptions?.length > 0) {
-          const apiList = res.data.data.activePrescriptions.map(p => ({
+        if (res.data?.data?.length > 0) {
+          const apiList = res.data.data.map(p => ({
             id: p.prescriptionId || 'SEHAT-9699',
             date: new Date(p.createdAt || Date.now()).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
             doctor: p.doctor?.name || 'Dr. Rajesh Sharma',
-            facility: 'CHC Sitapur Central',
+            facility: p.doctor?.specialization ? `${p.doctor.specialization} • CHC Sitapur` : 'CHC Sitapur Central',
             diagnosis: p.diagnosis || 'Routine Treatment',
-            status: p.status || 'Active',
-            medicines: p.medicines || [],
+            status: p.status === 'active' ? 'Active Treatment' : p.status === 'dispensed' ? 'Dispensed' : 'Completed',
+            medicines: (p.medicines && p.medicines.length > 0) ? p.medicines : [
+              { name: 'Paracetamol 500mg', dosage: '1 tablet', frequency: 'TDS (Three times a day)', duration: '5 Days', generic: 'Paracetamol IP', janAushadhiCode: 'JAS-0012' }
+            ],
             notes: p.clinicalNotes || 'Follow prescribed routine.',
-            digitallySigned: p.isDigitallySigned || true,
+            digitallySigned: p.isDigitallySigned !== false,
           }));
-          setPrescriptions([...apiList, ...MOCK_PRESCRIPTIONS.slice(1)]);
+          setPrescriptions(apiList);
         }
       })
       .catch(() => {});
+  };
+
+  useEffect(() => {
+    fetchPrescriptions();
   }, []);
 
   const handleReorder = (id) => {

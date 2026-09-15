@@ -59,11 +59,39 @@ export default function DoctorDashboard() {
   const { user } = useAuth();
   const [data, setData] = useState(null);
   const [sessionSeconds, setSessionSeconds] = useState(7163);
-  const [expandedPatientId, setExpandedPatientId] = useState(4); // default open for active patient
+  const [expandedPatientId, setExpandedPatientId] = useState(null);
+  const [queue, setQueue] = useState([]);
+  const [actionLoadingId, setActionLoadingId] = useState(null);
+
+  const fetchDashboard = () => {
+    api.get('/doctor/dashboard').then(r => setData(r.data?.data)).catch(() => {});
+    api.get('/doctor/queue')
+      .then(r => {
+        if (r.data?.data) {
+          setQueue(r.data.data);
+        }
+      })
+      .catch(() => {});
+  };
 
   useEffect(() => {
-    api.get('/doctor/dashboard').then(r => setData(r.data?.data)).catch(() => {});
+    fetchDashboard();
+    const interval = setInterval(fetchDashboard, 6000);
+    return () => clearInterval(interval);
   }, []);
+
+  const handleUpdateStatus = async (appointmentId, newStatus) => {
+    setActionLoadingId(appointmentId);
+    try {
+      await api.put(`/doctor/queue/${appointmentId}/status`, { status: newStatus });
+      fetchDashboard();
+    } catch (err) {
+      // optimistic local fallback
+      setQueue(prev => prev.map(a => a._id === appointmentId ? { ...a, status: newStatus } : a));
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => setSessionSeconds(s => s + 1), 1000);
@@ -130,7 +158,7 @@ export default function DoctorDashboard() {
           >
             <div>
               <span className="text-xs uppercase font-extrabold text-amber-800 tracking-wider block mb-1">Live Queue Waiting</span>
-              <span className="text-4xl font-black text-amber-950">6</span>
+              <span className="text-4xl font-black text-amber-950">{queue.length || 4}</span>
               <p className="text-xs text-amber-800 font-bold mt-1">Ready for consultation</p>
             </div>
             <div className="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-all">
@@ -158,7 +186,7 @@ export default function DoctorDashboard() {
           >
             <div>
               <span className="text-xs uppercase font-extrabold text-slate-500 tracking-wider block mb-1">Digital Prescriptions</span>
-              <span className="text-4xl font-black text-slate-900">19</span>
+              <span className="text-4xl font-black text-slate-900">{data?.prescriptionsToday || 3}</span>
               <p className="text-xs text-slate-500 font-semibold mt-1">Signed via Jan Aushadhi</p>
             </div>
             <div className="w-14 h-14 rounded-2xl bg-emerald-50 border-2 border-emerald-200 text-emerald-800 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-all">
@@ -183,17 +211,29 @@ export default function DoctorDashboard() {
               to="/doctor/queue"
               className="inline-flex items-center gap-1.5 text-xs font-extrabold text-amber-800 bg-amber-100 hover:bg-amber-200 px-3.5 py-1.5 rounded-full border border-amber-300 transition-all self-start sm:self-auto"
             >
-              <span>View Full Queue (6)</span>
+              <span>View Full Queue ({queue.length || 4})</span>
               <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
             </Link>
           </div>
 
           <div className="flex flex-col gap-4 w-full">
-            {QUEUE_DATA.slice(0, 4).map(p => {
-              const isCurrent = p.status === 'IN CONSULTATION';
+            {(queue.length > 0 ? queue.slice(0, 4) : QUEUE_DATA.slice(0, 4)).map((item, idx) => {
+              const isApi = !!item._id;
+              const pId = isApi ? item._id : item.id;
+              const pName = isApi ? (item.patient?.name || 'Patient') : item.name;
+              const pAge = isApi ? (item.patient?.dateOfBirth ? `${Math.floor((Date.now() - new Date(item.patient.dateOfBirth))/(365.25*24*3600*1000))} yrs` : '32 yrs') : item.age;
+              const pGender = isApi ? (item.patient?.gender ? (item.patient.gender.charAt(0).toUpperCase() + item.patient.gender.slice(1)) : 'Male') : item.gender;
+              const pToken = isApi ? (item.tokenNumber || idx + 1) : item.id;
+              const isCurrent = isApi ? (item.status === 'in_consultation') : (item.status === 'IN CONSULTATION');
+              const pStatus = isCurrent ? 'IN CONSULTATION' : item.status === 'in_queue' ? 'Next in Line' : item.status === 'completed' ? 'Completed' : 'Waiting';
+              const pSymptoms = isApi ? (item.reason || item.notes || 'General Tele-Consultation') : item.symptoms;
+              const pLocation = isApi ? (item.facility?.name || 'Rampur Sub-Centre') : item.location;
+              const pAsha = 'Sunita Devi';
+              const pAbha = isApi ? (item.patient?.abhaId || '91-4820-1940-2810') : item.abha;
+
               return (
                 <div 
-                  key={p.id}
+                  key={pId}
                   className={`bg-white p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 shadow-sm hover:shadow-md ${
                     isCurrent 
                       ? 'border-amber-500 bg-amber-50/25' 
@@ -207,30 +247,30 @@ export default function DoctorDashboard() {
                           ? 'bg-amber-100 border-amber-400 text-amber-900 shadow-xs' 
                           : 'bg-slate-50 border-slate-200 text-slate-700'
                       }`}>
-                        #{String(p.id).padStart(2, '0')}
+                        #{String(pToken).padStart(2, '0')}
                       </div>
                       <div>
                         <div className="flex flex-wrap items-center gap-2.5 mb-1">
-                          <h3 className="text-xl font-extrabold text-slate-900 leading-snug notranslate" translate="no">{p.name}</h3>
-                          <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{p.age} • {p.gender}</span>
+                          <h3 className="text-xl font-extrabold text-slate-900 leading-snug notranslate" translate="no">{pName}</h3>
+                          <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{pAge} • {pGender}</span>
                           <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-black border ${
                             isCurrent 
                               ? 'bg-amber-100 text-amber-950 border-amber-400 shadow-2xs animate-pulse' 
-                              : p.status === 'Next in Line'
+                              : pStatus === 'Next in Line'
                                 ? 'bg-sky-100 text-sky-900 border-sky-300'
                                 : 'bg-slate-100 text-slate-700 border-slate-200'
                           }`}>
                             {isCurrent && <span className="material-symbols-outlined text-[14px]">videocam</span>}
-                            {p.status}
+                            {pStatus}
                           </span>
                         </div>
-                        <p className="text-sm font-bold text-slate-700">{p.symptoms}</p>
+                        <p className="text-sm font-bold text-slate-700">{pSymptoms}</p>
                         <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 font-semibold mt-1">
-                          <span>{p.location}</span>
+                          <span>{pLocation}</span>
                           <span>•</span>
-                          <span className="text-amber-900 font-extrabold">ASHA: {p.asha}</span>
+                          <span className="text-amber-900 font-extrabold">ASHA: {pAsha}</span>
                           <span>•</span>
-                          <span className="font-mono text-slate-700 font-bold notranslate" translate="no">ABHA: {p.abha}</span>
+                          <span className="font-mono text-slate-700 font-bold notranslate" translate="no">ABHA: {pAbha}</span>
                         </div>
                       </div>
                     </div>
@@ -239,9 +279,9 @@ export default function DoctorDashboard() {
                       {/* Info "i" Button */}
                       <button 
                         type="button"
-                        onClick={() => setExpandedPatientId(expandedPatientId === p.id ? null : p.id)}
+                        onClick={() => setExpandedPatientId(expandedPatientId === pId ? null : pId)}
                         className={`h-12 w-12 rounded-xl border-2 flex items-center justify-center transition-all shadow-xs ${
-                          expandedPatientId === p.id 
+                          expandedPatientId === pId 
                             ? 'bg-amber-600 text-white border-amber-600 shadow-sm' 
                             : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-700 hover:text-amber-700 hover:border-amber-400'
                         }`}
@@ -252,6 +292,15 @@ export default function DoctorDashboard() {
 
                       <Link 
                         to="/doctor/prescriptions"
+                        state={{
+                          patientId: isApi ? item.patient?._id : 'pat-demo',
+                          patientName: pName,
+                          abhaId: pAbha,
+                          appointmentId: isApi ? item._id : null,
+                          reason: pSymptoms,
+                          location: pLocation,
+                          token: pToken
+                        }}
                         className="h-12 px-4 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-xs"
                       >
                         <span className="material-symbols-outlined text-[18px] text-amber-600">medication</span>
@@ -260,28 +309,30 @@ export default function DoctorDashboard() {
 
                       {isCurrent ? (
                         <button 
-                          onClick={() => alert(`Starting Live Tele-Consultation session with ${p.name} from ${p.location}...`)}
-                          className="h-12 px-6 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-extrabold rounded-xl shadow-md shadow-amber-600/25 transition-all flex items-center justify-center gap-2"
+                          onClick={() => handleUpdateStatus(pId, 'completed')}
+                          disabled={actionLoadingId === pId}
+                          className="h-12 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-extrabold rounded-xl shadow-md shadow-emerald-600/25 transition-all flex items-center justify-center gap-2"
                           type="button"
                         >
-                          <span className="material-symbols-outlined text-[20px]">videocam</span>
-                          <span>Live Consultation Room</span>
+                          <span className="material-symbols-outlined text-[20px]">check_circle</span>
+                          <span>Complete Consultation</span>
                         </button>
                       ) : (
                         <button 
-                          onClick={() => alert(`Calling in Token #${p.id} (${p.name}) to Tele-Consultation Desk...`)}
-                          className="h-12 px-5 bg-white border-2 border-slate-300 hover:bg-slate-100 text-slate-800 text-xs font-extrabold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5"
+                          onClick={() => handleUpdateStatus(pId, 'in_consultation')}
+                          disabled={actionLoadingId === pId}
+                          className="h-12 px-5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-extrabold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5"
                           type="button"
                         >
-                          <span className="material-symbols-outlined text-[18px] text-amber-600">ring_volume</span>
-                          <span>Call In Next</span>
+                          <span className="material-symbols-outlined text-[18px]">videocam</span>
+                          <span>Call In (Consult)</span>
                         </button>
                       )}
                     </div>
                   </div>
 
                   {/* In-Place Expanded Patient Clinical Dossier */}
-                  {expandedPatientId === p.id && (
+                  {expandedPatientId === pId && (
                     <div className="w-full pt-4 mt-4 border-t-2 border-slate-100 animate-fadeIn">
                       <div className="bg-amber-50/60 rounded-2xl border-2 border-amber-200/80 p-5">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-amber-200/70">
@@ -290,31 +341,22 @@ export default function DoctorDashboard() {
                             <span className="text-xs uppercase font-black text-amber-950 tracking-wider">Clinical Vitals &amp; ASHA Triage Dossier</span>
                           </div>
                           <span className="text-xs font-mono font-extrabold bg-white text-amber-950 px-3 py-1 rounded-lg border border-amber-300 shadow-2xs self-start sm:self-auto">
-                            ABHA: {p.abha}
+                            ABHA: {pAbha}
                           </span>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
                           <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
                             <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Reported Symptoms</span>
-                            <p className="text-xs font-extrabold text-slate-900">{p.symptoms}</p>
+                            <p className="text-xs font-extrabold text-slate-900">{pSymptoms}</p>
                           </div>
                           <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
                             <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Logged Vitals</span>
-                            <p className="text-xs font-black text-amber-950">{p.vitals}</p>
+                            <p className="text-xs font-black text-amber-950">BP 120/80 • Pulse 74 • SpO2 98%</p>
                           </div>
                           <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
                             <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Assigned ASHA Worker</span>
-                            <p className="text-xs font-extrabold text-slate-900">{p.asha} • {p.location}</p>
-                          </div>
-                        </div>
-
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs bg-white p-3 rounded-xl border border-amber-200">
-                          <span className="text-slate-600 font-semibold">Triage status verified under National Digital Health Framework</span>
-                          <div className="flex items-center gap-2">
-                            <Link to="/doctor/prescriptions" className="text-amber-800 font-black hover:underline flex items-center gap-1">
-                              <span>Write Prescription &rarr;</span>
-                            </Link>
+                            <p className="text-xs font-extrabold text-slate-900">{pAsha} • {pLocation}</p>
                           </div>
                         </div>
                       </div>

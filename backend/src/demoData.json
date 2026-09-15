@@ -1,0 +1,542 @@
+{
+  "facilities": [
+    {
+      "key": "chc_sitapur",
+      "name": "CHC Sitapur Central",
+      "type": "CHC",
+      "address": { "line1": "Civil Lines, Hospital Road", "city": "Sitapur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261001" },
+      "contactPhone": "05862-242108",
+      "capacity": { "beds": 30, "opdRooms": 6, "icuBeds": 4 },
+      "services": ["General Medicine", "Emergency & Trauma", "Pediatrics", "Gynecology", "Jan Aushadhi Kendra", "Pathology Lab", "X-Ray & ECG"],
+      "medicineInventory": [
+        { "name": "Paracetamol 500mg (Tab)", "quantity": 1200, "unit": "tablets", "status": "low_stock" },
+        { "name": "Amoxicillin 250mg (Cap)", "quantity": 8500, "unit": "capsules", "status": "in_stock" },
+        { "name": "ORS Electrolyte Sachet", "quantity": 450, "unit": "packets", "status": "low_stock" },
+        { "name": "Ibuprofen 400mg (Tab)", "quantity": 12000, "unit": "tablets", "status": "in_stock" },
+        { "name": "Cetirizine 10mg (Tab)", "quantity": 3400, "unit": "tablets", "status": "in_stock" },
+        { "name": "Metformin 500mg (Tab)", "quantity": 5600, "unit": "tablets", "status": "in_stock" },
+        { "name": "Amlodipine 5mg (Tab)", "quantity": 4100, "unit": "tablets", "status": "in_stock" },
+        { "name": "Iron Folic Acid (IFA)", "quantity": 9800, "unit": "tablets", "status": "in_stock" }
+      ],
+      "diagnosticServices": [
+        { "testName": "Complete Blood Count (CBC)", "available": true, "equipmentStatus": "operational" },
+        { "testName": "Fasting & PP Blood Sugar", "available": true, "equipmentStatus": "operational" },
+        { "testName": "Lipid Profile & Liver Panel", "available": true, "equipmentStatus": "operational" },
+        { "testName": "Digital X-Ray & 12-Lead ECG", "available": true, "equipmentStatus": "operational" }
+      ]
+    },
+    {
+      "key": "dh_sitapur",
+      "name": "District Hospital Sitapur",
+      "type": "district_hospital",
+      "address": { "line1": "Station Road", "city": "Sitapur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261001" },
+      "contactPhone": "05862-243108",
+      "capacity": { "beds": 120, "opdRooms": 18, "icuBeds": 12 },
+      "services": ["Specialist OPD", "Trauma Care", "ICU", "Blood Bank", "Pediatric Ward", "Gynecology & Maternity"]
+    },
+    {
+      "key": "sc_rampur",
+      "name": "Rampur Sub-Centre",
+      "type": "sub_centre",
+      "address": { "line1": "Village Rampur Chowk", "city": "Rampur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261002" },
+      "contactPhone": "05862-245108",
+      "capacity": { "beds": 5, "opdRooms": 2, "icuBeds": 0 },
+      "services": ["Maternal & Child Health", "Immunization", "First Aid", "Tele-Consultation Kiosk"]
+    },
+    {
+      "key": "sc_ward4",
+      "name": "Sitapur Ward 4 Health Post",
+      "type": "sub_centre",
+      "address": { "line1": "Panchayat Bhavan, Ward 4", "city": "Sitapur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261001" },
+      "contactPhone": "05862-246108",
+      "capacity": { "beds": 4, "opdRooms": 1, "icuBeds": 0 },
+      "services": ["ASHA Field Station", "Routine Vitals", "Jan Aushadhi Distribution"]
+    },
+    {
+      "key": "smc_hub",
+      "name": "State Medical College Tele-Hub",
+      "type": "tertiary",
+      "address": { "line1": "Medical Campus Road", "city": "Sitapur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261003" },
+      "contactPhone": "05862-248108",
+      "capacity": { "beds": 500, "opdRooms": 40, "icuBeds": 30 },
+      "services": ["Tele-Medicine Command Centre", "Cardiology Hub", "Neurology", "Advanced Oncology"]
+    }
+  ],
+
+  "users": {
+    "doctors": [
+      {
+        "key": "doc_rajesh",
+        "name": "Dr. Rajesh Sharma",
+        "email": "doctor@test.com",
+        "phone": "9876543210",
+        "role": "doctor",
+        "specialization": "General Medicine (सामान्य चिकित्सा)",
+        "registrationNumber": "UP-MCI-2014-1201",
+        "gender": "male",
+        "facilityKey": "chc_sitapur"
+      },
+      {
+        "key": "doc_ananya",
+        "name": "Dr. Ananya Gupta",
+        "email": "ananya.gupta@sehatsaarthi.gov.in",
+        "phone": "9876543230",
+        "role": "doctor",
+        "specialization": "Pediatrics (बाल रोग विशेषज्ञ)",
+        "registrationNumber": "UP-MCI-2018-3402",
+        "gender": "female",
+        "facilityKey": "dh_sitapur"
+      },
+      {
+        "key": "doc_vikram",
+        "name": "Dr. Vikramaditya Rathore",
+        "email": "vikram.rathore@sehatsaarthi.gov.in",
+        "phone": "9876543231",
+        "role": "doctor",
+        "specialization": "Cardiology (हृदय रोग)",
+        "registrationNumber": "UP-MCI-2008-0891",
+        "gender": "male",
+        "facilityKey": "smc_hub"
+      },
+      {
+        "key": "doc_priya",
+        "name": "Dr. Priya Verma",
+        "email": "priya.verma@sehatsaarthi.gov.in",
+        "phone": "9876543232",
+        "role": "doctor",
+        "specialization": "Gynecology & Maternal Care (महिला रोग)",
+        "registrationNumber": "UP-MCI-2016-2109",
+        "gender": "female",
+        "facilityKey": "dh_sitapur"
+      }
+    ],
+
+    "health_workers": [
+      {
+        "key": "asha_sunita",
+        "name": "Sunita Devi",
+        "email": "asha@test.com",
+        "phone": "9876543212",
+        "role": "health_worker",
+        "gender": "female",
+        "facilityKey": "sc_ward4",
+        "address": { "line1": "Sitapur Ward 4", "city": "Sitapur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261001" }
+      },
+      {
+        "key": "asha_kamla",
+        "name": "Kamla Verma",
+        "email": "kamla.verma@sehatsaarthi.gov.in",
+        "phone": "9876543240",
+        "role": "health_worker",
+        "gender": "female",
+        "facilityKey": "sc_rampur",
+        "address": { "line1": "Rampur Ward 1", "city": "Rampur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261002" }
+      }
+    ],
+
+    "admin": {
+      "key": "admin_main",
+      "name": "Dr. Manoj Kumar Singh (DHO)",
+      "email": "admin@test.com",
+      "phone": "9876543213",
+      "role": "admin",
+      "gender": "male",
+      "facilityKey": "dh_sitapur"
+    },
+
+    "patients": [
+      {
+        "key": "pat_test",
+        "name": "Patient Test",
+        "email": "patient@test.com",
+        "phone": "9876543211",
+        "role": "patient",
+        "gender": "male",
+        "dateOfBirth": "1994-04-12",
+        "abhaId": "91-4820-1940-2810",
+        "address": { "line1": "Sitapur Ward 4, House 12", "city": "Sitapur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261001" },
+        "profile": {
+          "ayushmanCardNumber": "PMJAY-UP-9842-1049",
+          "ayushmanEligible": true,
+          "bloodGroup": "B+",
+          "allergies": [{ "name": "Dust & Pollen", "severity": "mild" }],
+          "chronicConditions": [{ "condition": "Mild Seasonal Allergy", "diagnosedDate": "2024-03-10", "status": "managed" }],
+          "vitals": { "systolicBP": 120, "diastolicBP": 80, "heartRate": 74, "spO2": 98, "temperature": 98.6, "bloodSugar": 105, "weight": 68, "height": 172 }
+        }
+      },
+      {
+        "key": "pat_aditya",
+        "name": "Aditya Verma",
+        "email": "aditya.verma@test.com",
+        "phone": "9876543252",
+        "role": "patient",
+        "gender": "male",
+        "dateOfBirth": "1994-06-15",
+        "abhaId": "91-4820-1940-2812",
+        "address": { "line1": "Rampur Sub-Centre Mohalla", "city": "Rampur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261002" },
+        "profile": {
+          "ayushmanCardNumber": "PMJAY-UP-4820-1940",
+          "ayushmanEligible": true,
+          "bloodGroup": "O+",
+          "allergies": [{ "name": "Sulfa Drugs", "severity": "moderate" }],
+          "chronicConditions": [],
+          "vitals": { "systolicBP": 122, "diastolicBP": 80, "heartRate": 74, "spO2": 99, "temperature": 98.4, "bloodSugar": 98, "weight": 65, "height": 170 }
+        }
+      },
+      {
+        "key": "pat_savitri",
+        "name": "Savitri Devi",
+        "email": "savitri.devi@test.com",
+        "phone": "9876543253",
+        "role": "patient",
+        "gender": "female",
+        "dateOfBirth": "1972-09-30",
+        "abhaId": "91-2311-9041-5512",
+        "address": { "line1": "Bilaspur PHC Ward 3", "city": "Bilaspur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261001" },
+        "profile": {
+          "ayushmanCardNumber": "PMJAY-UP-2311-9041",
+          "ayushmanEligible": true,
+          "bloodGroup": "A+",
+          "allergies": [],
+          "chronicConditions": [
+            { "condition": "Type-2 Diabetes Mellitus", "diagnosedDate": "2020-05-15", "status": "active" },
+            { "condition": "Essential Hypertension", "diagnosedDate": "2019-11-20", "status": "active" }
+          ],
+          "vitals": { "systolicBP": 148, "diastolicBP": 92, "heartRate": 78, "spO2": 97, "temperature": 98.6, "bloodSugar": 168, "weight": 72, "height": 158 }
+        }
+      },
+      {
+        "key": "pat_kamla",
+        "name": "Kamla Devi",
+        "email": "kamla.devi@test.com",
+        "phone": "9876543251",
+        "role": "patient",
+        "gender": "female",
+        "dateOfBirth": "1998-07-22",
+        "abhaId": "91-4820-1940-2811",
+        "address": { "line1": "Rampur Ward 2", "city": "Rampur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261002" },
+        "profile": {
+          "ayushmanCardNumber": "PMJAY-UP-4820-2811",
+          "ayushmanEligible": true,
+          "bloodGroup": "B+",
+          "allergies": [{ "name": "Penicillin (Severe Shock Risk)", "severity": "severe" }],
+          "maternalHealth": { "isPregnant": true, "weeksPregnant": 34, "gravida": 2, "para": 1 },
+          "vitals": { "systolicBP": 138, "diastolicBP": 88, "heartRate": 82, "spO2": 98, "temperature": 98.6, "bloodSugar": 110, "weight": 61, "height": 155 }
+        }
+      },
+      {
+        "key": "pat_rameshwar",
+        "name": "Rameshwar Singh",
+        "email": "rameshwar.singh@test.com",
+        "phone": "9876543214",
+        "role": "patient",
+        "gender": "male",
+        "dateOfBirth": "1962-11-08",
+        "abhaId": "91-2311-9041-5514",
+        "address": { "line1": "Rampur Ward 1", "city": "Rampur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261002" },
+        "profile": {
+          "ayushmanCardNumber": "PMJAY-UP-2311-5514",
+          "ayushmanEligible": true,
+          "bloodGroup": "AB+",
+          "chronicConditions": [
+            { "condition": "Type-2 Diabetes (HbA1c 8.2%)", "diagnosedDate": "2018-02-14", "status": "active" },
+            { "condition": "Essential Hypertension", "diagnosedDate": "2017-08-10", "status": "active" }
+          ],
+          "vitals": { "systolicBP": 146, "diastolicBP": 92, "heartRate": 74, "spO2": 97, "temperature": 98.4, "bloodSugar": 164, "weight": 76, "height": 168 }
+        }
+      },
+      {
+        "key": "pat_aarav",
+        "name": "Aarav Kumar (Infant)",
+        "email": "aarav.parent@test.com",
+        "phone": "9876543215",
+        "role": "patient",
+        "gender": "male",
+        "dateOfBirth": "2025-12-15",
+        "abhaId": "91-8832-1002-3921",
+        "address": { "line1": "Rampur Ward 3", "city": "Rampur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261002" },
+        "profile": {
+          "ayushmanCardNumber": "PMJAY-UP-8832-3921",
+          "ayushmanEligible": true,
+          "bloodGroup": "O+",
+          "vitals": { "systolicBP": 90, "diastolicBP": 60, "heartRate": 110, "spO2": 99, "temperature": 98.4, "weight": 8.4, "height": 72 }
+        }
+      },
+      {
+        "key": "pat_meena",
+        "name": "Meena Yadav",
+        "email": "meena.yadav@test.com",
+        "phone": "9876543216",
+        "role": "patient",
+        "gender": "female",
+        "dateOfBirth": "1992-05-10",
+        "abhaId": "91-3490-1122-8761",
+        "address": { "line1": "Sitapur Ward 4", "city": "Sitapur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261001" },
+        "profile": {
+          "ayushmanCardNumber": "PMJAY-UP-3490-8761",
+          "ayushmanEligible": true,
+          "bloodGroup": "A+",
+          "vitals": { "systolicBP": 118, "diastolicBP": 76, "heartRate": 72, "spO2": 98, "temperature": 98.6, "weight": 58, "height": 156 }
+        }
+      },
+      {
+        "key": "pat_chhedi",
+        "name": "Chhedi Lal",
+        "email": "chhedi.lal@test.com",
+        "phone": "9876543217",
+        "role": "patient",
+        "gender": "male",
+        "dateOfBirth": "1955-02-28",
+        "abhaId": "91-9981-2244-1298",
+        "address": { "line1": "Sitapur Ward 4", "city": "Sitapur", "district": "Sitapur", "state": "Uttar Pradesh", "pincode": "261001" },
+        "profile": {
+          "ayushmanCardNumber": "PMJAY-UP-9981-1298",
+          "ayushmanEligible": true,
+          "bloodGroup": "B+",
+          "chronicConditions": [{ "condition": "Hypertension & Osteoarthritis", "diagnosedDate": "2016-04-10", "status": "active" }],
+          "vitals": { "systolicBP": 142, "diastolicBP": 86, "heartRate": 68, "spO2": 96, "temperature": 98.2, "bloodSugar": 125, "weight": 64, "height": 165 }
+        }
+      }
+    ]
+  },
+
+  "appointments": [
+    {
+      "patientKey": "pat_test",
+      "doctorKey": "doc_rajesh",
+      "facilityKey": "chc_sitapur",
+      "dateOffsetDays": 0,
+      "timeSlot": "04:00 PM",
+      "tokenNumber": 4,
+      "type": "teleconsultation",
+      "status": "scheduled",
+      "reason": "Follow-up on Viral Fever & Weakness",
+      "notes": "Patient reports fever subsided, requesting Jan Aushadhi refill and vitals review."
+    },
+    {
+      "patientKey": "pat_aditya",
+      "doctorKey": "doc_rajesh",
+      "facilityKey": "chc_sitapur",
+      "dateOffsetDays": 0,
+      "timeSlot": "10:30 AM",
+      "tokenNumber": 1,
+      "type": "teleconsultation",
+      "status": "in_consultation",
+      "reason": "Mild acute bronchitis, non-productive cough x 3 days",
+      "notes": "Throat irritation, no fever, chest clear on tele-auscultation."
+    },
+    {
+      "patientKey": "pat_savitri",
+      "doctorKey": "doc_rajesh",
+      "facilityKey": "chc_sitapur",
+      "dateOffsetDays": 0,
+      "timeSlot": "10:45 AM",
+      "tokenNumber": 2,
+      "type": "teleconsultation",
+      "status": "in_queue",
+      "reason": "Diabetes & BP routine review",
+      "notes": "Fasting blood sugar 168 mg/dL, mild morning dizziness."
+    },
+    {
+      "patientKey": "pat_rameshwar",
+      "doctorKey": "doc_rajesh",
+      "facilityKey": "chc_sitapur",
+      "dateOffsetDays": 0,
+      "timeSlot": "11:00 AM",
+      "tokenNumber": 3,
+      "type": "in_person",
+      "status": "scheduled",
+      "reason": "HbA1c follow-up & Jan Aushadhi prescription renewal"
+    },
+    {
+      "patientKey": "pat_kamla",
+      "doctorKey": "doc_priya",
+      "facilityKey": "dh_sitapur",
+      "dateOffsetDays": 0,
+      "timeSlot": "11:30 AM",
+      "tokenNumber": 1,
+      "type": "teleconsultation",
+      "status": "scheduled",
+      "reason": "High-risk pregnancy Trimester 3 follow-up"
+    },
+    {
+      "patientKey": "pat_test",
+      "doctorKey": "doc_ananya",
+      "facilityKey": "dh_sitapur",
+      "dateOffsetDays": -28,
+      "timeSlot": "02:30 PM",
+      "tokenNumber": 8,
+      "type": "teleconsultation",
+      "status": "completed",
+      "reason": "Seasonal Bronchial Allergy review"
+    }
+  ],
+
+  "prescriptions": [
+    {
+      "patientKey": "pat_test",
+      "doctorKey": "doc_rajesh",
+      "prescriptionId": "SEHAT-9699",
+      "diagnosis": "Acute Viral Fever & Dehydration",
+      "icdCode": "B34.9",
+      "clinicalNotes": "Adequate rest for 3 days. Drink plenty of boiled clean water. Return if fever persists beyond 5 days.",
+      "isDigitallySigned": true,
+      "status": "active",
+      "medicines": [
+        { "name": "Paracetamol 500mg", "dosage": "1 tablet", "frequency": "TDS (Three times a day)", "duration": "5 Days", "instructions": "After food", "isGeneric": true },
+        { "name": "Cetirizine 10mg", "dosage": "1 tablet", "frequency": "HS (Bedtime)", "duration": "3 Days", "instructions": "At night", "isGeneric": true },
+        { "name": "ORS Electrolyte Sachet", "dosage": "1 packet in 1L water", "frequency": "As Needed", "duration": "3 Days", "instructions": "Sip throughout the day", "isGeneric": true }
+      ],
+      "labTests": [
+        { "testName": "Complete Blood Count (CBC)", "urgency": "routine", "status": "completed", "result": "Hemoglobin 13.8 g/dL, TLC 7400/uL (Normal)" }
+      ]
+    },
+    {
+      "patientKey": "pat_test",
+      "doctorKey": "doc_ananya",
+      "prescriptionId": "SEHAT-8120",
+      "diagnosis": "Seasonal Bronchial Allergy",
+      "icdCode": "J30.9",
+      "clinicalNotes": "Completed prescribed course.",
+      "isDigitallySigned": true,
+      "status": "dispensed",
+      "medicines": [
+        { "name": "Amoxicillin 250mg", "dosage": "1 capsule", "frequency": "BD (Twice a day)", "duration": "5 Days", "instructions": "After breakfast and dinner", "isGeneric": true },
+        { "name": "Vitamin C 500mg", "dosage": "1 chewable tab", "frequency": "OD (Once daily)", "duration": "15 Days", "instructions": "Chew after lunch", "isGeneric": true }
+      ]
+    },
+    {
+      "patientKey": "pat_aditya",
+      "doctorKey": "doc_rajesh",
+      "prescriptionId": "SEHAT-4021",
+      "diagnosis": "Mild acute bronchitis",
+      "icdCode": "J20.9",
+      "clinicalNotes": "Warm saline gargles twice daily, adequate hydration.",
+      "isDigitallySigned": true,
+      "status": "active",
+      "medicines": [
+        { "name": "Amoxicillin 500mg (Cap)", "dosage": "1 capsule", "frequency": "TDS (Thrice daily)", "duration": "5 Days", "instructions": "After meals", "isGeneric": true },
+        { "name": "Cetirizine 10mg (Tab)", "dosage": "1 tablet", "frequency": "HS (Bedtime)", "duration": "3 Days", "instructions": "At bedtime", "isGeneric": true },
+        { "name": "Paracetamol 650mg (Tab)", "dosage": "1 tablet", "frequency": "SOS (As Needed)", "duration": "3 Days", "instructions": "Max 3/day", "isGeneric": true }
+      ]
+    }
+  ],
+
+  "triageData": [
+    {
+      "patientKey": "pat_kamla",
+      "assessedByKey": "asha_sunita",
+      "riskLevel": "high",
+      "tags": ["Maternal", "High Risk Pregnancy", "Pre-eclampsia Risk"],
+      "symptoms": ["Mild headache", "Swelling in ankles", "BP elevated"],
+      "vitals": { "systolicBP": 138, "diastolicBP": 88, "heartRate": 82, "spO2": 98, "temperature": 98.6 },
+      "notes": "Trimester 3 pregnancy checkup. Blood pressure elevated. Referred to Dr. Priya Verma for tele-consultation.",
+      "requiresReferral": true,
+      "requiresAmbulance": false
+    },
+    {
+      "patientKey": "pat_rameshwar",
+      "assessedByKey": "asha_sunita",
+      "riskLevel": "high",
+      "tags": ["Diabetes", "Hypertension", "Geriatric"],
+      "symptoms": ["Blurred vision occasional", "High fasting sugar", "Dizziness"],
+      "vitals": { "systolicBP": 146, "diastolicBP": 92, "heartRate": 74, "bloodSugar": 164, "spO2": 97 },
+      "notes": "Blood sugar remains high. Prescribed Metformin dose review needed.",
+      "requiresReferral": true,
+      "requiresAmbulance": false
+    },
+    {
+      "patientKey": "pat_aarav",
+      "assessedByKey": "asha_sunita",
+      "riskLevel": "low",
+      "tags": ["Immunization", "Pediatric", "Milestone Review"],
+      "symptoms": ["None", "Normal growth"],
+      "vitals": { "weight": 8.4, "temperature": 98.4, "spO2": 99 },
+      "notes": "9-month milestone checkup. MR-1 vaccine and Vitamin A dose administered.",
+      "requiresReferral": false
+    },
+    {
+      "patientKey": "pat_test",
+      "assessedByKey": "asha_sunita",
+      "riskLevel": "low",
+      "tags": ["Routine Vitals", "Post-Viral Review"],
+      "symptoms": ["General recovery", "Normal appetite"],
+      "vitals": { "systolicBP": 120, "diastolicBP": 80, "heartRate": 74, "spO2": 98, "temperature": 98.6 },
+      "notes": "Vitals normal. Routine village visit check completed.",
+      "requiresReferral": false
+    }
+  ],
+
+  "referrals": [
+    {
+      "patientKey": "pat_kamla",
+      "referredByKey": "asha_sunita",
+      "referredToKey": "doc_priya",
+      "fromFacilityKey": "sc_ward4",
+      "toFacilityKey": "dh_sitapur",
+      "specialty": "Gynecology & Maternal Care",
+      "reason": "High-risk pregnancy (Trimester 3) with elevated BP (138/88) and pre-eclampsia warning signs.",
+      "priority": "high",
+      "status": "in_progress",
+      "notes": "ASHA Sunita Devi scheduled urgent consultation with Dr. Priya Verma."
+    },
+    {
+      "patientKey": "pat_rameshwar",
+      "referredByKey": "asha_sunita",
+      "referredToKey": "doc_rajesh",
+      "fromFacilityKey": "sc_rampur",
+      "toFacilityKey": "chc_sitapur",
+      "specialty": "General Medicine",
+      "reason": "Uncontrolled Type-2 Diabetes (fasting sugar 164 mg/dL) and hypertension follow-up.",
+      "priority": "medium",
+      "status": "accepted",
+      "notes": "Patient advised to consult today at CHC Sitapur OPD."
+    }
+  ],
+
+  "visitRequests": [
+    {
+      "patientKey": "pat_test",
+      "patientName": "Patient Test",
+      "patientPhone": "9876543211",
+      "patientAddress": "Sitapur Ward 4, House 12",
+      "ashaName": "Sunita Devi",
+      "reason": "Routine Health Checkup & Vitals",
+      "urgency": "routine",
+      "preferredSlot": "Morning (8:00 AM - 12:00 PM)",
+      "notes": "Mild dizziness, requesting BP and blood sugar check at home.",
+      "status": "scheduled",
+      "scheduledTime": "Today, 11:30 AM",
+      "actionNotes": "Sunita Devi confirmed visit slot for morning round.",
+      "requestId": "VISIT-7227"
+    },
+    {
+      "patientKey": "pat_kamla",
+      "patientName": "Kamla Devi",
+      "patientPhone": "9876543251",
+      "patientAddress": "Rampur Ward 2",
+      "ashaName": "Sunita Devi",
+      "reason": "Maternal / ANC Pregnancy Follow-up",
+      "urgency": "urgent",
+      "preferredSlot": "Morning (8:00 AM - 12:00 PM)",
+      "notes": "Need IFA tablet refill and BP check.",
+      "status": "pending",
+      "requestId": "VISIT-7581"
+    },
+    {
+      "patientKey": "pat_chhedi",
+      "patientName": "Chhedi Lal",
+      "patientPhone": "9876543217",
+      "patientAddress": "Sitapur Ward 4",
+      "ashaName": "Sunita Devi",
+      "reason": "Elderly Care & Mobility Assistance",
+      "urgency": "routine",
+      "preferredSlot": "Afternoon (12:00 PM - 3:00 PM)",
+      "notes": "Knee pain check and routine BP measurement.",
+      "status": "completed",
+      "scheduledTime": "Yesterday, 02:15 PM",
+      "actionNotes": "Home visit completed. BP recorded: 142/86 mmHg.",
+      "requestId": "VISIT-6190"
+    }
+  ]
+}

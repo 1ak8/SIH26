@@ -1,0 +1,98 @@
+================================================================================
+          SEHATSARTHI - COMPLETE INTERCONNECTED DEMO DATASET (SIH 2026)
+================================================================================
+
+1. DEMO USER ACCOUNTS (Password for all: 123456)
+--------------------------------------------------------------------------------
+ROLE            NAME                        EMAIL                      PHONE
+Citizen/Patient Patient Test                patient@test.com           9876543211
+Doctor          Dr. Rajesh Sharma (MD)      doctor@test.com            9876543210
+ASHA Worker     Sunita Devi                 asha@test.com              9876543212
+Admin/DHO       Dr. Manoj Kumar Singh       admin@test.com             9876543213
+
+Additional Specialist Doctors:
+- Dr. Ananya Gupta (Pediatrics)          - ananya.gupta@sehatsaarthi.gov.in
+- Dr. Vikramaditya Rathore (Cardiology)  - vikram.rathore@sehatsaarthi.gov.in
+- Dr. Priya Verma (Gynecology/OBG)       - priya.verma@sehatsaarthi.gov.in
+
+
+2. HEALTHCARE FACILITIES & INFRASTRUCTURE
+--------------------------------------------------------------------------------
+FACILITY NAME                   TYPE               BEDS  ICU   PHONE
+CHC Sitapur Central             CHC                30    4     05862-242108
+District Hospital Sitapur       District Hospital  120   12    05862-243108
+Rampur Sub-Centre               Sub-Centre         5     0     05862-245108
+Sitapur Ward 4 Health Post      Sub-Centre         4     0     05862-246108
+State Medical College Tele-Hub  Tertiary Hub       500   30    05862-248108
+
+
+3. JAN AUSHADHI MEDICINE INVENTORY (CHC Sitapur Kendra)
+--------------------------------------------------------------------------------
+MEDICINE NAME                   QTY IN STOCK       UNIT       STATUS
+Paracetamol 500mg (Tab)         1,200              Tablets    Low Stock (Critical)
+Amoxicillin 250mg (Cap)         8,500              Capsules   In Stock (Healthy)
+ORS Electrolyte Sachet          450                Packets    Low Stock
+Ibuprofen 400mg (Tab)           12,000             Tablets    In Stock (Healthy)
+Cetirizine 10mg (Tab)           3,400              Tablets    In Stock
+Metformin 500mg (Tab)           5,600              Tablets    In Stock
+Amlodipine 5mg (Tab)            4,100              Tablets    In Stock
+Iron Folic Acid (IFA)           9,800              Tablets    In Stock
+
+
+4. VILLAGE PATIENT REGISTRY (With ABHA & Ayushman Bharat Linkage)
+--------------------------------------------------------------------------------
+NAME             AGE/GENDER  VILLAGE/WARD     ABHA ID              AYUSHMAN CARD         CONDITION
+Patient Test     30/M        Sitapur Ward 4   91-4820-1940-2810    PMJAY-UP-9842-1049    Post-Viral Weakness
+Aditya Verma     32/M        Rampur Ward 1    91-4820-1940-2812    PMJAY-UP-4820-1940    Mild Acute Bronchitis
+Savitri Devi     54/F        Bilaspur Ward 3  91-2311-9041-5512    PMJAY-UP-2311-9041    Diabetes + Hypertension
+Kamla Devi       28/F        Rampur Ward 2    91-4820-1940-2811    PMJAY-UP-4820-2811    Trimester 3 High-Risk ANC
+Rameshwar Singh  64/M        Rampur Ward 1    91-2311-9041-5514    PMJAY-UP-2311-5514    Type-2 Diabetes (HbA1c 8.2%)
+Aarav Kumar      9 mos/M     Rampur Ward 3    91-8832-1002-3921    PMJAY-UP-8832-3921    Routine Immunization (MR-1)
+Meena Yadav      34/F        Sitapur Ward 4   91-3490-1122-8761    PMJAY-UP-3490-8761    Post-Natal Checkup
+Chhedi Lal       71/M        Sitapur Ward 4   91-9981-2244-1298    PMJAY-UP-9981-1298    Hypertension + Arthritis
+
+
+5. TODAY'S DOCTOR OPD QUEUE (Dr. Rajesh Sharma - CHC Sitapur)
+--------------------------------------------------------------------------------
+TOKEN  PATIENT           AGE/SEX  TYPE             STATUS             SYMPTOMS / REASON
+#01    Aditya Verma      32/M     Teleconsult      IN CONSULTATION    Acute bronchitis, dry cough x 3 days
+#02    Savitri Devi      54/F     Teleconsult      IN QUEUE           Sugar 168 mg/dL, morning dizziness
+#03    Rameshwar Singh   64/M     In-Person        SCHEDULED          HbA1c follow-up & Metformin renewal
+#04    Patient Test      30/M     Teleconsult      SCHEDULED          Follow-up on Viral Fever recovery
+
+
+6. ACTIVE VERIFIED PRESCRIPTIONS (SEHAT- Gov ID)
+--------------------------------------------------------------------------------
+RX ID       PATIENT       DOCTOR             DIAGNOSIS                     MEDICINES PRESCRIBED
+SEHAT-9699  Patient Test  Dr. Rajesh Sharma  Acute Viral Fever &           Paracetamol 500mg (TDS x 5d)
+                                             Dehydration                   Cetirizine 10mg (HS x 3d)
+                                                                           ORS Electrolyte Sachet (SOS)
+SEHAT-8120  Patient Test  Dr. Ananya Gupta   Seasonal Bronchial Allergy    Amoxicillin 250mg (BD x 5d)
+                                                                           Vitamin C 500mg (OD x 15d)
+SEHAT-4021  Aditya Verma  Dr. Rajesh Sharma  Mild Acute Bronchitis         Amoxicillin 500mg (TDS x 5d)
+                                                                           Cetirizine 10mg (HS x 3d)
+                                                                           Paracetamol 650mg (SOS)
+
+
+7. ASHA FIELD WORKER HOME VISIT REQUESTS (Sunita Devi)
+--------------------------------------------------------------------------------
+REQUEST ID  PATIENT       WARD             REASON                       SLOT               STATUS
+VISIT-7227  Patient Test  Sitapur Ward 4   Routine Vitals Checkup       Morning 8-12 PM    Scheduled (Today 11:30 AM)
+VISIT-7581  Kamla Devi    Rampur Ward 2    Maternal ANC Pregnancy       Morning 8-12 PM    Pending Review (Urgent)
+VISIT-6190  Chhedi Lal    Sitapur Ward 4   Elderly Care & Mobility      Afternoon 12-3 PM  Completed (BP 142/86)
+
+
+8. INTER-FACILITY REFERRALS
+--------------------------------------------------------------------------------
+PATIENT       FROM FACILITY    TO FACILITY                SPECIALTY         PRIORITY   STATUS
+Kamla Devi    Ward 4 SC        District Hospital Sitapur  Gynecology/OBG    High       In Progress
+Rameshwar S.  Rampur SC        CHC Sitapur Central        General Medicine  Medium     Accepted
+
+
+9. HOW TO RE-SEED DATABASE ANYTIME
+--------------------------------------------------------------------------------
+Open terminal in backend folder and run:
+  node src/seed.js
+
+Data source file: backend/src/demoData.json
+================================================================================
