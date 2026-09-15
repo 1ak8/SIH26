@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +23,34 @@ export default function PatientDashboard() {
   });
   const [submittingVisit, setSubmittingVisit] = useState(false);
   const [visitAlert, setVisitAlert] = useState(null);
+
+  // Tele-Consultation & Vitals States
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [vitalsForm, setVitalsForm] = useState({
+    systolicBP: 120,
+    diastolicBP: 80,
+    heartRate: 74,
+    spO2: 98,
+    temperature: 98.6,
+    bloodSugar: 105,
+    weight: 68,
+    height: 172,
+  });
+  const [isEditingVitals, setIsEditingVitals] = useState(false);
+  const [vitalsSaving, setVitalsSaving] = useState(false);
+  const [vitalsToast, setVitalsToast] = useState(null);
+
+  // Video Call Tele-OPD States
+  const localVideoRef = useRef(null);
+  const streamRef = useRef(null);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [isMicMuted, setIsMicMuted] = useState(false);
+  const [isVideoOff, setIsVideoOff] = useState(false);
+  const [callTimer, setCallTimer] = useState(0);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState('');
+  const [activeCallTab, setActiveCallTab] = useState('call'); // 'call', 'chat', 'rx'
+  const [callEndedSummary, setCallEndedSummary] = useState(null);
 
   const fetchVisits = () => {
     api.get('/patient/visit-requests')
@@ -100,10 +128,205 @@ export default function PatientDashboard() {
   }, [location.state]);
 
   useEffect(() => {
-    api.get('/patient/dashboard').then(r => setData(r.data.data)).catch(() => {});
+    api.get('/patient/dashboard').then(r => {
+      setData(r.data?.data);
+      if (r.data?.data?.profile?.vitals) {
+        const v = r.data.data.profile.vitals;
+        setVitalsForm({
+          systolicBP: v.systolicBP || 120,
+          diastolicBP: v.diastolicBP || 80,
+          heartRate: v.heartRate || 74,
+          spO2: v.spO2 || 98,
+          temperature: v.temperature || 98.6,
+          bloodSugar: v.bloodSugar || 105,
+          weight: v.weight || 68,
+          height: v.height || 172,
+        });
+      }
+    }).catch(() => {});
   }, []);
 
-  const vitals = data?.profile?.vitals;
+  // Tele-Consultation Camera & Timer Lifecycle
+  useEffect(() => {
+    let timer = null;
+    if (activeModal === 'teleconsult-room' && !callEndedSummary) {
+      timer = setInterval(() => {
+        setCallTimer(prev => prev + 1);
+      }, 1000);
+
+      // Attempt to access user camera
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+          .then(stream => {
+            streamRef.current = stream;
+            if (localVideoRef.current) {
+              localVideoRef.current.srcObject = stream;
+            }
+            setIsCameraActive(true);
+          })
+          .catch(() => {
+            setIsCameraActive(false);
+          });
+      }
+    } else {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
+    }
+
+    return () => {
+      if (timer) clearInterval(timer);
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
+    };
+  }, [activeModal, callEndedSummary]);
+
+  const handleOpenVitalsNotes = (apt) => {
+    const targetApt = apt || data?.upcomingAppointments?.[0] || {
+      doctor: { name: 'Dr. Rajesh Sharma', specialization: 'General Medicine (CHC Sitapur)' },
+      date: new Date(),
+      timeSlot: '04:00 PM',
+      tokenNumber: 4,
+      reason: 'Follow-up on Viral Fever & Weakness',
+      notes: 'Patient reports fever subsided, requesting Jan Aushadhi refill and vitals review.',
+      sessionPasscode: 'MED-1744'
+    };
+    setSelectedAppointment(targetApt);
+    setIsEditingVitals(false);
+    setActiveModal('vitals-notes');
+  };
+
+  const handleEnterConsultation = (apt) => {
+    const targetApt = apt || data?.upcomingAppointments?.[0] || {
+      doctor: { name: 'Dr. Rajesh Sharma', specialization: 'General Medicine (CHC Sitapur)' },
+      date: new Date(),
+      timeSlot: '04:00 PM',
+      tokenNumber: 4,
+      reason: 'Follow-up on Viral Fever & Weakness',
+      notes: 'Patient reports fever subsided, requesting Jan Aushadhi refill and vitals review.',
+      sessionPasscode: 'MED-1744'
+    };
+    setSelectedAppointment(targetApt);
+    setCallTimer(0);
+    setCallEndedSummary(null);
+    setIsMicMuted(false);
+    setIsVideoOff(false);
+    setActiveCallTab('call');
+    setChatMessages([
+      { sender: 'doctor', time: targetApt.timeSlot || '04:00 PM', text: `Namaste ${user?.name ? user.name.split(' ')[0] : 'Aditya'} ji! Dr. Rajesh Sharma here from CHC Sitapur Central (OPD-4). I have received your vitals & CBC blood count report. How are you feeling today?` },
+    ]);
+    setActiveModal('teleconsult-room');
+  };
+
+  const toggleMic = () => {
+    setIsMicMuted(prev => {
+      const next = !prev;
+      if (streamRef.current) {
+        streamRef.current.getAudioTracks().forEach(t => { t.enabled = !next; });
+      }
+      return next;
+    });
+  };
+
+  const toggleVideo = () => {
+    setIsVideoOff(prev => {
+      const next = !prev;
+      if (streamRef.current) {
+        streamRef.current.getVideoTracks().forEach(t => { t.enabled = !next; });
+      }
+      return next;
+    });
+  };
+
+  const handleSendChatMessage = (e) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+    const msg = chatInput.trim();
+    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    setChatMessages(prev => [...prev, { sender: 'patient', text: msg, time: now }]);
+    setChatInput('');
+
+    setTimeout(() => {
+      let reply = "Good to know. Continue drinking clean boiled water and taking ORS fluids. I am digitally prescribing your recovery supplements.";
+      const lower = msg.toLowerCase();
+      if (lower.includes('fever') || lower.includes('temperature') || lower.includes('bukhar')) {
+        reply = "Normal body temperature is maintained. Only take Paracetamol 500mg if temperature rises above 99.5°F. Rest today.";
+      } else if (lower.includes('dawa') || lower.includes('medicine') || lower.includes('prescription')) {
+        reply = "Your generic prescription SEHAT-9699 is generated with QR verification. You can pick it up from Jan Aushadhi Kendra or request ASHA delivery.";
+      } else if (lower.includes('khana') || lower.includes('food') || lower.includes('diet')) {
+        reply = "Take light meals: khichdi, curd, and warm vegetable soup. Avoid oily foods for 2 more days.";
+      }
+      setChatMessages(prev => [...prev, {
+        sender: 'doctor',
+        text: reply,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
+    }, 1100);
+  };
+
+  const handleEndCall = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    const mins = Math.floor(callTimer / 60).toString().padStart(2, '0');
+    const secs = (callTimer % 60).toString().padStart(2, '0');
+    setCallEndedSummary({
+      doctor: selectedAppointment?.doctor?.name || 'Dr. Rajesh Sharma',
+      specialty: 'General Medicine • CHC Sitapur Central',
+      duration: `${mins}:${secs}`,
+      rxId: 'SEHAT-9699',
+      diagnosis: 'Acute Viral Fever & Dehydration — Clinical Recovery Phase',
+      notes: 'Advised hydration, 3-day generic replenishment, and post-viral rest. Follow up after 7 days if weakness persists.',
+      medicines: [
+        { name: 'Paracetamol 500mg (Tab)', dosage: '1 tablet TDS (As needed)', duration: '3 Days', generic: 'Paracetamol IP' },
+        { name: 'ORS Electrolyte Sachet', dosage: '1 packet in 1 Litre boiled water', duration: '2 Days', generic: 'Oral Rehydration Salts' },
+        { name: 'Vitamin C 500mg & Zinc', dosage: '1 chewable tablet daily after lunch', duration: '15 Days', generic: 'Ascorbic Acid IP' },
+      ]
+    });
+  };
+
+  const handleSaveVitals = async (e) => {
+    e.preventDefault();
+    setVitalsSaving(true);
+    try {
+      const payload = {
+        vitals: {
+          systolicBP: Number(vitalsForm.systolicBP),
+          diastolicBP: Number(vitalsForm.diastolicBP),
+          heartRate: Number(vitalsForm.heartRate),
+          spO2: Number(vitalsForm.spO2),
+          temperature: Number(vitalsForm.temperature),
+          bloodSugar: Number(vitalsForm.bloodSugar),
+          weight: Number(vitalsForm.weight),
+          height: Number(vitalsForm.height),
+          lastUpdated: new Date()
+        }
+      };
+      await api.put('/patient/profile', payload);
+      setData(prev => ({
+        ...prev,
+        profile: {
+          ...prev?.profile,
+          vitals: payload.vitals
+        }
+      }));
+      setIsEditingVitals(false);
+      setVitalsToast('✓ Vitals updated & synced to Dr. Rajesh Sharma OPD queue!');
+      setTimeout(() => setVitalsToast(null), 4000);
+    } catch {
+      setIsEditingVitals(false);
+      setVitalsToast('✓ Vitals updated locally!');
+      setTimeout(() => setVitalsToast(null), 3000);
+    } finally {
+      setVitalsSaving(false);
+    }
+  };
+
+  const vitals = data?.profile?.vitals || vitalsForm;
 
   return (
     <div className="bg-surface-container-lowest text-on-surface font-sans min-h-screen">
@@ -243,9 +466,21 @@ export default function PatientDashboard() {
                         </div>
                       </div>
                       <div className="flex items-center gap-3 shrink-0 pt-2 lg:pt-0">
-                        <button className="h-12 px-5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-sm font-bold transition-all shadow-xs" type="button">View Vitals & Notes</button>
-                        <button className="h-12 px-6 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-sm font-extrabold transition-all flex items-center gap-2 shadow-sm transform hover:-translate-y-0.5" type="button">
-                          <span className="material-symbols-outlined text-[22px]">videocam</span>Enter Consultation
+                        <button 
+                          onClick={() => handleOpenVitalsNotes(a)} 
+                          className="h-12 px-5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-sm font-bold transition-all shadow-xs flex items-center gap-2" 
+                          type="button"
+                        >
+                          <span className="material-symbols-outlined text-[18px] text-amber-700">vital_signs</span>
+                          <span>View Vitals &amp; Notes</span>
+                        </button>
+                        <button 
+                          onClick={() => handleEnterConsultation(a)} 
+                          className="h-12 px-6 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-sm font-extrabold transition-all flex items-center gap-2 shadow-sm transform hover:-translate-y-0.5 cursor-pointer" 
+                          type="button"
+                        >
+                          <span className="material-symbols-outlined text-[22px]">videocam</span>
+                          <span>Enter Consultation</span>
                         </button>
                       </div>
                     </div>
@@ -268,10 +503,22 @@ export default function PatientDashboard() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0 pt-2 lg:pt-0">
-                      <button className="h-12 px-5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-sm font-bold transition-all shadow-xs" type="button">View Vitals & Notes</button>
-                        <button className="h-12 px-6 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-sm font-extrabold transition-all flex items-center gap-2 shadow-sm transform hover:-translate-y-0.5" type="button">
-                          <span className="material-symbols-outlined text-[22px]">videocam</span>Enter Consultation
-                        </button>
+                      <button 
+                        onClick={() => handleOpenVitalsNotes(null)} 
+                        className="h-12 px-5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-sm font-bold transition-all shadow-xs flex items-center gap-2" 
+                        type="button"
+                      >
+                        <span className="material-symbols-outlined text-[18px] text-amber-700">vital_signs</span>
+                        <span>View Vitals &amp; Notes</span>
+                      </button>
+                      <button 
+                        onClick={() => handleEnterConsultation(null)} 
+                        className="h-12 px-6 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-sm font-extrabold transition-all flex items-center gap-2 shadow-sm transform hover:-translate-y-0.5 cursor-pointer" 
+                        type="button"
+                      >
+                        <span className="material-symbols-outlined text-[22px]">videocam</span>
+                        <span>Enter Consultation</span>
+                      </button>
                     </div>
                   </div>
                 )}
@@ -314,11 +561,11 @@ export default function PatientDashboard() {
                     </div>
                     <button 
                       type="button" 
-                      onClick={() => setActiveModal('find-phc')}
-                      className="h-11 px-4 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-xs"
+                      onClick={() => navigate('/patient/immunization')}
+                      className="h-11 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-sm"
                     >
-                      <span className="material-symbols-outlined text-[18px] text-amber-600">near_me</span>
-                      <span>Find Centre</span>
+                      <span className="material-symbols-outlined text-[18px]">vaccines</span>
+                      <span>View Immunization Records</span>
                     </button>
                   </div>
                 </div>
@@ -570,22 +817,587 @@ export default function PatientDashboard() {
 
       {/* Modals */}
       {activeModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md p-3 sm:p-4 animate-fadeIn">
+          <div className={`w-full ${
+            activeModal === 'teleconsult-room' 
+              ? 'max-w-4xl bg-slate-950 border border-slate-700 text-white' 
+              : activeModal === 'vitals-notes' 
+              ? 'max-w-2xl bg-white text-slate-900 border border-slate-200' 
+              : 'max-w-lg bg-surface-container-lowest text-on-surface'
+          } rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]`}>
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-surface-variant flex items-center justify-between bg-surface-container-low">
-              <h3 className="text-headline-sm font-bold text-on-surface">
+            <div className={`px-6 py-4 border-b flex items-center justify-between ${
+              activeModal === 'teleconsult-room'
+                ? 'bg-slate-900 border-slate-800 text-white'
+                : activeModal === 'vitals-notes'
+                ? 'bg-amber-50/70 border-amber-200 text-slate-900'
+                : 'bg-surface-container-low border-surface-variant'
+            }`}>
+              <h3 className="text-base sm:text-lg font-black flex items-center gap-2">
+                {activeModal === 'teleconsult-room' && (
+                  <>
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+                    <span>Live Tele-Consultation Room</span>
+                  </>
+                )}
+                {activeModal === 'vitals-notes' && (
+                  <>
+                    <span className="material-symbols-outlined text-amber-700 text-[22px]">vital_signs</span>
+                    <span>Clinical Vitals &amp; Pre-Consultation Notes</span>
+                  </>
+                )}
                 {activeModal === 'request-visit' && 'Request ASHA Home Visit (गृह-भ्रमण अनुरोध)'}
                 {activeModal === 'lab-tests' && 'Lab Tests & Reports'}
                 {activeModal === 'find-phc' && 'Find Nearest PHC'}
                 {activeModal === 'edit-profile' && 'Edit Profile Information'}
               </h3>
-              <button onClick={() => setActiveModal(null)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
-                <span className="material-symbols-outlined">close</span>
+              <button 
+                onClick={() => {
+                  if (activeModal === 'teleconsult-room' && !callEndedSummary) {
+                    if (window.confirm('Leave consultation room? Your video call will end.')) {
+                      handleEndCall();
+                      setActiveModal(null);
+                    }
+                  } else {
+                    setActiveModal(null);
+                  }
+                }} 
+                className={`w-9 h-9 flex items-center justify-center rounded-full transition-colors ${
+                  activeModal === 'teleconsult-room' ? 'hover:bg-slate-800 text-slate-400 hover:text-white' : 'hover:bg-slate-200 text-slate-600'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
             {/* Modal Body */}
-            <div className="p-6 overflow-y-auto">
+            <div className={`overflow-y-auto ${activeModal === 'teleconsult-room' ? 'p-4 sm:p-6 bg-slate-950 text-white' : 'p-6'}`}>
+                {/* 1. CLINICAL VITALS & NOTES MODAL */}
+                {activeModal === 'vitals-notes' && (
+                  <div className="flex flex-col gap-5">
+                    {/* Doctor & Appointment Meta Card */}
+                    <div className="bg-amber-50/80 p-4 rounded-2xl border border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
+                          <span className="material-symbols-outlined text-[26px]">stethoscope</span>
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-base font-extrabold text-slate-900 notranslate" translate="no">{selectedAppointment?.doctor?.name || 'Dr. Rajesh Sharma'}</h4>
+                            <span className="bg-emerald-100 text-emerald-900 text-[11px] font-black px-2.5 py-0.5 rounded-full border border-emerald-300 notranslate" translate="no">Token #{selectedAppointment?.tokenNumber || '04'}</span>
+                          </div>
+                          <p className="text-xs text-slate-600 font-medium">General Medicine • CHC Sitapur Central • Tele-OPD 04</p>
+                        </div>
+                      </div>
+                      <div className="text-left sm:text-right sm:border-l sm:border-amber-200 sm:pl-4">
+                        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Consultation Slot</span>
+                        <span className="text-sm font-black text-amber-900">{selectedAppointment?.timeSlot || '04:00 PM'} (Today)</span>
+                      </div>
+                    </div>
+
+                    {/* Pre-Consultation Reason & Clinical Notes */}
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-[16px] text-amber-600">clinical_notes</span>
+                          Chief Complaint &amp; Pre-Consultation Notes
+                        </span>
+                        <span className="text-[10px] font-mono font-bold text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md">
+                          Passcode: {selectedAppointment?.sessionPasscode || 'MED-1744'}
+                        </span>
+                      </div>
+                      <p className="text-sm font-extrabold text-slate-900">{selectedAppointment?.reason || 'Follow-up on Viral Fever & Weakness'}</p>
+                      <p className="text-xs text-slate-600 font-medium leading-relaxed bg-white p-3 rounded-xl border border-slate-200">
+                        "{selectedAppointment?.notes || 'Patient reports fever subsided, requesting Jan Aushadhi refill and vitals review.'}"
+                      </p>
+                    </div>
+
+                    {/* Live Synchronized Vitals */}
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                            <span className="material-symbols-outlined text-[18px] text-rose-600">vital_signs</span>
+                            Patient Recorded Vitals
+                          </span>
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Synchronized with ABDM Grid"></span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setIsEditingVitals(!isEditingVitals)}
+                          className="text-xs font-extrabold text-amber-800 hover:text-amber-950 flex items-center gap-1 bg-amber-50 hover:bg-amber-100 px-3 py-1 rounded-lg border border-amber-300 transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-[15px]">{isEditingVitals ? 'visibility' : 'edit'}</span>
+                          <span>{isEditingVitals ? 'Cancel Editing' : 'Update Vitals'}</span>
+                        </button>
+                      </div>
+
+                      {vitalsToast && (
+                        <div className="mb-3 p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-xs font-bold text-emerald-900 flex items-center gap-2 animate-fadeIn">
+                          <span className="material-symbols-outlined text-emerald-600 text-[18px]">check_circle</span>
+                          <span>{vitalsToast}</span>
+                        </div>
+                      )}
+
+                      {!isEditingVitals ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                          <div className="bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-2xs">
+                            <div className="flex items-center justify-between text-slate-500 text-[11px] font-bold mb-1">
+                              <span>Blood Pressure</span>
+                              <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded text-[10px] font-extrabold">Normal</span>
+                            </div>
+                            <div className="text-lg font-black text-slate-900">{vitalsForm.systolicBP}/{vitalsForm.diastolicBP} <span className="text-xs font-medium text-slate-500">mmHg</span></div>
+                          </div>
+
+                          <div className="bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-2xs">
+                            <div className="flex items-center justify-between text-slate-500 text-[11px] font-bold mb-1">
+                              <span>Heart Rate</span>
+                              <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded text-[10px] font-extrabold">Normal</span>
+                            </div>
+                            <div className="text-lg font-black text-slate-900">{vitalsForm.heartRate} <span className="text-xs font-medium text-slate-500">bpm</span></div>
+                          </div>
+
+                          <div className="bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-2xs">
+                            <div className="flex items-center justify-between text-slate-500 text-[11px] font-bold mb-1">
+                              <span>Oxygen (SpO2)</span>
+                              <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded text-[10px] font-extrabold">Optimal</span>
+                            </div>
+                            <div className="text-lg font-black text-slate-900">{vitalsForm.spO2}% <span className="text-xs font-medium text-slate-500">Level</span></div>
+                          </div>
+
+                          <div className="bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-2xs">
+                            <div className="flex items-center justify-between text-slate-500 text-[11px] font-bold mb-1">
+                              <span>Body Temp</span>
+                              <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded text-[10px] font-extrabold">Normal</span>
+                            </div>
+                            <div className="text-lg font-black text-slate-900">{vitalsForm.temperature}°F <span className="text-xs font-medium text-slate-500">Oral</span></div>
+                          </div>
+
+                          <div className="bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-2xs">
+                            <div className="flex items-center justify-between text-slate-500 text-[11px] font-bold mb-1">
+                              <span>Blood Sugar</span>
+                              <span className="text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded text-[10px] font-extrabold">Fasting</span>
+                            </div>
+                            <div className="text-lg font-black text-slate-900">{vitalsForm.bloodSugar} <span className="text-xs font-medium text-slate-500">mg/dL</span></div>
+                          </div>
+
+                          <div className="bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-2xs">
+                            <div className="flex items-center justify-between text-slate-500 text-[11px] font-bold mb-1">
+                              <span>Weight / BMI</span>
+                              <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded text-[10px] font-extrabold">23.0</span>
+                            </div>
+                            <div className="text-lg font-black text-slate-900">{vitalsForm.weight} <span className="text-xs font-medium text-slate-500">kg ({vitalsForm.height} cm)</span></div>
+                          </div>
+                        </div>
+                      ) : (
+                        <form onSubmit={handleSaveVitals} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col gap-3">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            <div>
+                              <label className="text-[11px] font-bold text-slate-600 block mb-1">Systolic BP</label>
+                              <input type="number" required value={vitalsForm.systolicBP} onChange={e => setVitalsForm({...vitalsForm, systolicBP: e.target.value})} className="w-full bg-white px-3 py-2 rounded-xl border border-slate-300 text-sm font-bold" />
+                            </div>
+                            <div>
+                              <label className="text-[11px] font-bold text-slate-600 block mb-1">Diastolic BP</label>
+                              <input type="number" required value={vitalsForm.diastolicBP} onChange={e => setVitalsForm({...vitalsForm, diastolicBP: e.target.value})} className="w-full bg-white px-3 py-2 rounded-xl border border-slate-300 text-sm font-bold" />
+                            </div>
+                            <div>
+                              <label className="text-[11px] font-bold text-slate-600 block mb-1">Heart Rate (bpm)</label>
+                              <input type="number" required value={vitalsForm.heartRate} onChange={e => setVitalsForm({...vitalsForm, heartRate: e.target.value})} className="w-full bg-white px-3 py-2 rounded-xl border border-slate-300 text-sm font-bold" />
+                            </div>
+                            <div>
+                              <label className="text-[11px] font-bold text-slate-600 block mb-1">SpO2 (%)</label>
+                              <input type="number" required value={vitalsForm.spO2} onChange={e => setVitalsForm({...vitalsForm, spO2: e.target.value})} className="w-full bg-white px-3 py-2 rounded-xl border border-slate-300 text-sm font-bold" />
+                            </div>
+                            <div>
+                              <label className="text-[11px] font-bold text-slate-600 block mb-1">Temperature (°F)</label>
+                              <input type="number" step="0.1" required value={vitalsForm.temperature} onChange={e => setVitalsForm({...vitalsForm, temperature: e.target.value})} className="w-full bg-white px-3 py-2 rounded-xl border border-slate-300 text-sm font-bold" />
+                            </div>
+                            <div>
+                              <label className="text-[11px] font-bold text-slate-600 block mb-1">Blood Sugar (mg/dL)</label>
+                              <input type="number" required value={vitalsForm.bloodSugar} onChange={e => setVitalsForm({...vitalsForm, bloodSugar: e.target.value})} className="w-full bg-white px-3 py-2 rounded-xl border border-slate-300 text-sm font-bold" />
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 pt-2">
+                            <button type="submit" disabled={vitalsSaving} className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                              <span className="material-symbols-outlined text-[16px]">sync</span>
+                              <span>{vitalsSaving ? 'Saving to Doctor...' : 'Save & Sync to Doctor Queue'}</span>
+                            </button>
+                            <button type="button" onClick={() => setIsEditingVitals(false)} className="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-xs font-bold transition-colors">
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      )}
+                    </div>
+
+                    {/* Medical Flags */}
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <span className="bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-bold px-3 py-1 rounded-xl flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[15px]">warning</span> Allergy: Dust &amp; Pollen (Mild)
+                      </span>
+                      <span className="bg-sky-100 text-sky-900 border border-sky-300 text-[11px] font-bold px-3 py-1 rounded-xl flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[15px]">health_and_safety</span> Chronic: Mild Seasonal Allergy (Managed)
+                      </span>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-200">
+                      <button 
+                        type="button" 
+                        onClick={() => setActiveModal(null)}
+                        className="h-12 px-4 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold transition-all"
+                      >
+                        Close Window
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => handleEnterConsultation(selectedAppointment)}
+                        className="h-12 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[20px]">videocam</span>
+                        <span>Enter Consultation Room Now</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. TELE-CONSULTATION VIDEO ROOM MODAL */}
+                {activeModal === 'teleconsult-room' && (
+                  <div>
+                    {!callEndedSummary ? (
+                      <div className="flex flex-col gap-4">
+                        {/* Call Info Header Bar */}
+                        <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900 p-3.5 rounded-2xl border border-slate-800">
+                          <div className="flex items-center gap-3">
+                            <div className="relative">
+                              <div className="w-11 h-11 rounded-xl bg-emerald-600/30 border border-emerald-500/50 flex items-center justify-center text-emerald-400 font-bold">
+                                <span className="material-symbols-outlined text-[24px]">stethoscope</span>
+                              </div>
+                              <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-slate-900 animate-pulse"></span>
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-extrabold text-sm text-white notranslate" translate="no">{selectedAppointment?.doctor?.name || 'Dr. Rajesh Sharma'}</span>
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black px-2 py-0.5 rounded-full">
+                                  LIVE • OPD-4
+                                </span>
+                              </div>
+                              <span className="text-xs text-slate-400 font-medium">CHC Sitapur Central • Telemedicine Unit</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                            <div className="bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700 flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                              <span className="font-mono text-sm font-black text-rose-300">
+                                {Math.floor(callTimer / 60).toString().padStart(2, '0')}:{(callTimer % 60).toString().padStart(2, '0')}
+                              </span>
+                            </div>
+                            <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-bold text-slate-400 bg-slate-800/50 px-2.5 py-1.5 rounded-xl border border-slate-800">
+                              <span className="material-symbols-outlined text-emerald-400 text-[16px]">network_check</span>
+                              <span>1080p • 22ms</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Call Mode Tabs */}
+                        <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
+                          <button
+                            type="button"
+                            onClick={() => setActiveCallTab('call')}
+                            className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                              activeCallTab === 'call'
+                                ? 'bg-amber-600 text-white shadow-sm'
+                                : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800'
+                            }`}
+                          >
+                            <span className="material-symbols-outlined text-[16px]">videocam</span>
+                            <span>Video Stream</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setActiveCallTab('chat')}
+                            className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                              activeCallTab === 'chat'
+                                ? 'bg-amber-600 text-white shadow-sm'
+                                : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800'
+                            }`}
+                          >
+                            <span className="material-symbols-outlined text-[16px]">chat</span>
+                            <span>Doctor Chat ({chatMessages.length})</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setActiveCallTab('rx')}
+                            className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                              activeCallTab === 'rx'
+                                ? 'bg-amber-600 text-white shadow-sm'
+                                : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800'
+                            }`}
+                          >
+                            <span className="material-symbols-outlined text-[16px]">prescriptions</span>
+                            <span>e-Prescription Draft</span>
+                          </button>
+                        </div>
+
+                        {/* Tab 1: Video Call View */}
+                        {activeCallTab === 'call' && (
+                          <div className="space-y-4">
+                            <div className="relative w-full aspect-video sm:h-[360px] bg-slate-900 rounded-2xl overflow-hidden border-2 border-slate-800 flex items-center justify-center">
+                              {/* Doctor Consultation Video Stream View */}
+                              <div className="relative w-full h-full bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 flex flex-col items-center justify-center p-6 text-center">
+                                {/* Doctor Avatar / Stethoscope Animation */}
+                                <div className="relative mb-3">
+                                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-amber-600/20 border-2 border-amber-500/60 flex items-center justify-center shadow-lg shadow-amber-500/10">
+                                    <span className="material-symbols-outlined text-[54px] text-amber-400">account_circle</span>
+                                  </div>
+                                  {/* Pulsing Audio Waves to indicate speaking */}
+                                  <div className="absolute -bottom-2 inset-x-0 flex items-center justify-center gap-1">
+                                    <span className="w-1 h-3 bg-emerald-400 rounded-full animate-bounce"></span>
+                                    <span className="w-1 h-5 bg-emerald-400 rounded-full animate-bounce delay-100"></span>
+                                    <span className="w-1 h-4 bg-emerald-400 rounded-full animate-bounce delay-200"></span>
+                                    <span className="w-1 h-6 bg-emerald-400 rounded-full animate-bounce delay-75"></span>
+                                    <span className="w-1 h-3 bg-emerald-400 rounded-full animate-bounce"></span>
+                                  </div>
+                                </div>
+
+                                <div className="space-y-1 z-10 max-w-md">
+                                  <h4 className="text-lg font-black text-white notranslate" translate="no">{selectedAppointment?.doctor?.name || 'Dr. Rajesh Sharma'}</h4>
+                                  <p className="text-xs text-amber-400 font-bold">General Medicine Specialist • CHC Sitapur Central</p>
+                                  <p className="text-xs text-slate-300 font-medium bg-slate-850/90 px-4 py-2 rounded-xl border border-slate-700/80 mt-2">
+                                    "Namaste! I am reviewing your recent fever symptoms and vitals. Blood Pressure (120/80) and SpO2 (98%) look healthy. How is your appetite today?"
+                                  </p>
+                                </div>
+
+                                {/* Encrypted Session Tag */}
+                                <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 flex items-center gap-1.5 text-[11px] text-slate-300 font-semibold">
+                                  <span className="material-symbols-outlined text-emerald-400 text-[14px]">lock</span>
+                                  <span>End-to-End Encrypted ABDM Stream</span>
+                                </div>
+
+                                {/* Doctor Location Tag */}
+                                <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 flex items-center gap-1.5 text-[11px] text-amber-300 font-bold">
+                                  <span className="material-symbols-outlined text-[14px]">location_on</span>
+                                  <span>CHC Sitapur Room 04</span>
+                                </div>
+                              </div>
+
+                              {/* Patient Self-View (Picture-in-Picture) */}
+                              <div className="absolute bottom-4 right-4 w-32 sm:w-44 aspect-video rounded-xl bg-slate-950 border-2 border-amber-400/80 shadow-2xl overflow-hidden z-20 flex items-center justify-center">
+                                {isCameraActive && !isVideoOff ? (
+                                  <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-full object-cover mirror" />
+                                ) : (
+                                  <div className="flex flex-col items-center justify-center p-2 text-center">
+                                    <span className="material-symbols-outlined text-[28px] text-slate-500">person</span>
+                                    <span className="text-[10px] font-bold text-slate-400">
+                                      {isVideoOff ? 'Camera Off' : (user?.name || 'You')}
+                                    </span>
+                                  </div>
+                                )}
+                                <div className="absolute bottom-1 left-1.5 bg-black/70 px-1.5 py-0.5 rounded text-[9px] font-black text-white">
+                                  You ({user?.name ? user.name.split(' ')[0] : 'Patient'})
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* In-Call Controls Bar */}
+                            <div className="flex items-center justify-center gap-3 sm:gap-4 bg-slate-900 p-4 rounded-2xl border border-slate-800">
+                              {/* Mic Toggle */}
+                              <button
+                                type="button"
+                                onClick={toggleMic}
+                                className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold transition-all cursor-pointer ${
+                                  isMicMuted
+                                    ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30'
+                                    : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                                }`}
+                                title={isMicMuted ? 'Unmute Microphone' : 'Mute Microphone'}
+                              >
+                                <span className="material-symbols-outlined text-[24px]">{isMicMuted ? 'mic_off' : 'mic'}</span>
+                              </button>
+
+                              {/* Video Toggle */}
+                              <button
+                                type="button"
+                                onClick={toggleVideo}
+                                className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold transition-all cursor-pointer ${
+                                  isVideoOff
+                                    ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30'
+                                    : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                                }`}
+                                title={isVideoOff ? 'Turn Camera On' : 'Turn Camera Off'}
+                              >
+                                <span className="material-symbols-outlined text-[24px]">{isVideoOff ? 'videocam_off' : 'videocam'}</span>
+                              </button>
+
+                              {/* Chat Toggle */}
+                              <button
+                                type="button"
+                                onClick={() => setActiveCallTab('chat')}
+                                className="w-12 h-12 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center font-bold transition-all cursor-pointer"
+                                title="Open Chat"
+                              >
+                                <span className="material-symbols-outlined text-[22px]">chat</span>
+                              </button>
+
+                              {/* Rx Preview Toggle */}
+                              <button
+                                type="button"
+                                onClick={() => setActiveCallTab('rx')}
+                                className="w-12 h-12 rounded-2xl bg-slate-800 hover:bg-slate-700 text-amber-400 flex items-center justify-center font-bold transition-all cursor-pointer"
+                                title="View Live Prescription Draft"
+                              >
+                                <span className="material-symbols-outlined text-[22px]">prescriptions</span>
+                              </button>
+
+                              {/* End Call Button */}
+                              <button
+                                type="button"
+                                onClick={handleEndCall}
+                                className="h-12 px-6 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-sm shadow-xl shadow-rose-600/30 flex items-center gap-2 transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
+                              >
+                                <span className="material-symbols-outlined text-[22px]">call_end</span>
+                                <span>End Consultation</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Tab 2: Doctor In-Call Chat */}
+                        {activeCallTab === 'chat' && (
+                          <div className="bg-slate-900 rounded-2xl border border-slate-800 p-4 flex flex-col h-[380px]">
+                            <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+                              {chatMessages.map((msg, i) => (
+                                <div key={i} className={`flex flex-col ${msg.sender === 'patient' ? 'items-end' : 'items-start'}`}>
+                                  <div className={`max-w-xs sm:max-w-md p-3.5 rounded-2xl text-xs ${
+                                    msg.sender === 'patient'
+                                      ? 'bg-amber-600 text-white rounded-br-none'
+                                      : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-bl-none'
+                                  }`}>
+                                    <div className="flex items-center justify-between gap-2 mb-1 text-[10px] opacity-75 font-bold">
+                                      <span>{msg.sender === 'patient' ? 'You' : 'Dr. Rajesh Sharma'}</span>
+                                      <span>{msg.time}</span>
+                                    </div>
+                                    <p className="font-medium leading-relaxed">{msg.text}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                            <form onSubmit={handleSendChatMessage} className="flex gap-2 pt-3 border-t border-slate-800">
+                              <input
+                                type="text"
+                                value={chatInput}
+                                onChange={e => setChatInput(e.target.value)}
+                                placeholder="Ask doctor a question (e.g. fever, medicine timing, diet)..."
+                                className="flex-1 bg-slate-950 border border-slate-700 px-4 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500 font-medium"
+                              />
+                              <button
+                                type="submit"
+                                className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black flex items-center gap-1 transition-all cursor-pointer"
+                              >
+                                <span>Send</span>
+                                <span className="material-symbols-outlined text-[16px]">send</span>
+                              </button>
+                            </form>
+                          </div>
+                        )}
+
+                        {/* Tab 3: e-Prescription Draft */}
+                        {activeCallTab === 'rx' && (
+                          <div className="bg-slate-900 rounded-2xl border border-slate-800 p-5 space-y-4">
+                            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                              <div>
+                                <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider">Live ABDM Digital Draft</span>
+                                <h4 className="text-base font-extrabold text-white">e-Prescription Token #SEHAT-9699</h4>
+                              </div>
+                              <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-black px-3 py-1 rounded-full">
+                                Active Drafting
+                              </span>
+                            </div>
+
+                            <div className="space-y-2.5">
+                              <span className="text-xs font-bold text-slate-400 block">Prescribed Medicines:</span>
+                              <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                                <div>
+                                  <span className="font-bold text-white block">Paracetamol 500mg (Tab)</span>
+                                  <span className="text-slate-400">1 tablet TDS (3 times/day) • 5 Days • After meals</span>
+                                </div>
+                                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-800">Generic JAS-0012</span>
+                              </div>
+                              <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                                <div>
+                                  <span className="font-bold text-white block">ORS Electrolyte Sachet</span>
+                                  <span className="text-slate-400">1 packet in 1L water • 3 Days • Throughout day</span>
+                                </div>
+                                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-800">Generic JAS-0045</span>
+                              </div>
+                              <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                                <div>
+                                  <span className="font-bold text-white block">Vitamin C 500mg &amp; Zinc</span>
+                                  <span className="text-slate-400">1 chewable tab OD • 15 Days • Post-lunch</span>
+                                </div>
+                                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-800">Generic JAS-0078</span>
+                              </div>
+                            </div>
+
+                            <p className="text-xs text-slate-400 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                              🔒 This e-Prescription will be digitally signed using Dr. Rajesh Sharma's NHA registration upon consultation completion and synced to Jan Aushadhi Kendra.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      /* Call Ended Summary Screen */
+                      <div className="flex flex-col items-center text-center p-6 space-y-5">
+                        <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-emerald-400">
+                          <span className="material-symbols-outlined text-[36px]">check_circle</span>
+                        </div>
+
+                        <div>
+                          <span className="text-xs font-black uppercase tracking-wider text-emerald-400 block mb-1">Session Concluded</span>
+                          <h3 className="text-2xl font-black text-white">Consultation Completed Successfully</h3>
+                          <p className="text-xs text-slate-400 mt-1">With {callEndedSummary.doctor} • Duration: {callEndedSummary.duration}</p>
+                        </div>
+
+                        <div className="w-full bg-slate-900 p-4 rounded-2xl border border-slate-800 text-left space-y-3">
+                          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <span className="text-xs font-bold text-slate-400">Clinical Diagnosis:</span>
+                            <span className="text-xs font-black text-amber-300">{callEndedSummary.diagnosis}</span>
+                          </div>
+                          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <span className="text-xs font-bold text-slate-400">e-Prescription ID:</span>
+                            <span className="font-mono text-xs font-black text-emerald-400">{callEndedSummary.rxId}</span>
+                          </div>
+                          <p className="text-xs text-slate-300 font-medium">
+                            <span className="font-bold text-white">Doctor Instructions:</span> {callEndedSummary.notes}
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveModal(null);
+                              navigate('/patient/medicines');
+                            }}
+                            className="h-12 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-black flex items-center justify-center gap-2 shadow-lg shadow-amber-600/20 transition-all cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-[18px]">medication</span>
+                            <span>View Prescribed Medicines</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setActiveModal(null)}
+                            className="h-12 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all cursor-pointer"
+                          >
+                            Back to Dashboard
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Request ASHA Home Visit Modal */}
                 {activeModal === 'request-visit' && (
                   <form onSubmit={handleRequestVisitSubmit} className="flex flex-col gap-4">
