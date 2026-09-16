@@ -711,9 +711,10 @@ export default function ImmunizationMaternal() {
               </h3>
               <button 
                 onClick={() => setActiveModal(null)} 
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-amber-100 text-slate-600 transition-colors cursor-pointer"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 active:bg-slate-200 text-slate-900 shadow-sm border border-slate-200 transition-all cursor-pointer"
+                title="Close"
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
               </button>
             </div>
 

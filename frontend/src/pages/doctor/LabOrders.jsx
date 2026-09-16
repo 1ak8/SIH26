@@ -496,9 +496,10 @@ export default function LabOrders() {
               </div>
               <button 
                 onClick={() => setActiveModal(null)}
-                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+                className="w-9 h-9 rounded-full bg-white hover:bg-slate-100 active:bg-slate-200 text-slate-900 shadow-sm border border-slate-200 flex items-center justify-center transition-all cursor-pointer"
+                title="Close"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
               </button>
             </div>
 
@@ -720,9 +721,10 @@ export default function LabOrders() {
                   <button
                     type="button"
                     onClick={() => setActiveModal(null)}
-                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+                    className="w-9 h-9 rounded-full bg-white hover:bg-slate-100 active:bg-slate-200 text-slate-900 shadow-sm border border-slate-200 flex items-center justify-center transition-all cursor-pointer"
+                    title="Close"
                   >
-                    <span className="material-symbols-outlined text-[18px]">close</span>
+                    <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
                   </button>
                 </div>
               </div>
