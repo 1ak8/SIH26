@@ -5,6 +5,77 @@ import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 import LanguageSelector from '../../components/LanguageSelector';
 
+const ASHA_WORKFORCE = [
+  { id: 'ASHA-01', name: 'ASHA Sunita Devi', phone: '9876543230', ward: 'Sitapur Ward 4', households: 245, status: 'Active on Duty' },
+  { id: 'ASHA-02', name: 'ASHA Geeta Yadav', phone: '9876543231', ward: 'Rampur Ward 1', households: 210, status: 'Active on Duty' },
+  { id: 'ASHA-03', name: 'ASHA Manju Devi', phone: '9876543232', ward: 'Rampur Ward 2', households: 230, status: 'Active on Duty' },
+  { id: 'ASHA-04', name: 'ASHA Pushpa Sharma', phone: '9876543233', ward: 'Rampur Ward 3', households: 195, status: 'Active on Duty' },
+  { id: 'ASHA-05', name: 'ASHA Kamlesh Kumari', phone: '9876543234', ward: 'Sitapur Ward 2', households: 260, status: 'Field Survey' },
+];
+
+const INITIAL_TASKS = [
+  {
+    _id: 'task-101',
+    taskId: 'TASK-101',
+    ashaWorker: { name: 'ASHA Sunita Devi', phone: '9876543230', ward: 'Sitapur Ward 4' },
+    patientName: 'Kamla Devi',
+    patientPhone: '9876543251',
+    patientAddress: 'Rampur Ward 2, Near Primary School',
+    taskType: 'Antenatal Checkup (ANC)',
+    priority: 'high',
+    scheduledDate: 'Today',
+    scheduledTime: '10:00 AM',
+    instructions: 'Deliver 30 IFA tablets. Check blood pressure for pre-eclampsia symptoms and verify fetal movement.',
+    status: 'in_progress',
+    outcomeNotes: '',
+  },
+  {
+    _id: 'task-102',
+    taskId: 'TASK-102',
+    ashaWorker: { name: 'ASHA Geeta Yadav', phone: '9876543231', ward: 'Rampur Ward 1' },
+    patientName: 'Rameshwar Singh',
+    patientPhone: '9876543214',
+    patientAddress: 'Rampur Ward 1, House 42',
+    taskType: 'Chronic NCD Follow-up',
+    priority: 'high',
+    scheduledDate: 'Today',
+    scheduledTime: '02:00 PM',
+    instructions: 'Take fasting blood sugar reading with portable glucometer. Hand over Metformin Jan Aushadhi refill.',
+    status: 'pending',
+    outcomeNotes: '',
+  },
+  {
+    _id: 'task-103',
+    taskId: 'TASK-103',
+    ashaWorker: { name: 'ASHA Sunita Devi', phone: '9876543230', ward: 'Sitapur Ward 4' },
+    patientName: 'Aarav Kumar (Infant)',
+    patientPhone: '9876543215',
+    patientAddress: 'Rampur Ward 3, Kiosk Road',
+    taskType: 'Infant Immunization Reminders',
+    priority: 'routine',
+    scheduledDate: 'Tomorrow',
+    scheduledTime: '11:00 AM',
+    instructions: 'Mobilize mother Sunita Kumar for MR-1 & Vitamin A vaccination dose at Anganwadi Booth 3.',
+    status: 'pending',
+    outcomeNotes: '',
+  },
+  {
+    _id: 'task-104',
+    taskId: 'TASK-104',
+    ashaWorker: { name: 'ASHA Manju Devi', phone: '9876543232', ward: 'Rampur Ward 2' },
+    patientName: 'Chhedi Lal',
+    patientPhone: '9876543217',
+    patientAddress: 'Sitapur Ward 4',
+    taskType: 'Home Visit & Vitals',
+    priority: 'routine',
+    scheduledDate: 'Yesterday',
+    scheduledTime: '04:00 PM',
+    instructions: 'Weekly hypertension surveillance. Check adherence to Telmisartan medication.',
+    status: 'completed',
+    outcomeNotes: 'BP recorded 140/86 mmHg. Patient taking medication regularly without complaints.',
+  }
+];
+
 const INITIAL_VILLAGE_PATIENTS = [
   { 
     _id: '6aa974847fbaf7f52bfb3707',
@@ -16,7 +87,6 @@ const INITIAL_VILLAGE_PATIENTS = [
     risk: 'High Risk', 
     riskColor: true, 
     type: 'Trimester 3 Checkup (तीसरी तिमाही)', 
-    time: '09:30 AM', 
     phone: '9876543251', 
     village: 'Rampur Ward 2', 
     abha: '91-4820-1940-2810',
@@ -26,7 +96,8 @@ const INITIAL_VILLAGE_PATIENTS = [
     emergencyContact: 'Husband: Mahendra (+91 9876543220)',
     lastVitals: 'BP 138/88 mmHg • Pulse 82 • SpO2 98%',
     vitals: { systolicBP: 138, diastolicBP: 88, heartRate: 82, spO2: 98, temperature: 98.6, bloodSugar: 108 },
-    referredDoctor: 'Dr. Priya Verma (SDH Sitapur)'
+    referredDoctor: 'Dr. Priya Verma (SDH Sitapur)',
+    assignedAsha: 'ASHA Sunita Devi',
   },
   { 
     _id: '6aa974857fbaf7f52bfb370c',
@@ -38,7 +109,6 @@ const INITIAL_VILLAGE_PATIENTS = [
     risk: 'High Risk', 
     riskColor: true, 
     type: 'Diabetes & BP Follow-up', 
-    time: '10:15 AM', 
     phone: '9876543214', 
     village: 'Rampur Ward 1', 
     abha: '91-2311-9041-5512',
@@ -48,7 +118,8 @@ const INITIAL_VILLAGE_PATIENTS = [
     emergencyContact: 'Son: Sunil Singh (+91 9876543221)',
     lastVitals: 'BP 146/92 mmHg • Pulse 74 • Sugar 164 mg/dL',
     vitals: { systolicBP: 146, diastolicBP: 92, heartRate: 74, spO2: 97, temperature: 98.4, bloodSugar: 164 },
-    referredDoctor: 'Dr. Rajesh Sharma (CHC Sitapur)'
+    referredDoctor: 'Dr. Rajesh Sharma (CHC Sitapur)',
+    assignedAsha: 'ASHA Geeta Yadav',
   },
   { 
     _id: '6aa974857fbaf7f52bfb3712',
@@ -60,7 +131,6 @@ const INITIAL_VILLAGE_PATIENTS = [
     risk: 'Routine', 
     riskColor: false, 
     type: 'Immunization MR-1 (टीकाकरण)', 
-    time: '11:30 AM', 
     phone: '9876543215', 
     village: 'Rampur Ward 3', 
     abha: '91-8832-1002-3921',
@@ -70,7 +140,8 @@ const INITIAL_VILLAGE_PATIENTS = [
     emergencyContact: 'Mother: Sunita Kumar (+91 9876543222)',
     lastVitals: 'Weight: 8.4 kg • Temp: 98.4°F • SpO2: 99%',
     vitals: { systolicBP: 90, diastolicBP: 60, heartRate: 110, spO2: 99, temperature: 98.4, bloodSugar: 85 },
-    referredDoctor: 'Dr. Ananya Gupta (District Hospital)'
+    referredDoctor: 'Dr. Ananya Gupta (District Hospital)',
+    assignedAsha: 'ASHA Pushpa Sharma',
   },
   { 
     _id: '6aa974867fbaf7f52bfb3716',
@@ -82,7 +153,6 @@ const INITIAL_VILLAGE_PATIENTS = [
     risk: 'Normal', 
     riskColor: false, 
     type: 'Post-natal Care (प्रसवोत्तर देखभाल)', 
-    time: '01:00 PM', 
     phone: '9876543216', 
     village: 'Sitapur Ward 4', 
     abha: '91-3490-1122-8761',
@@ -92,7 +162,8 @@ const INITIAL_VILLAGE_PATIENTS = [
     emergencyContact: 'Mother-in-law: Sita Devi (+91 9876543223)',
     lastVitals: 'BP 118/76 mmHg • Pulse 72 • Temp: 98.6°F',
     vitals: { systolicBP: 118, diastolicBP: 76, heartRate: 72, spO2: 98, temperature: 98.6, bloodSugar: 94 },
-    referredDoctor: 'Dr. Priya Verma (Maternal Health)'
+    referredDoctor: 'Dr. Priya Verma (Maternal Health)',
+    assignedAsha: 'ASHA Sunita Devi',
   },
   { 
     _id: '6aa974877fbaf7f52bfb371a',
@@ -104,7 +175,6 @@ const INITIAL_VILLAGE_PATIENTS = [
     risk: 'Scheduled', 
     riskColor: false, 
     type: 'Hypertension Review (उच्च रक्तचाप)', 
-    time: '02:15 PM', 
     phone: '9876543217', 
     village: 'Sitapur Ward 4', 
     abha: '91-9981-2244-1298',
@@ -114,7 +184,8 @@ const INITIAL_VILLAGE_PATIENTS = [
     emergencyContact: 'Nephew: Anil Lal (+91 9876543224)',
     lastVitals: 'BP 142/86 mmHg • Pulse 68 • SpO2: 96%',
     vitals: { systolicBP: 142, diastolicBP: 86, heartRate: 68, spO2: 96, temperature: 98.2, bloodSugar: 112 },
-    referredDoctor: 'Dr. Rajesh Sharma (CHC Sitapur)'
+    referredDoctor: 'Dr. Rajesh Sharma (CHC Sitapur)',
+    assignedAsha: 'ASHA Sunita Devi',
   },
   {
     _id: '6aa974837fbaf7f52bfb36fc',
@@ -126,7 +197,6 @@ const INITIAL_VILLAGE_PATIENTS = [
     risk: 'Routine',
     riskColor: false,
     type: 'General Health & Vitals Review',
-    time: '03:30 PM',
     phone: '9876543252',
     village: 'Sitapur Ward 4 Kiosk',
     abha: '91-8472-1029-4820',
@@ -136,7 +206,8 @@ const INITIAL_VILLAGE_PATIENTS = [
     emergencyContact: 'Father: R.K. Verma (+91 9876543290)',
     lastVitals: 'BP 122/80 mmHg • Pulse 74 • SpO2: 99%',
     vitals: { systolicBP: 122, diastolicBP: 80, heartRate: 74, spO2: 99, temperature: 98.4, bloodSugar: 98 },
-    referredDoctor: 'Dr. Rajesh Sharma (CHC Sitapur Central)'
+    referredDoctor: 'Dr. Rajesh Sharma (CHC Sitapur Central)',
+    assignedAsha: 'ASHA Sunita Devi',
   }
 ];
 
@@ -152,6 +223,7 @@ const INITIAL_VACCINES = [
     status: 'due',
     doseNumber: 'Dose 1 of 2',
     facility: 'Anganwadi Centre 3',
+    assignedAsha: 'ASHA Pushpa Sharma',
     batchNo: '',
   },
   {
@@ -165,6 +237,7 @@ const INITIAL_VACCINES = [
     status: 'scheduled',
     doseNumber: 'Booster Dose',
     facility: 'Rampur Sub-Centre Kiosk',
+    assignedAsha: 'ASHA Geeta Yadav',
     batchNo: '',
   },
   {
@@ -178,6 +251,7 @@ const INITIAL_VACCINES = [
     status: 'scheduled',
     doseNumber: 'Antenatal Dose 2',
     facility: 'CHC Sitapur Central',
+    assignedAsha: 'ASHA Manju Devi',
     batchNo: '',
   },
   {
@@ -191,6 +265,7 @@ const INITIAL_VACCINES = [
     status: 'due',
     doseNumber: 'Final Booster',
     facility: 'Primary School Booth 4',
+    assignedAsha: 'ASHA Sunita Devi',
     batchNo: '',
   },
   {
@@ -204,6 +279,7 @@ const INITIAL_VACCINES = [
     status: 'completed',
     doseNumber: 'Primary Series 3',
     facility: 'Sitapur Sub-Centre Kiosk',
+    assignedAsha: 'ASHA Sunita Devi',
     batchNo: 'SII-PNT-9942',
     completedDate: '10 Sep 2026',
   },
@@ -211,22 +287,79 @@ const INITIAL_VACCINES = [
 
 export default function HealthWorkerDashboard() {
   const { user, logout } = useAuth();
-  const { t, i18n } = useTranslation();
-  const [data, setData] = useState(null);
-  const [activeTab, setActiveTab] = useState('visits'); // 'visits', 'registry', 'immunization', 'requests'
-  const [activeModal, setActiveModal] = useState(null); // 'vitals', 'dossier', 'register-citizen', 'log-vaccine', 'schedule-chart'
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState('tasks'); // 'tasks', 'vitals-triage', 'registry', 'immunization', 'requests'
+  const [activeModal, setActiveModal] = useState(null); // 'assign-task', 'vitals', 'dossier', 'register-citizen', 'log-vaccine', 'schedule-chart', 'update-task'
+  
+  // Data States with permanent LocalStorage persistence on top of MongoDB Atlas
+  const [tasks, setTasks] = useState(() => {
+    try {
+      const local = JSON.parse(localStorage.getItem('sehatsaarthi_asha_tasks'));
+      if (local && local.length > 0) return local;
+    } catch(e) {}
+    return INITIAL_TASKS;
+  });
+
+  const [patients, setPatients] = useState(() => {
+    try {
+      const local = JSON.parse(localStorage.getItem('sehatsaarthi_village_patients'));
+      if (local && local.length > 0) return local;
+    } catch(e) {}
+    return INITIAL_VILLAGE_PATIENTS;
+  });
+
+  const [vaccines, setVaccines] = useState(() => {
+    try {
+      const local = JSON.parse(localStorage.getItem('sehatsaarthi_village_vaccines'));
+      if (local && local.length > 0) return local;
+    } catch(e) {}
+    return INITIAL_VACCINES;
+  });
+  const [citizenRequests, setCitizenRequests] = useState([]);
+
+  // Selected entities for modals
+  const [selectedTask, setSelectedTask] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [expandedPatientId, setExpandedPatientId] = useState(null);
-  const [patients, setPatients] = useState(INITIAL_VILLAGE_PATIENTS);
-  const [vaccines, setVaccines] = useState(INITIAL_VACCINES);
   const [selectedVaccine, setSelectedVaccine] = useState(null);
 
-  // Search & Filters
+  // Filters & Searches
+  const [taskFilter, setTaskFilter] = useState('ALL');
   const [registrySearch, setRegistrySearch] = useState('');
   const [wardFilter, setWardFilter] = useState('ALL');
   const [vaccineFilter, setVaccineFilter] = useState('ALL');
 
-  // Vitals Form State
+  // Registry Sub-Tabs: 'citizens' or 'asha'
+  const [registrySubTab, setRegistrySubTab] = useState('citizens');
+  const [ashaList, setAshaList] = useState(() => {
+    try {
+      const local = JSON.parse(localStorage.getItem('sehatsaarthi_asha_roster'));
+      if (local && local.length > 0) return local;
+    } catch(e) {}
+    return ASHA_WORKFORCE;
+  });
+
+  const [newAshaForm, setNewAshaForm] = useState({
+    name: '',
+    phone: '',
+    ward: 'Sitapur Ward 4',
+    households: 220,
+    status: 'Active on Duty',
+  });
+
+  // Form: Assign New Task to ASHA
+  const [taskForm, setTaskForm] = useState({
+    ashaName: 'ASHA Sunita Devi',
+    patientName: 'Kamla Devi',
+    patientAddress: 'Rampur Ward 2',
+    patientPhone: '9876543251',
+    taskType: 'Antenatal Checkup (ANC)',
+    priority: 'high',
+    scheduledDate: 'Today',
+    scheduledTime: '10:00 AM',
+    instructions: 'Check blood pressure, verify fetal movements, deliver IFA supplements.',
+  });
+
+  // Form: Vitals Entry
   const [vitalsForm, setVitalsForm] = useState({
     bp: '120/80',
     pulse: '72',
@@ -237,7 +370,7 @@ export default function HealthWorkerDashboard() {
     urgent: false,
   });
 
-  // Register Citizen Form State
+  // Form: Register New Citizen
   const [newCitizen, setNewCitizen] = useState({
     name: '',
     age: '',
@@ -247,19 +380,17 @@ export default function HealthWorkerDashboard() {
     condition: 'Routine Health Check',
     allergies: 'None reported',
     risk: 'Routine',
+    assignedAsha: 'ASHA Sunita Devi',
   });
 
-  // Log Vaccine Form State
+  // Form: Log Vaccine
   const [vaccineLogForm, setVaccineLogForm] = useState({
     batchNo: 'SII-COV-8291',
     facility: 'Anganwadi Centre 3 (Sitapur)',
-    notes: 'Vaccine vial monitor verified, zero adverse reaction noted.',
+    notes: 'Vaccine vial monitor verified (Stage 1), zero adverse reaction noted.',
   });
 
-  const [syncStatus, setSyncStatus] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
-  const [citizenRequests, setCitizenRequests] = useState([]);
-  const [updatingRequestId, setUpdatingRequestId] = useState(null);
   const [submittingVitals, setSubmittingVitals] = useState(false);
 
   const showToast = (msg) => {
@@ -267,6 +398,7 @@ export default function HealthWorkerDashboard() {
     setTimeout(() => setToastMessage(null), 4000);
   };
 
+  // Background data fetching & automatic sync
   const fetchCitizenRequests = () => {
     api.get('/health-worker/visit-requests')
       .then(r => {
@@ -287,7 +419,6 @@ export default function HealthWorkerDashboard() {
     api.get('/health-worker/patients')
       .then(r => {
         if (r.data?.data && r.data.data.length > 0) {
-          // Merge with initial rich structure
           const backendPatients = r.data.data;
           const merged = INITIAL_VILLAGE_PATIENTS.map(ip => {
             const found = backendPatients.find(bp => bp._id === ip._id || bp.name.toLowerCase() === ip.name.toLowerCase());
@@ -305,20 +436,34 @@ export default function HealthWorkerDashboard() {
         }
       })
       .catch(err => {
-        console.warn('Using local village patients dossier:', err);
+        console.warn('Local patients fallback:', err);
+      });
+  };
+
+  const fetchTasks = () => {
+    api.get('/health-worker/tasks')
+      .then(r => {
+        if (r.data?.data && r.data.data.length > 0) {
+          setTasks(r.data.data);
+          try { localStorage.setItem('sehatsaarthi_asha_tasks', JSON.stringify(r.data.data)); } catch(e) {}
+        }
+      })
+      .catch(() => {
+        try {
+          const local = JSON.parse(localStorage.getItem('sehatsaarthi_asha_tasks') || '[]');
+          if (local.length > 0) setTasks(local);
+        } catch(e) {}
       });
   };
 
   useEffect(() => {
-    api.get('/health-worker/dashboard')
-      .then(r => setData(r.data?.data))
-      .catch(() => {});
     fetchCitizenRequests();
     fetchAssignedPatients();
-    // Continuous background automatic sync of ABDM village health records
+    fetchTasks();
     const interval = setInterval(() => {
       fetchCitizenRequests();
       fetchAssignedPatients();
+      fetchTasks();
       try {
         localStorage.setItem('sehatsaarthi_last_abdm_sync', new Date().toISOString());
       } catch(e) {}
@@ -326,16 +471,71 @@ export default function HealthWorkerDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Update Visit Request Status
+  // 1. Assign New Task to ASHA Worker
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    const ashaObj = ASHA_WORKFORCE.find(a => a.name === taskForm.ashaName) || { name: taskForm.ashaName, phone: '9876543230', ward: taskForm.patientAddress };
+    const newTask = {
+      _id: `task-${Date.now()}`,
+      taskId: `TASK-${Math.floor(100 + Math.random() * 900)}`,
+      ashaWorker: ashaObj,
+      patientName: taskForm.patientName,
+      patientPhone: taskForm.patientPhone,
+      patientAddress: taskForm.patientAddress,
+      taskType: taskForm.taskType,
+      priority: taskForm.priority,
+      scheduledDate: taskForm.scheduledDate,
+      scheduledTime: taskForm.scheduledTime,
+      instructions: taskForm.instructions,
+      status: 'pending',
+    };
+
+    let updatedTasks = [newTask, ...tasks];
+    try {
+      const res = await api.post('/health-worker/tasks', newTask);
+      if (res.data?.success) {
+        updatedTasks = [res.data.data, ...tasks];
+      }
+    } catch {}
+
+    setTasks(updatedTasks);
+    try { localStorage.setItem('sehatsaarthi_asha_tasks', JSON.stringify(updatedTasks)); } catch(e) {}
+    showToast(`Task ${newTask.taskId} assigned to ${taskForm.ashaName}! SMS alert dispatched.`);
+    setActiveModal(null);
+  };
+
+  // 2. Update Task Status
+  const handleUpdateTaskStatus = async (taskId, newStatus, outcomeNotes) => {
+    try {
+      await api.patch(`/health-worker/tasks/${taskId}/status`, { status: newStatus, outcomeNotes });
+    } catch {}
+
+    const updated = tasks.map(t => {
+      if (t._id === taskId || t.taskId === taskId) {
+        return {
+          ...t,
+          status: newStatus,
+          outcomeNotes: outcomeNotes || t.outcomeNotes || (newStatus === 'completed' ? 'Field task verified by Health Worker.' : ''),
+        };
+      }
+      return t;
+    });
+    setTasks(updated);
+    try { localStorage.setItem('sehatsaarthi_asha_tasks', JSON.stringify(updated)); } catch(e) {}
+
+    showToast(`Task status updated to "${newStatus.replace('_', ' ')}"!`);
+    setActiveModal(null);
+  };
+
+  // 3. Update Citizen Visit Request Status
   const handleUpdateVisitStatus = async (id, newStatus, customNotes) => {
-    setUpdatingRequestId(id);
     try {
       const nowStr = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
       const scheduledTime = newStatus === 'scheduled' ? `Today, ${nowStr}` : undefined;
       const actionNotes = customNotes || (
-        newStatus === 'scheduled' ? 'Sunita Devi confirmed visit slot' :
-        newStatus === 'in_progress' ? 'Sunita Devi is en-route to household' :
-        newStatus === 'completed' ? 'Home visit & initial health check completed' :
+        newStatus === 'scheduled' ? 'Health Worker assigned visit to ASHA Sunita Devi' :
+        newStatus === 'in_progress' ? 'ASHA field worker en-route to household' :
+        newStatus === 'completed' ? 'Home visit & health check completed' :
         newStatus === 'cancelled' ? 'Visit cancelled/rescheduled' : ''
       );
 
@@ -356,7 +556,7 @@ export default function HealthWorkerDashboard() {
             ...item,
             status: newStatus,
             scheduledTime: newStatus === 'scheduled' ? 'Today, 11:30 AM' : item.scheduledTime,
-            actionNotes: customNotes || (newStatus === 'scheduled' ? 'Visit scheduled by Sunita Devi' : newStatus === 'completed' ? 'Visit completed' : 'Updated')
+            actionNotes: customNotes || (newStatus === 'scheduled' ? 'Assigned to ASHA' : 'Updated')
           };
         }
         return item;
@@ -364,12 +564,34 @@ export default function HealthWorkerDashboard() {
       setCitizenRequests(updated);
       try { localStorage.setItem('sehatsaarthi_visit_requests', JSON.stringify(updated)); } catch(e) {}
       showToast(`Status updated to "${newStatus.replace('_', ' ')}"`);
-    } finally {
-      setUpdatingRequestId(null);
     }
   };
 
-  // Record Vitals & Triage
+  // 3b. Onboard / Register New ASHA Worker
+  const handleRegisterAsha = (e) => {
+    e.preventDefault();
+    if (!newAshaForm.name) {
+      showToast('Please enter ASHA worker name');
+      return;
+    }
+    const cleanName = newAshaForm.name.startsWith('ASHA ') ? newAshaForm.name : `ASHA ${newAshaForm.name}`;
+    const newWorker = {
+      id: `ASHA-0${ashaList.length + 1}`,
+      name: cleanName,
+      phone: newAshaForm.phone || '9876543235',
+      ward: newAshaForm.ward || 'Sitapur Ward 4',
+      households: Number(newAshaForm.households) || 220,
+      status: newAshaForm.status || 'Active on Duty',
+    };
+    const updated = [...ashaList, newWorker];
+    setAshaList(updated);
+    try { localStorage.setItem('sehatsaarthi_asha_roster', JSON.stringify(updated)); } catch(e) {}
+    showToast(`${newWorker.name} successfully onboarded to ASHA workforce roster!`);
+    setActiveModal(null);
+    setNewAshaForm({ name: '', phone: '', ward: 'Sitapur Ward 4', households: 220, status: 'Active on Duty' });
+  };
+
+  // 4. Record Vitals & Triage
   const handleSaveVitals = async (e) => {
     e.preventDefault();
     setSubmittingVitals(true);
@@ -389,15 +611,14 @@ export default function HealthWorkerDashboard() {
           bloodSugar: Number(vitalsForm.sugar) || 100,
         },
         symptoms: ['routine_checkup'],
-        notes: vitalsForm.notes || 'Village household visit completed by ASHA worker.',
+        notes: vitalsForm.notes || 'Routine vitals updated by Community Health Worker (ANM/CHO).',
       };
 
       await api.post('/health-worker/triage', payload);
 
-      // Update patient's in-memory last vitals
       const vitalsSummary = `BP ${payload.vitals.systolicBP}/${payload.vitals.diastolicBP} mmHg • Pulse ${payload.vitals.heartRate} • SpO2 ${payload.vitals.spO2}%`;
-      setPatients(prev => prev.map(p => {
-        if (p._id === targetPatientId || p.id === selectedPatient?.id) {
+      const updated = patients.map(p => {
+        if (p._id === targetPatientId || p.id === selectedPatient?.id || p.name === selectedPatient?.name) {
           return {
             ...p,
             lastVitals: vitalsSummary,
@@ -407,29 +628,31 @@ export default function HealthWorkerDashboard() {
           };
         }
         return p;
-      }));
+      });
+      setPatients(updated);
+      try { localStorage.setItem('sehatsaarthi_village_patients', JSON.stringify(updated)); } catch(e) {}
 
-      showToast(`Vitals for ${selectedPatient?.name} successfully recorded & synced to ABDM Health Grid!`);
+      showToast(`Vitals for ${selectedPatient?.name} recorded & synced to ABDM Health Grid!`);
       setActiveModal(null);
-    } catch (err) {
-      console.warn(err);
-      // Still update local UI
+    } catch {
       const vitalsSummary = `BP ${vitalsForm.bp} mmHg • Pulse ${vitalsForm.pulse} • SpO2 ${vitalsForm.spo2}%`;
-      setPatients(prev => prev.map(p => {
+      const updated = patients.map(p => {
         if (p.name === selectedPatient?.name) {
           return { ...p, lastVitals: vitalsSummary };
         }
         return p;
-      }));
-      showToast(`Vitals for ${selectedPatient?.name} saved locally & queued for ABDM sync!`);
+      });
+      setPatients(updated);
+      try { localStorage.setItem('sehatsaarthi_village_patients', JSON.stringify(updated)); } catch(e) {}
+      showToast(`Vitals for ${selectedPatient?.name} saved locally!`);
       setActiveModal(null);
     } finally {
       setSubmittingVitals(false);
     }
   };
 
-  // Register New Citizen Handler
-  const handleRegisterCitizen = (e) => {
+  // 5. Register New Citizen
+  const handleRegisterCitizen = async (e) => {
     e.preventDefault();
     if (!newCitizen.name) {
       showToast('Please enter citizen name');
@@ -437,8 +660,16 @@ export default function HealthWorkerDashboard() {
     }
 
     const randomAbha = `91-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`;
+    let serverId = `local-${Date.now()}`;
+    try {
+      const res = await api.post('/health-worker/register-citizen', newCitizen);
+      if (res.data?.data?._id) serverId = res.data.data._id;
+    } catch(err) {
+      console.warn('Citizen saved locally:', err);
+    }
+
     const newEntry = {
-      _id: `local-${Date.now()}`,
+      _id: serverId,
       id: patients.length + 1,
       name: newCitizen.name,
       age: `${newCitizen.age || '30'} yrs`,
@@ -446,8 +677,7 @@ export default function HealthWorkerDashboard() {
       icon: newCitizen.gender === 'Female' ? 'person_4' : 'person',
       risk: newCitizen.risk,
       riskColor: newCitizen.risk === 'High Risk',
-      type: 'New Household Registration (नवीन पंजीकरण)',
-      time: '04:00 PM',
+      type: 'New Household Registration (नवीन पंजीयन)',
       phone: newCitizen.phone || '9876543299',
       village: newCitizen.village,
       abha: randomAbha,
@@ -458,10 +688,14 @@ export default function HealthWorkerDashboard() {
       lastVitals: 'Pending first vitals check',
       vitals: { systolicBP: 120, diastolicBP: 80, heartRate: 72, spO2: 98, temperature: 98.6 },
       referredDoctor: 'Dr. Rajesh Sharma (CHC Sitapur Central)',
+      assignedAsha: newCitizen.assignedAsha,
     };
 
-    setPatients([newEntry, ...patients]);
-    showToast(`Citizen "${newCitizen.name}" registered with ABHA: ${randomAbha}!`);
+    const updated = [newEntry, ...patients];
+    setPatients(updated);
+    try { localStorage.setItem('sehatsaarthi_village_patients', JSON.stringify(updated)); } catch(e) {}
+
+    showToast(`Citizen "${newCitizen.name}" registered with ABHA: ${randomAbha}! Assigned to ${newCitizen.assignedAsha}.`);
     setActiveModal(null);
     setNewCitizen({
       name: '',
@@ -472,15 +706,16 @@ export default function HealthWorkerDashboard() {
       condition: 'Routine Health Check',
       allergies: 'None reported',
       risk: 'Routine',
+      assignedAsha: 'ASHA Sunita Devi',
     });
   };
 
-  // Log Vaccination Dose Handler
+  // 6. Log Vaccination Dose
   const handleLogVaccineDose = (e) => {
     e.preventDefault();
     if (!selectedVaccine) return;
 
-    setVaccines(prev => prev.map(v => {
+    const updated = vaccines.map(v => {
       if (v.id === selectedVaccine.id) {
         return {
           ...v,
@@ -491,23 +726,22 @@ export default function HealthWorkerDashboard() {
         };
       }
       return v;
-    }));
+    });
 
-    showToast(`Vaccination for "${selectedVaccine.childName}" recorded! Logged on U-WIN/ABDM Grid.`);
+    setVaccines(updated);
+    try { localStorage.setItem('sehatsaarthi_village_vaccines', JSON.stringify(updated)); } catch(e) {}
+    showToast(`Vaccination dose for "${selectedVaccine.childName}" verified & logged on U-WIN Grid!`);
     setActiveModal(null);
   };
 
-  // Sync ABDM Handler
-  const handleSync = () => {
-    setSyncStatus('syncing');
-    setTimeout(() => {
-      setSyncStatus('done');
-      showToast('All 245 household records and vitals synchronized with ABDM cloud server!');
-      setTimeout(() => setSyncStatus(null), 3500);
-    }, 1200);
-  };
+  // Filters
+  const filteredTasks = tasks.filter(t => {
+    if (taskFilter === 'PENDING') return t.status === 'pending';
+    if (taskFilter === 'IN_PROGRESS') return t.status === 'in_progress';
+    if (taskFilter === 'COMPLETED') return t.status === 'completed';
+    return true;
+  });
 
-  // Filtered Patients
   const filteredPatients = patients.filter(p => {
     const term = registrySearch.toLowerCase();
     const matchesSearch = !term || (
@@ -520,7 +754,6 @@ export default function HealthWorkerDashboard() {
     return matchesSearch && matchesWard;
   });
 
-  // Filtered Vaccines
   const filteredVaccines = vaccines.filter(v => {
     if (vaccineFilter === 'DUE') return v.status === 'due';
     if (vaccineFilter === 'SCHEDULED') return v.status === 'scheduled';
@@ -538,56 +771,70 @@ export default function HealthWorkerDashboard() {
         </div>
       )}
 
-      {/* HEADER: Exactly matching SehatSaarthi warm amber branding */}
+      {/* HEADER: Health Worker Supervisor Console */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs w-full">
         <div className="w-full px-6 lg:px-12 xl:px-16 flex items-center justify-between gap-8 h-20">
-          {/* Logo with Govt Portal Badge Below */}
+          {/* Logo with Govt Health Worker Console Badge */}
           <Link to="/health-worker" className="flex items-center gap-3.5 shrink-0 group">
             <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-11 h-11 rounded-2xl object-cover shrink-0 notranslate" translate="no" />
             <div className="flex flex-col">
               <span className="font-brand font-black text-slate-900 tracking-tight text-2xl leading-none group-hover:text-amber-700 transition-colors notranslate" translate="no">SehatSaarthi</span>
               <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 self-start mt-1">
-                Govt Portal • ASHA Grid
+                Govt Portal • Health Worker Console
               </span>
             </div>
           </Link>
 
-          {/* Navigation Items with Subtle Dividers */}
-          <nav className="hidden lg:flex items-center gap-2 xl:gap-4">
+          {/* Navigation Items */}
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-3">
             <button 
-              onClick={() => setActiveTab('visits')} 
-              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
-                activeTab === 'visits' 
+              onClick={() => setActiveTab('tasks')} 
+              className={`px-3 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'tasks' 
                   ? 'bg-amber-600 text-white shadow-sm' 
                   : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
               }`}
             >
-              <span className="material-symbols-outlined text-[18px]">calendar_today</span>
-              <span>Today's Visits</span>
-              <span className="bg-amber-100 text-amber-900 text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-300">
-                {patients.length}
+              <span className="material-symbols-outlined text-[18px]">assignment_turned_in</span>
+              <span>ASHA Task Delegation</span>
+              <span className="bg-amber-100 text-amber-900 text-[10px] font-black px-1.5 py-0.2 rounded-full border border-amber-300">
+                {tasks.filter(t => t.status !== 'completed').length}
               </span>
+            </button>
+
+            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+
+            <button 
+              onClick={() => setActiveTab('vitals-triage')} 
+              className={`px-3 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'vitals-triage' 
+                  ? 'bg-amber-600 text-white shadow-sm' 
+                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">favorite</span>
+              <span>Vitals &amp; Triage</span>
             </button>
 
             <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveTab('registry')} 
-              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
+              className={`px-3 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'registry' 
                   ? 'bg-amber-600 text-white shadow-sm' 
                   : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">group</span>
-              <span>Patient Registry</span>
+              <span>Registry</span>
             </button>
 
             <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveTab('immunization')} 
-              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
+              className={`px-3 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'immunization' 
                   ? 'bg-amber-600 text-white shadow-sm' 
                   : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -595,18 +842,13 @@ export default function HealthWorkerDashboard() {
             >
               <span className="material-symbols-outlined text-[18px]">vaccines</span>
               <span>Immunization</span>
-              {vaccines.filter(v => v.status === 'due').length > 0 && (
-                <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
-                  {vaccines.filter(v => v.status === 'due').length} Due
-                </span>
-              )}
             </button>
             
             <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveTab('requests')} 
-              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all inline-flex items-center gap-2 cursor-pointer ${
+              className={`px-3 py-2 font-extrabold text-sm rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'requests' 
                   ? 'bg-amber-600 text-white shadow-sm' 
                   : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -622,7 +864,7 @@ export default function HealthWorkerDashboard() {
             </button>
           </nav>
 
-          {/* Right Action Controls */}
+          {/* Right Action Controls: Clean Language + Logout */}
           <div className="flex items-center gap-3 shrink-0">
             <div className="h-8 w-[2px] bg-slate-300 rounded-full hidden lg:block mr-1"></div>
 
@@ -639,329 +881,575 @@ export default function HealthWorkerDashboard() {
         </div>
       </header>
 
-      {/* MAIN CONTAINER */}
+      {/* MAIN CONTENT AREA */}
       <main className="w-full px-6 lg:px-12 xl:px-16 pt-28 pb-16">
-        {/* TODAY'S VISITS TAB */}
-        {activeTab === 'visits' && (
+        {/* Top Health Worker Hero Banner */}
+        <div className="bg-gradient-to-r from-amber-500/15 via-amber-100/40 to-transparent p-6 sm:p-8 rounded-3xl border-2 border-amber-300 shadow-sm mb-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-extrabold mb-3 shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>National Health Mission • Primary Healthcare Supervision</span>
+              </div>
+              <h1 className="font-heading text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                Community Health Worker (ANM / CHO) Console
+              </h1>
+              <p className="text-base text-slate-700 font-semibold mt-1">
+                Health Supervisor: <span className="text-amber-800 underline decoration-amber-400 decoration-2">{user?.name || 'Rekha Rani (Senior ANM / CHO)'}</span> • Supervising 8 Grassroot ASHA Workers across 1,200 Households
+              </p>
+            </div>
+
+            <div className="bg-white border-2 border-amber-300 p-5 rounded-3xl shadow-md flex items-center gap-4 self-start md:self-auto shrink-0">
+              <div className="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-300 flex items-center justify-center text-amber-700 shrink-0 shadow-xs">
+                <span className="material-symbols-outlined text-[30px]">health_and_safety</span>
+              </div>
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-black mb-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                  <span>SUPERVISORY DUTY ACTIVE</span>
+                </div>
+                <div className="flex items-center gap-2 bg-amber-100 text-amber-950 border-2 border-amber-300 px-3 py-1 rounded-xl shadow-xs my-1">
+                  <span className="material-symbols-outlined text-[16px] text-amber-700">supervisor_account</span>
+                  <span className="text-sm font-black tracking-tight">8 ASHA Workers Under Supervision</span>
+                </div>
+                <span className="text-xs text-slate-600 font-bold block mt-0.5">Sitapur Rural Block Sector</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Supervisory Key Metrics Strip */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-xs">
+            <span className="text-xs font-extrabold text-slate-500 uppercase">ASHA Workforce</span>
+            <p className="text-3xl font-black text-slate-900 mt-1">8 ASHAs</p>
+            <span className="text-[11px] text-emerald-700 font-extrabold flex items-center gap-1 mt-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              All Active on Ground
+            </span>
+          </div>
+
+          <div className="bg-amber-50/70 p-5 rounded-2xl border-2 border-amber-300 shadow-xs">
+            <span className="text-xs font-extrabold text-amber-800 uppercase">Active Field Tasks</span>
+            <p className="text-3xl font-black text-amber-950 mt-1">{tasks.filter(t => t.status !== 'completed').length}</p>
+            <span className="text-[11px] text-amber-900 font-semibold mt-0.5 block">Delegated to ASHA workers</span>
+          </div>
+
+          <div className="bg-rose-50/70 p-5 rounded-2xl border-2 border-rose-300 shadow-xs">
+            <span className="text-xs font-extrabold text-rose-800 uppercase">High-Risk Triage</span>
+            <p className="text-3xl font-black text-rose-950 mt-1">{patients.filter(p => p.riskColor).length}</p>
+            <span className="text-[11px] text-rose-800 font-extrabold mt-0.5 block">Requires Medical Officer</span>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-xs">
+            <span className="text-xs font-extrabold text-slate-500 uppercase">Pending Requests</span>
+            <p className="text-3xl font-black text-slate-900 mt-1">{citizenRequests.filter(r => r.status === 'pending').length}</p>
+            <span className="text-[11px] text-slate-500 font-semibold mt-0.5 block">Citizen requests to delegate</span>
+          </div>
+        </div>
+
+        {/* TAB 1: ASHA TASK ASSIGNMENT & DELEGATION (CORE WORKFLOW) */}
+        {activeTab === 'tasks' && (
           <div className="flex flex-col w-full animate-fadeIn">
-            {/* Top ASHA Duty Card */}
-            <div className="bg-gradient-to-r from-amber-500/15 via-amber-100/40 to-transparent p-6 sm:p-8 rounded-3xl border-2 border-amber-300 shadow-sm mb-8">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-extrabold mb-3 shadow-xs">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>National Rural Health Mission • Accredited Field Worker</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-3 border-b border-slate-200">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">
+                    Field Task Delegation to ASHA Workers
+                  </h2>
+                  <span className="bg-amber-100 text-amber-900 text-xs font-black px-2.5 py-0.5 rounded-full border border-amber-300">
+                    Supervisor Hub
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-600 font-medium">
+                  Health Worker assigns household visits, maternal checkups, and routine surveillance to grassroot ASHA workers.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setActiveModal('assign-task')}
+                  className="px-5 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-black text-xs shadow-sm flex items-center gap-2 transition-all cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  <span className="material-symbols-outlined text-[18px]">add_task</span>
+                  <span>Assign New Task to ASHA</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Filter Chips for Tasks */}
+            <div className="flex gap-2 mb-6 bg-slate-100 p-1 rounded-2xl w-fit border border-slate-200">
+              {[
+                { key: 'ALL', label: `All Tasks (${tasks.length})` },
+                { key: 'PENDING', label: `Pending (${tasks.filter(t => t.status === 'pending').length})` },
+                { key: 'IN_PROGRESS', label: `In Progress (${tasks.filter(t => t.status === 'in_progress').length})` },
+                { key: 'COMPLETED', label: `Completed (${tasks.filter(t => t.status === 'completed').length})` },
+              ].map(f => (
+                <button
+                  key={f.key}
+                  type="button"
+                  onClick={() => setTaskFilter(f.key)}
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                    taskFilter === f.key 
+                      ? 'bg-amber-600 text-white shadow-sm' 
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Task Cards */}
+            <div className="space-y-4">
+              {filteredTasks.map(t => {
+                const isCompleted = t.status === 'completed';
+                const isInProgress = t.status === 'in_progress';
+
+                return (
+                  <div 
+                    key={t._id || t.taskId}
+                    className={`bg-white p-5 sm:p-6 rounded-3xl border-2 transition-all shadow-sm ${
+                      isCompleted ? 'border-slate-200 bg-slate-50/40' :
+                      t.priority === 'urgent' ? 'border-rose-400 bg-rose-50/20' : 'border-amber-300'
+                    }`}
+                  >
+                    <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+                      <div>
+                        {/* Header row: Task ID, Priority, ASHA Worker Name */}
+                        <div className="flex flex-wrap items-center gap-2.5 mb-2">
+                          <span className="font-mono text-xs font-black text-amber-950 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-300">
+                            {t.taskId}
+                          </span>
+                          <span className="text-xs font-black text-slate-900 bg-slate-100 px-3 py-1 rounded-xl border border-slate-200 flex items-center gap-1.5">
+                            <span className="material-symbols-outlined text-[16px] text-amber-700">badge</span>
+                            <span>Assigned To: <strong className="text-amber-900">{t.ashaWorker?.name}</strong> ({t.ashaWorker?.ward})</span>
+                          </span>
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                            t.priority === 'urgent' ? 'bg-rose-100 text-rose-900 border border-rose-300' :
+                            t.priority === 'high' ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-slate-100 text-slate-700'
+                          }`}>
+                            {t.priority}
+                          </span>
+                        </div>
+
+                        {/* Patient & Task Details */}
+                        <h3 className="text-lg font-black text-slate-900 mb-0.5">
+                          {t.taskType} — <span className="text-amber-950">{t.patientName}</span>
+                        </h3>
+                        <p className="text-xs text-slate-600 font-semibold flex flex-wrap items-center gap-2">
+                          <span>📍 {t.patientAddress}</span>
+                          <span>•</span>
+                          <span>📞 Patient: {t.patientPhone}</span>
+                          <span>•</span>
+                          <span>Slot: {t.scheduledTime} ({t.scheduledDate})</span>
+                        </p>
+
+                        {/* Field Instructions */}
+                        <div className="mt-2.5 p-3 rounded-xl bg-amber-50/60 border border-amber-200 text-xs font-medium text-amber-950">
+                          <strong className="text-amber-900 font-black mr-1">Supervisor Instructions for ASHA:</strong>
+                          "{t.instructions}"
+                        </div>
+
+                        {/* Outcome / Completion Report */}
+                        {t.outcomeNotes && (
+                          <div className="mt-2 p-3 rounded-xl bg-emerald-50 border border-emerald-300 text-xs text-emerald-950 font-bold">
+                            <strong className="text-emerald-900 font-black mr-1">ASHA Field Outcome Report:</strong>
+                            {t.outcomeNotes}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Status & Action Buttons */}
+                      <div className="flex flex-wrap lg:flex-col items-end gap-2 shrink-0 self-start lg:self-auto">
+                        <span className={`px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border shadow-2xs ${
+                          isCompleted ? 'bg-emerald-100 text-emerald-900 border-emerald-300' :
+                          isInProgress ? 'bg-sky-100 text-sky-900 border-sky-300' : 'bg-amber-100 text-amber-900 border-amber-300'
+                        }`}>
+                          {isCompleted ? 'Completed' : isInProgress ? 'In Progress' : 'Pending Field Visit'}
+                        </span>
+
+                        <div className="flex items-center gap-2 mt-1">
+                          <a 
+                            href={`tel:${t.ashaWorker?.phone}`} 
+                            className="px-3 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center gap-1"
+                            title="Call ASHA on phone"
+                          >
+                            <span className="material-symbols-outlined text-[16px] text-amber-700">call</span>
+                            <span>Call ASHA</span>
+                          </a>
+
+                          {!isCompleted && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedTask(t);
+                                setActiveModal('update-task');
+                              }}
+                              className="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-black shadow-xs cursor-pointer"
+                            >
+                              Log ASHA Report
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <h1 className="font-heading text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-                    ASHA Rural Community Console
-                  </h1>
-                  <p className="text-base text-slate-700 font-semibold mt-1">
-                    Field Worker: <span className="text-amber-800 underline decoration-amber-400 decoration-2">{user?.name || 'Sunita Devi'}</span> • Assigned Sitapur Ward 4 Sector (245 Households)
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: CITIZEN VITALS & TRIAGE MANAGEMENT */}
+        {activeTab === 'vitals-triage' && (
+          <div className="flex flex-col w-full animate-fadeIn">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-3 border-b border-slate-200">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">
+                  Citizen Clinical Vitals &amp; Triage Records
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 font-medium">
+                  Health Worker digitally manages and updates vitals collected from field kits and village health post OPDs.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {patients.map(p => (
+                <div 
+                  key={p._id || p.id}
+                  className={`bg-white p-5 rounded-3xl border-2 transition-all shadow-sm ${
+                    p.riskColor ? 'border-rose-300 bg-rose-50/15' : 'border-slate-200 hover:border-amber-300'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold shrink-0 border ${
+                        p.riskColor ? 'bg-rose-100 text-rose-800 border-rose-300' : 'bg-amber-50 text-amber-800 border-amber-200'
+                      }`}>
+                        <span className="material-symbols-outlined text-[26px]">{p.icon}</span>
+                      </div>
+                      <div>
+                        <h4 className="text-base font-black text-slate-900">{p.name}</h4>
+                        <p className="text-xs text-slate-500 font-semibold">{p.age} • {p.gender} • {p.village}</p>
+                      </div>
+                    </div>
+
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${
+                      p.riskColor ? 'bg-rose-100 text-rose-900 border-rose-300' : 'bg-amber-100 text-amber-900 border-amber-300'
+                    }`}>
+                      {p.risk}
+                    </span>
+                  </div>
+
+                  {/* Vitals Grid */}
+                  <div className="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs mb-3">
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-bold block">Blood Pressure</span>
+                      <strong className="text-slate-900 font-black">{p.vitals?.systolicBP}/{p.vitals?.diastolicBP} mmHg</strong>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-bold block">Heart Rate</span>
+                      <strong className="text-slate-900 font-black">{p.vitals?.heartRate} bpm</strong>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-bold block">SpO2 / Sugar</span>
+                      <strong className="text-slate-900 font-black">{p.vitals?.spO2}% • {p.vitals?.bloodSugar || '98'}mg</strong>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-600 mb-3">
+                    <strong className="text-slate-900 font-bold">Assigned ASHA:</strong> {p.assignedAsha || 'ASHA Sunita Devi'}
                   </p>
-                </div>
-                <div className="bg-white border-2 border-amber-300 p-5 sm:p-6 rounded-3xl shadow-md flex items-center gap-5 self-start md:self-auto shrink-0">
-                  <div className="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-300 flex items-center justify-center text-amber-700 shrink-0 shadow-xs">
-                    <span className="material-symbols-outlined text-[30px]">volunteer_activism</span>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedPatient(p);
+                        setActiveModal('dossier');
+                      }}
+                      className="px-3.5 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold"
+                    >
+                      Dossier
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedPatient(p);
+                        setVitalsForm({
+                          bp: `${p.vitals?.systolicBP || 120}/${p.vitals?.diastolicBP || 80}`,
+                          pulse: String(p.vitals?.heartRate || 72),
+                          spo2: String(p.vitals?.spO2 || 98),
+                          temp: String(p.vitals?.temperature || 98.6),
+                          sugar: String(p.vitals?.bloodSugar || 100),
+                          notes: '',
+                          urgent: p.riskColor,
+                        });
+                        setActiveModal('vitals');
+                      }}
+                      className="px-4 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-black shadow-xs cursor-pointer flex items-center gap-1"
+                    >
+                      <span className="material-symbols-outlined text-[15px]">edit_note</span>
+                      <span>Update Vitals</span>
+                    </button>
                   </div>
-                  <div>
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-black mb-1">
-                      <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse"></span>
-                      <span>DUTY: ACTIVE TODAY</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-amber-100 text-amber-950 border-2 border-amber-300 px-3.5 py-1.5 rounded-xl shadow-xs my-1">
-                      <span className="material-symbols-outlined text-[18px] text-amber-700">schedule</span>
-                      <span className="text-base sm:text-lg font-black tracking-tight">8:00 AM – 6:00 PM</span>
-                      <span className="text-[10px] uppercase font-black bg-amber-200/90 text-amber-900 px-1.5 py-0.5 rounded">Shift</span>
-                    </div>
-                    <span className="text-xs text-slate-600 font-bold block mt-0.5">Sitapur Ward 4 Field Route</span>
-                  </div>
                 </div>
-              </div>
+              ))}
             </div>
+          </div>
+        )}
 
-            {/* Accessible Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
-              <div className="bg-white p-6 rounded-3xl border-2 border-slate-200 shadow-sm flex items-center justify-between gap-4">
-                <div>
-                  <span className="text-xs uppercase font-extrabold text-slate-500 tracking-wider block mb-1">Today's Assigned</span>
-                  <span className="text-4xl font-black text-slate-900">{patients.length}</span>
-                  <p className="text-xs text-slate-500 font-semibold mt-1">Village Household Visits</p>
-                </div>
-                <div className="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[32px]">assignment</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-3xl border-2 border-amber-300 shadow-sm flex items-center justify-between gap-4">
-                <div>
-                  <span className="text-xs uppercase font-extrabold text-amber-800 tracking-wider block mb-1">Pending Citizen Requests</span>
-                  <span className="text-4xl font-black text-amber-950">{citizenRequests.filter(r => r.status === 'pending').length}</span>
-                  <p className="text-xs text-amber-800 font-bold mt-1">Home visits awaiting acceptance</p>
-                </div>
-                <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-900 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[32px]">pending_actions</span>
-                </div>
-              </div>
-
-              <div className="bg-rose-50/70 p-6 rounded-3xl border-2 border-rose-300 shadow-sm flex items-center justify-between gap-4">
-                <div>
-                  <span className="text-xs uppercase font-extrabold text-rose-800 tracking-wider block mb-1">High Risk Priority</span>
-                  <span className="text-4xl font-black text-rose-950">{patients.filter(p => p.riskColor).length}</span>
-                  <p className="text-xs text-rose-800 font-bold mt-1">Immediate PHC triage needed</p>
-                </div>
-                <div className="w-14 h-14 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[32px]">warning</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Pending Citizen Requests Alert Banner */}
-            {citizenRequests.filter(r => r.status === 'pending').length > 0 && (
-              <div 
-                onClick={() => setActiveTab('requests')}
-                className="mb-8 p-4 sm:p-5 bg-gradient-to-r from-amber-500/15 via-amber-100/50 to-transparent border-2 border-amber-400 hover:border-amber-500 rounded-3xl flex items-center justify-between gap-4 cursor-pointer transition-all shadow-xs"
+        {/* TAB 3: REGISTRY (SUB-TABS: CITIZEN REGISTRY & ASHA WORKER REGISTRY) */}
+        {activeTab === 'registry' && (
+          <div className="flex flex-col w-full animate-fadeIn">
+            {/* Top Sub-Tab Switcher */}
+            <div className="flex bg-slate-100 p-1.5 rounded-2xl w-full sm:w-fit border border-slate-200 mb-6 gap-2">
+              <button
+                type="button"
+                onClick={() => setRegistrySubTab('citizens')}
+                className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                  registrySubTab === 'citizens'
+                    ? 'bg-amber-600 text-white shadow-sm'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/60'
+                }`}
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <span className="material-symbols-outlined text-[26px]">home_health</span>
-                  </div>
+                <span className="material-symbols-outlined text-[18px]">person</span>
+                <span>Citizen Registry ({patients.length})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setRegistrySubTab('asha')}
+                className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                  registrySubTab === 'asha'
+                    ? 'bg-amber-600 text-white shadow-sm'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/60'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">badge</span>
+                <span>ASHA Worker Registry ({ashaList.length})</span>
+              </button>
+            </div>
+
+            {/* SUB-TAB 1: CITIZEN REGISTRY */}
+            {registrySubTab === 'citizens' && (
+              <div className="animate-fadeIn">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                   <div>
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <h3 className="text-base font-extrabold text-amber-950">
-                        {citizenRequests.filter(r => r.status === 'pending').length} New Citizen Visit Request(s) Received
-                      </h3>
-                      <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Action Needed</span>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Citizen Health Registry</h1>
+                      <span className="bg-amber-100 text-amber-900 text-xs font-black px-2.5 py-0.5 rounded-full border border-amber-300">
+                        {patients.length} Registered Households
+                      </span>
                     </div>
-                    <p className="text-xs text-amber-800 font-semibold">Village residents have requested home visits / medicine delivery from Sunita Devi.</p>
+                    <p className="text-xs sm:text-sm text-slate-600 font-medium">Digital ABHA health records of village households managed by the Community Health Worker.</p>
                   </div>
+                  <button 
+                    onClick={() => setActiveModal('register-citizen')}
+                    className="bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white px-5 py-3 rounded-xl font-extrabold text-xs shadow-sm flex items-center gap-2 transition-all self-start sm:self-auto cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">person_add</span>
+                    <span>Register New Citizen</span>
+                  </button>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="hidden sm:inline text-xs font-black text-amber-900">Open Requests Tab</span>
-                  <div className="w-9 h-9 rounded-xl bg-amber-600 text-white flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+
+                <div className="bg-white border-2 border-slate-200/90 rounded-3xl overflow-hidden shadow-sm">
+                  <div className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row gap-3">
+                    <div className="relative flex-1">
+                      <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <span className="material-symbols-outlined text-[20px]">search</span>
+                      </span>
+                      <input 
+                        type="text" 
+                        value={registrySearch}
+                        onChange={(e) => setRegistrySearch(e.target.value)}
+                        placeholder="Search by Citizen Name, ABHA ID (e.g. 91-4820), or Phone..." 
+                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-500" 
+                      />
+                    </div>
+                    <select 
+                      value={wardFilter}
+                      onChange={(e) => setWardFilter(e.target.value)}
+                      className="bg-white px-4 py-2.5 border border-slate-300 rounded-xl text-xs font-extrabold text-slate-800 focus:outline-none focus:border-amber-500 cursor-pointer"
+                    >
+                      <option value="ALL">All Wards (Rampur &amp; Sitapur)</option>
+                      <option value="Ward 1">Ward 1 (North Rampur)</option>
+                      <option value="Ward 2">Ward 2 (Central)</option>
+                      <option value="Ward 3">Ward 3 (East Sub-Centre)</option>
+                      <option value="Ward 4">Ward 4 (Sitapur Road)</option>
+                    </select>
+                  </div>
+
+                  <div className="divide-y divide-slate-100">
+                    {filteredPatients.map(c => (
+                      <div key={c._id || c.id} className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-center font-bold text-xl">
+                            {c.name[0]}
+                          </div>
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h4 className="text-base font-extrabold text-slate-900">{c.name}</h4>
+                              <span className="text-xs text-slate-500 font-bold">• {c.age}</span>
+                              <span className="text-xs font-mono font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-300">{c.abha}</span>
+                            </div>
+                            <p className="text-xs text-slate-500 font-semibold mt-0.5">{c.village} • Ph: {c.phone} • Assigned ASHA: <strong className="text-slate-800">{c.assignedAsha || 'ASHA Sunita Devi'}</strong></p>
+                            <p className="text-[11px] text-slate-600 mt-0.5">
+                              <strong>Clinical State:</strong> {c.condition}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                          <button 
+                            onClick={() => {
+                              setSelectedPatient(c);
+                              setActiveModal('dossier');
+                            }}
+                            className="h-10 px-4 rounded-xl border border-slate-300 bg-white hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 text-slate-800 text-xs font-extrabold transition-all cursor-pointer shadow-2xs flex items-center gap-1.5"
+                          >
+                            <span className="material-symbols-outlined text-[16px] text-amber-700">description</span>
+                            <span>View Dossier</span>
+                          </button>
+
+                          <button 
+                            onClick={() => { 
+                              setSelectedPatient(c); 
+                              setActiveModal('vitals'); 
+                            }}
+                            className="h-10 px-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-black shadow-xs transition-all cursor-pointer flex items-center gap-1"
+                          >
+                            <span className="material-symbols-outlined text-[16px]">favorite</span>
+                            <span>Vitals</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Daily Visit Queue Section */}
-            <section className="mb-10">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-3 border-b border-slate-200">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-sm shrink-0">
-                    <span className="material-symbols-outlined text-[22px]">format_list_bulleted</span>
-                  </div>
+            {/* SUB-TAB 2: ASHA WORKER REGISTRY */}
+            {registrySubTab === 'asha' && (
+              <div className="animate-fadeIn">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                   <div>
-                    <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-heading">Daily Household Visit Queue</h2>
-                    <p className="text-xs sm:text-sm text-slate-600 font-medium">Prioritized by clinical triage risk score &amp; gestation stage</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">ASHA Worker Workforce Registry</h1>
+                      <span className="bg-amber-100 text-amber-900 text-xs font-black px-2.5 py-0.5 rounded-full border border-amber-300">
+                        {ashaList.length} Field Workers
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-slate-600 font-medium">
+                      Grassroot ASHA workers deployed in Sitapur &amp; Rampur rural sectors under your supervisory oversight.
+                    </p>
                   </div>
-                </div>
-                <span className="bg-amber-100 text-amber-900 text-xs font-extrabold px-3 py-1 rounded-full border border-amber-300 self-start sm:self-auto">
-                  {patients.length} Citizens Queued
-                </span>
-              </div>
 
-              {/* Patient Cards List */}
-              <div className="flex flex-col gap-4 w-full">
-                {patients.map(patient => (
-                  <div 
-                    key={patient._id || patient.id} 
-                    className={`bg-white p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 shadow-sm hover:shadow-md ${
-                      patient.riskColor 
-                        ? 'border-rose-300 hover:border-rose-500 bg-rose-50/20' 
-                        : 'border-slate-200 hover:border-amber-400'
-                    }`}
+                  <button 
+                    onClick={() => setActiveModal('add-asha')}
+                    className="bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white px-5 py-3 rounded-xl font-extrabold text-xs shadow-sm flex items-center gap-2 transition-all self-start sm:self-auto cursor-pointer"
                   >
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-                      <div className="flex items-start sm:items-center gap-4">
-                        <div className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center font-bold shrink-0 ${
-                          patient.riskColor 
-                            ? 'bg-rose-50 border-rose-300 text-rose-700' 
-                            : patient.risk === 'Routine' 
-                              ? 'bg-sky-50 border-sky-300 text-sky-800' 
-                              : 'bg-amber-50 border-amber-300 text-amber-800'
-                        }`}>
-                          <span className="material-symbols-outlined text-[32px]">{patient.icon || 'person'}</span>
-                        </div>
-                        <div>
-                          <div className="flex flex-wrap items-center gap-2.5 mb-1">
-                            <h3 className="text-xl font-extrabold text-slate-900 leading-snug notranslate" translate="no">{patient.name}</h3>
-                            <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{patient.age}</span>
-                            <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-black border ${
-                              patient.riskColor 
-                                ? 'bg-rose-100 text-rose-900 border-rose-300 shadow-2xs' 
-                                : 'bg-amber-100 text-amber-900 border-amber-300'
-                            }`}>
-                              {patient.riskColor && <span className="material-symbols-outlined text-[14px]">priority_high</span>}
-                              {patient.risk}
-                            </span>
-                          </div>
-                          <p className="text-sm font-bold text-slate-700">{patient.type}</p>
-                          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 font-semibold mt-1">
-                            <span className="flex items-center gap-1 text-slate-700 font-extrabold">
-                              <span className="material-symbols-outlined text-[16px] text-amber-600">schedule</span>
-                              Slot: {patient.time}
-                            </span>
-                            <span>•</span>
-                            <span>{patient.village}</span>
-                            <span>•</span>
-                            <span className="font-mono text-amber-900 notranslate" translate="no">ABHA: {patient.abha}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2.5 shrink-0 pt-2 lg:pt-0">
-                        {/* Dossier info button */}
-                        <button 
-                          type="button"
-                          onClick={() => {
-                            setSelectedPatient(patient);
-                            setActiveModal('dossier');
-                          }}
-                          className="h-12 w-12 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-700 hover:text-amber-700 hover:border-amber-400 flex items-center justify-center transition-all shadow-xs cursor-pointer"
-                          title="View Full ABDM Clinical Dossier"
-                        >
-                          <span className="material-symbols-outlined text-[22px]">info</span>
-                        </button>
-
-                        {/* Call Button */}
-                        <a 
-                          href={`tel:${patient.phone}`} 
-                          className="h-12 px-4 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-xs"
-                        >
-                          <span className="material-symbols-outlined text-[18px] text-amber-600">call</span>
-                          <span>Call</span>
-                        </a>
-
-                        {/* Record Vitals Button */}
-                        <button 
-                          onClick={() => { 
-                            setSelectedPatient(patient); 
-                            setVitalsForm(prev => ({
-                              ...prev,
-                              bp: patient.vitals ? `${patient.vitals.systolicBP}/${patient.vitals.diastolicBP}` : '120/80',
-                              pulse: patient.vitals ? String(patient.vitals.heartRate) : '72',
-                              spo2: patient.vitals ? String(patient.vitals.spO2) : '98',
-                              temp: patient.vitals ? String(patient.vitals.temperature) : '98.6',
-                              sugar: patient.vitals?.bloodSugar ? String(patient.vitals.bloodSugar) : '100',
-                            }));
-                            setActiveModal('vitals'); 
-                          }} 
-                          className="h-12 px-5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-extrabold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
-                          type="button"
-                        >
-                          <span className="material-symbols-outlined text-[20px]">favorite</span>
-                          <span>Record Vitals &amp; Triage</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </div>
-        )}
-
-        {/* REGISTRY TAB */}
-        {activeTab === 'registry' && (
-          <div className="flex flex-col w-full animate-fadeIn">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-              <div>
-                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight font-heading">Village Citizen Registry</h1>
-                <p className="text-sm text-slate-600 font-medium">Verified ABHA digital health profiles of village households assigned under Rampur &amp; Sitapur sector.</p>
-              </div>
-              <button 
-                onClick={() => setActiveModal('register-citizen')}
-                className="bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white px-5 py-3 rounded-xl font-extrabold text-sm shadow-sm flex items-center gap-2 transition-all self-start sm:self-auto cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[20px]">person_add</span>
-                <span>Register New Citizen</span>
-              </button>
-            </div>
-
-            <div className="bg-white border-2 border-slate-200/90 rounded-3xl overflow-hidden shadow-sm">
-              <div className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row gap-3">
-                <div className="relative flex-1">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <span className="material-symbols-outlined text-[20px]">search</span>
-                  </span>
-                  <input 
-                    type="text" 
-                    value={registrySearch}
-                    onChange={(e) => setRegistrySearch(e.target.value)}
-                    placeholder="Search by Citizen Name, ABHA ID (e.g. 91-4820), or Phone Number..." 
-                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-500" 
-                  />
+                    <span className="material-symbols-outlined text-[18px]">person_add</span>
+                    <span>Onboard New ASHA</span>
+                  </button>
                 </div>
-                <select 
-                  value={wardFilter}
-                  onChange={(e) => setWardFilter(e.target.value)}
-                  className="bg-white px-4 py-2.5 border border-slate-300 rounded-xl text-xs font-extrabold text-slate-800 focus:outline-none focus:border-amber-500 cursor-pointer"
-                >
-                  <option value="ALL">All Wards (Rampur &amp; Sitapur)</option>
-                  <option value="Ward 1">Ward 1 (North Rampur)</option>
-                  <option value="Ward 2">Ward 2 (Central)</option>
-                  <option value="Ward 3">Ward 3 (East Sub-Centre)</option>
-                  <option value="Ward 4">Ward 4 (Sitapur Road)</option>
-                </select>
-              </div>
 
-              <div className="divide-y divide-slate-100">
-                {filteredPatients.map(c => (
-                  <div key={c._id || c.id} className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-center font-bold text-xl">
-                        {c.name[0]}
-                      </div>
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h4 className="text-base font-extrabold text-slate-900">{c.name}</h4>
-                          <span className="text-xs text-slate-500 font-bold">• {c.age}</span>
-                          <span className="text-xs font-mono font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-300">{c.abha}</span>
+                {/* ASHA Workforce Cards Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {ashaList.map(a => {
+                    const activeAshaTasks = tasks.filter(t => t.ashaWorker?.name === a.name && t.status !== 'completed').length;
+                    const isDutyActive = a.status === 'Active on Duty';
+
+                    return (
+                      <div 
+                        key={a.id}
+                        className="bg-white p-5 rounded-3xl border-2 border-slate-200 hover:border-amber-400 transition-all shadow-sm flex flex-col justify-between"
+                      >
+                        <div>
+                          <div className="flex items-start justify-between gap-3 mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 rounded-2xl bg-amber-50 border-2 border-amber-300 flex items-center justify-center font-black text-amber-900 text-base shrink-0">
+                                {a.name.replace('ASHA ', '').charAt(0)}
+                              </div>
+                              <div>
+                                <h3 className="text-base font-black text-slate-900 leading-tight">{a.name}</h3>
+                                <span className="text-[11px] font-mono font-bold text-amber-900 bg-amber-50 px-2 py-0.2 rounded border border-amber-200">
+                                  {a.id}
+                                </span>
+                              </div>
+                            </div>
+
+                            <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black border uppercase tracking-wider ${
+                              isDutyActive ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : 'bg-amber-100 text-amber-900 border-amber-300'
+                            }`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${isDutyActive ? 'bg-emerald-600 animate-pulse' : 'bg-amber-600'}`}></span>
+                              {a.status}
+                            </span>
+                          </div>
+
+                          <div className="space-y-1.5 text-xs bg-slate-50 p-3 rounded-2xl border border-slate-200 mb-4">
+                            <div className="flex justify-between">
+                              <span className="text-slate-500 font-semibold">Assigned Ward:</span>
+                              <strong className="text-slate-900 font-extrabold">{a.ward}</strong>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-slate-500 font-semibold">Households Covered:</span>
+                              <strong className="text-slate-900 font-extrabold">{a.households} Households</strong>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-slate-500 font-semibold">Active Field Tasks:</span>
+                              <strong className={`${activeAshaTasks > 0 ? 'text-amber-950 font-black' : 'text-slate-500'}`}>
+                                {activeAshaTasks} Pending Tasks
+                              </strong>
+                            </div>
+                          </div>
                         </div>
-                        <p className="text-xs text-slate-500 font-semibold mt-0.5">{c.village} • Ph: {c.phone}</p>
-                        <p className="text-[11px] text-slate-600 mt-1">
-                          <strong>Condition:</strong> {c.condition}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
-                      <button 
-                        onClick={() => {
-                          setSelectedPatient(c);
-                          setActiveModal('dossier');
-                        }}
-                        className="h-10 px-4 rounded-xl border border-slate-300 bg-white hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 text-slate-800 text-xs font-extrabold transition-all cursor-pointer shadow-2xs flex items-center gap-1.5"
-                      >
-                        <span className="material-symbols-outlined text-[16px] text-amber-700">description</span>
-                        <span>View Health Dossier</span>
-                      </button>
 
-                      <button 
-                        onClick={() => { 
-                          setSelectedPatient(c); 
-                          setActiveModal('vitals'); 
-                        }}
-                        className="h-10 px-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-black shadow-xs transition-all cursor-pointer flex items-center gap-1"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">favorite</span>
-                        <span>Vitals</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                        <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                          <a 
+                            href={`tel:${a.phone}`}
+                            className="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold flex items-center gap-1 shadow-2xs"
+                          >
+                            <span className="material-symbols-outlined text-[16px] text-amber-700">call</span>
+                            <span>Call</span>
+                          </a>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setTaskForm(prev => ({
+                                ...prev,
+                                ashaName: a.name,
+                                patientAddress: a.ward,
+                              }));
+                              setActiveModal('assign-task');
+                            }}
+                            className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-black shadow-xs cursor-pointer flex items-center gap-1"
+                          >
+                            <span className="material-symbols-outlined text-[16px]">add_task</span>
+                            <span>Assign Task</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
-        {/* IMMUNIZATION TAB */}
+        {/* TAB 4: VILLAGE IMMUNIZATION TRACKER */}
         {activeTab === 'immunization' && (
           <div className="flex flex-col w-full animate-fadeIn">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div>
-                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight font-heading">Village Immunization Tracker</h1>
-                <p className="text-sm text-slate-600 font-medium">Mission Indradhanush vaccination schedule for village infants and pregnant mothers.</p>
+                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight font-heading">Village Immunization Management</h1>
+                <p className="text-sm text-slate-600 font-medium">Mission Indradhanush vaccination schedule for infants and pregnant mothers overseen by Health Worker.</p>
               </div>
 
               <button
@@ -1018,6 +1506,7 @@ export default function HealthWorkerDashboard() {
                           <span className="text-xs text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded">{vac.age}</span>
                         </div>
                         <p className="text-xs text-slate-500 font-semibold mt-0.5">{vac.motherName} • {vac.village}</p>
+                        <span className="text-[11px] text-amber-900 font-bold block mt-0.5">Mobilizer: {vac.assignedAsha}</span>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-xs font-black border uppercase tracking-wider ${
                         isCompleted ? 'bg-emerald-100 text-emerald-900 border-emerald-300' :
@@ -1061,66 +1550,24 @@ export default function HealthWorkerDashboard() {
           </div>
         )}
 
-        {/* CITIZEN VISIT REQUESTS TAB */}
+        {/* TAB 5: CITIZEN VISIT REQUESTS DELEGATION */}
         {activeTab === 'requests' && (
           <div className="flex flex-col w-full animate-fadeIn">
-            {/* Hero Header Banner */}
-            <div className="bg-gradient-to-r from-amber-500/15 via-amber-100/40 to-transparent p-6 sm:p-8 rounded-3xl border-2 border-amber-300 shadow-sm mb-8">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-extrabold mb-3 shadow-xs">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>National Rural Health Mission • Citizen Field Requests</span>
-                  </div>
-                  <h1 className="font-heading text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-                    Citizen Home Visit Requests
-                  </h1>
-                  <p className="text-base text-slate-700 font-semibold mt-1">
-                    Direct visit &amp; medicine refill requests submitted by village households to <span className="text-amber-800 underline decoration-amber-400 decoration-2">{user?.name || 'Sunita Devi'}</span> • Sitapur Ward 4
-                  </p>
-                </div>
-
-                <div className="bg-white border-2 border-amber-300 p-5 rounded-3xl shadow-sm flex items-center gap-4 self-start md:self-auto shrink-0">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-[28px]">home_health</span>
-                  </div>
-                  <div>
-                    <span className="text-xs uppercase font-extrabold text-slate-500 block">Assigned ASHA</span>
-                    <span className="text-base font-black text-slate-900 leading-tight block notranslate" translate="no">{user?.name || 'Sunita Devi'}</span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-800 mt-0.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                      Auto-Synced to Cloud
-                    </span>
-                  </div>
-                </div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-3 border-b border-slate-200">
+              <div>
+                <h1 className="font-heading text-3xl font-black text-slate-900 tracking-tight">
+                  Citizen Home Visit Requests Delegation
+                </h1>
+                <p className="text-sm text-slate-600 font-medium">
+                  Review incoming visit requests and delegate households to appropriate ASHA field workers.
+                </p>
               </div>
             </div>
 
-            {/* Summary Stats Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-              <div className="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-xs">
-                <span className="text-xs font-extrabold text-slate-500 uppercase">Total Requests</span>
-                <p className="text-3xl font-black text-slate-900 mt-1">{citizenRequests.length}</p>
-              </div>
-              <div className="bg-amber-50/70 p-5 rounded-2xl border-2 border-amber-300 shadow-xs">
-                <span className="text-xs font-extrabold text-amber-800 uppercase">Pending Review</span>
-                <p className="text-3xl font-black text-amber-950 mt-1">{citizenRequests.filter(r => r.status === 'pending').length}</p>
-              </div>
-              <div className="bg-sky-50/70 p-5 rounded-2xl border-2 border-sky-300 shadow-xs">
-                <span className="text-xs font-extrabold text-sky-800 uppercase">Scheduled Visits</span>
-                <p className="text-3xl font-black text-sky-950 mt-1">{citizenRequests.filter(r => r.status === 'scheduled' || r.status === 'in_progress').length}</p>
-              </div>
-              <div className="bg-emerald-50/70 p-5 rounded-2xl border-2 border-emerald-300 shadow-xs">
-                <span className="text-xs font-extrabold text-emerald-800 uppercase">Completed</span>
-                <p className="text-3xl font-black text-emerald-950 mt-1">{citizenRequests.filter(r => r.status === 'completed').length}</p>
-              </div>
-            </div>
-
-            {/* Requests List */}
             {citizenRequests.length === 0 ? (
               <div className="bg-white p-12 rounded-3xl border-2 border-slate-200 text-center">
                 <span className="material-symbols-outlined text-4xl text-slate-300 mb-2">home_health</span>
-                <h3 className="text-lg font-black text-slate-800">No Visit Requests Received Yet</h3>
+                <h3 className="text-lg font-black text-slate-800">No Visit Requests Received</h3>
                 <p className="text-xs text-slate-500 mt-1">When citizens request a home visit from their dashboard, they will appear here in real-time.</p>
               </div>
             ) : (
@@ -1158,25 +1605,38 @@ export default function HealthWorkerDashboard() {
                           className="px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold flex items-center gap-1"
                         >
                           <span className="material-symbols-outlined text-[16px] text-amber-700">call</span>
-                          <span>Call</span>
+                          <span>Call Citizen</span>
                         </a>
 
                         {req.status === 'pending' && (
                           <button
                             type="button"
-                            disabled={updatingRequestId === req._id}
-                            onClick={() => handleUpdateVisitStatus(req._id, 'scheduled')}
-                            className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-black shadow-xs cursor-pointer"
+                            onClick={() => {
+                              setTaskForm({
+                                ashaName: 'ASHA Sunita Devi',
+                                patientName: req.patientName,
+                                patientAddress: req.patientAddress,
+                                patientPhone: req.patientPhone,
+                                taskType: 'Home Visit & Vitals',
+                                priority: req.urgency === 'urgent' ? 'urgent' : 'routine',
+                                scheduledDate: 'Today',
+                                scheduledTime: req.preferredSlot || '10:00 AM',
+                                instructions: `Citizen request: ${req.reason}. ${req.notes || ''}`,
+                              });
+                              setActiveModal('assign-task');
+                              handleUpdateVisitStatus(req._id, 'scheduled', 'Delegated to ASHA Sunita Devi');
+                            }}
+                            className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-black shadow-xs cursor-pointer flex items-center gap-1"
                           >
-                            Accept &amp; Schedule
+                            <span className="material-symbols-outlined text-[16px]">person_add</span>
+                            <span>Assign to ASHA</span>
                           </button>
                         )}
 
                         {req.status === 'scheduled' && (
                           <button
                             type="button"
-                            disabled={updatingRequestId === req._id}
-                            onClick={() => handleUpdateVisitStatus(req._id, 'completed')}
+                            onClick={() => handleUpdateVisitStatus(req._id, 'completed', 'Visit completed and vitals recorded')}
                             className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-xs cursor-pointer"
                           >
                             Mark Completed
@@ -1211,11 +1671,207 @@ export default function HealthWorkerDashboard() {
         )}
       </main>
 
-      {/* MODAL 1: RECORD VITALS & TRIAGE */}
+      {/* MODAL 1: ASSIGN TASK TO ASHA WORKER */}
+      {activeModal === 'assign-task' && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-white w-full max-w-lg rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                  <span className="material-symbols-outlined text-[22px]">add_task</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-white font-heading">Delegate Field Task to ASHA</h3>
+                  <p className="text-xs text-amber-300/80 font-bold">Assign household duty to ground health worker</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setActiveModal(null)} 
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 transition-colors cursor-pointer shadow-sm"
+                title="Close"
+              >
+                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateTask} className="p-6 overflow-y-auto space-y-3.5 text-xs">
+              {/* Select ASHA Worker */}
+              <div>
+                <label className="block text-xs font-black text-slate-700 uppercase mb-1">
+                  Assign to ASHA Worker <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  value={taskForm.ashaName}
+                  onChange={e => setTaskForm({...taskForm, ashaName: e.target.value})}
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                >
+                  {ASHA_WORKFORCE.map(a => (
+                    <option key={a.id} value={a.name}>
+                      {a.name} ({a.ward} • {a.households} HH)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Patient Name & Phone */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-black text-slate-700 uppercase mb-1">Citizen Name <span className="text-rose-500">*</span></label>
+                  <input
+                    type="text"
+                    value={taskForm.patientName}
+                    onChange={e => setTaskForm({...taskForm, patientName: e.target.value})}
+                    placeholder="e.g. Kamla Devi"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-black text-slate-700 uppercase mb-1">Citizen Phone</label>
+                  <input
+                    type="tel"
+                    value={taskForm.patientPhone}
+                    onChange={e => setTaskForm({...taskForm, patientPhone: e.target.value})}
+                    placeholder="9876543251"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              {/* Address */}
+              <div>
+                <label className="block text-xs font-black text-slate-700 uppercase mb-1">Household Address / Village Ward</label>
+                <input
+                  type="text"
+                  value={taskForm.patientAddress}
+                  onChange={e => setTaskForm({...taskForm, patientAddress: e.target.value})}
+                  placeholder="e.g. Rampur Ward 2, House 14"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              {/* Task Type & Priority */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-black text-slate-700 uppercase mb-1">Task Nature</label>
+                  <select
+                    value={taskForm.taskType}
+                    onChange={e => setTaskForm({...taskForm, taskType: e.target.value})}
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  >
+                    <option value="Home Visit & Vitals">Home Visit &amp; Vitals</option>
+                    <option value="Antenatal Checkup (ANC)">Antenatal Checkup (ANC)</option>
+                    <option value="Infant Immunization Reminders">Infant Immunization</option>
+                    <option value="Jan Aushadhi Medicine Refill">Medicine Delivery</option>
+                    <option value="Chronic NCD Follow-up">Chronic NCD Follow-up</option>
+                    <option value="Fever & Vector Surveillance">Fever &amp; Vector Surveillance</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-black text-slate-700 uppercase mb-1">Priority</label>
+                  <select
+                    value={taskForm.priority}
+                    onChange={e => setTaskForm({...taskForm, priority: e.target.value})}
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  >
+                    <option value="routine">Routine</option>
+                    <option value="high">High Priority</option>
+                    <option value="urgent">Urgent / Stat</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Instructions for ASHA */}
+              <div>
+                <label className="block text-xs font-black text-slate-700 uppercase mb-1">Supervisor Instructions for ASHA Worker</label>
+                <textarea
+                  rows="2"
+                  value={taskForm.instructions}
+                  onChange={e => setTaskForm({...taskForm, instructions: e.target.value})}
+                  placeholder="e.g. Check BP with digital cuff, supply IFA, advise hospital delivery..."
+                  className="w-full bg-slate-50 px-3.5 py-2 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-amber-500"
+                ></textarea>
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveModal(null)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black shadow-xs"
+                >
+                  Delegate Task to ASHA
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: UPDATE TASK / LOG ASHA REPORT */}
+      {activeModal === 'update-task' && selectedTask && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-white w-full max-w-md rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                  <span className="material-symbols-outlined text-[20px]">fact_check</span>
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-white font-heading">Log ASHA Field Report</h3>
+                  <p className="text-xs text-amber-300/80 font-bold">{selectedTask.taskId} • {selectedTask.patientName}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setActiveModal(null)} 
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 transition-colors cursor-pointer shadow-sm"
+                title="Close"
+              >
+                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-3.5 text-xs">
+              <div className="bg-amber-50 p-3.5 rounded-xl border border-amber-200">
+                <span className="text-[10px] text-amber-800 font-bold uppercase block">Field Worker</span>
+                <strong className="text-slate-900 font-black text-sm">{selectedTask.ashaWorker?.name}</strong>
+                <p className="text-slate-600 mt-1"><strong>Task:</strong> {selectedTask.taskType}</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-slate-700 uppercase mb-1">Update Task Status</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateTaskStatus(selectedTask._id, 'in_progress')}
+                    className="p-3 rounded-xl border-2 border-sky-300 bg-sky-50 text-sky-950 font-black text-center"
+                  >
+                    Mark In-Progress
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateTaskStatus(selectedTask._id, 'completed', 'ASHA visited household. Citizen confirmed stable condition.')}
+                    className="p-3 rounded-xl border-2 border-emerald-400 bg-emerald-100 text-emerald-950 font-black text-center"
+                  >
+                    Mark Completed
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 3: RECORD VITALS & TRIAGE */}
       {activeModal === 'vitals' && selectedPatient && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
           <div className="bg-white w-full max-w-lg rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
+            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white border-b-4 border-amber-500">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold shadow-xs">
                   <span className="material-symbols-outlined text-[24px]">favorite</span>
@@ -1297,7 +1953,7 @@ export default function HealthWorkerDashboard() {
                   rows="2" 
                   value={vitalsForm.notes} 
                   onChange={e => setVitalsForm({...vitalsForm, notes: e.target.value})} 
-                  placeholder="e.g. Mild headache, fever subsided, prescribed Jan Aushadhi refill..." 
+                  placeholder="e.g. Regular medication compliance, mild joint pain..." 
                   className="w-full bg-slate-50 px-3.5 py-2 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-amber-500"
                 ></textarea>
               </div>
@@ -1311,7 +1967,7 @@ export default function HealthWorkerDashboard() {
                   className="w-5 h-5 text-rose-600 rounded border-slate-300 focus:ring-rose-500 cursor-pointer" 
                 />
                 <label htmlFor="urgentFlag" className="text-xs font-extrabold text-rose-900 cursor-pointer">
-                  Flag as High-Risk for Immediate Doctor Tele-Consultation
+                  Flag as High-Risk for Medical Officer / Tele-Consultation
                 </label>
               </div>
 
@@ -1337,7 +1993,7 @@ export default function HealthWorkerDashboard() {
         </div>
       )}
 
-      {/* MODAL 2: CLINICAL DOSSIER */}
+      {/* MODAL 4: CLINICAL DOSSIER */}
       {activeModal === 'dossier' && selectedPatient && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
           <div className="bg-white w-full max-w-2xl rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -1375,8 +2031,8 @@ export default function HealthWorkerDashboard() {
                   <strong className="text-slate-900 font-black">{selectedPatient.village}</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">Primary Phone</span>
-                  <strong className="text-slate-900 font-black">{selectedPatient.phone}</strong>
+                  <span className="text-[10px] text-slate-500 font-bold uppercase block">Assigned ASHA</span>
+                  <strong className="text-slate-900 font-black">{selectedPatient.assignedAsha || 'ASHA Sunita Devi'}</strong>
                 </div>
               </div>
 
@@ -1422,7 +2078,7 @@ export default function HealthWorkerDashboard() {
         </div>
       )}
 
-      {/* MODAL 3: REGISTER NEW CITIZEN */}
+      {/* MODAL 5: REGISTER NEW CITIZEN */}
       {activeModal === 'register-citizen' && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
           <div className="bg-white w-full max-w-lg rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -1511,6 +2167,19 @@ export default function HealthWorkerDashboard() {
               </div>
 
               <div>
+                <label className="block text-xs font-black text-slate-700 uppercase mb-1">Assign Responsible ASHA</label>
+                <select
+                  value={newCitizen.assignedAsha}
+                  onChange={e => setNewCitizen({...newCitizen, assignedAsha: e.target.value})}
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                >
+                  {ASHA_WORKFORCE.map(a => (
+                    <option key={a.id} value={a.name}>{a.name} ({a.ward})</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
                 <label className="block text-xs font-black text-slate-700 uppercase mb-1">Health Condition / Symptoms</label>
                 <input
                   type="text"
@@ -1519,31 +2188,6 @@ export default function HealthWorkerDashboard() {
                   placeholder="e.g. Trimester 2 Pregnancy, Hypertension, Seasonal Flu"
                   className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
                 />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-black text-slate-700 uppercase mb-1">Known Allergies</label>
-                  <input
-                    type="text"
-                    value={newCitizen.allergies}
-                    onChange={e => setNewCitizen({...newCitizen, allergies: e.target.value})}
-                    placeholder="e.g. Penicillin, Sulfa"
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-black text-slate-700 uppercase mb-1">Clinical Priority</label>
-                  <select
-                    value={newCitizen.risk}
-                    onChange={e => setNewCitizen({...newCitizen, risk: e.target.value})}
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
-                  >
-                    <option value="Routine">Routine Visit</option>
-                    <option value="High Risk">High Risk Priority</option>
-                    <option value="Normal">Normal Follow-up</option>
-                  </select>
-                </div>
               </div>
 
               <div className="pt-2 flex justify-end gap-2">
@@ -1566,7 +2210,7 @@ export default function HealthWorkerDashboard() {
         </div>
       )}
 
-      {/* MODAL 4: LOG VACCINE DOSE */}
+      {/* MODAL 6: LOG VACCINE DOSE */}
       {activeModal === 'log-vaccine' && selectedVaccine && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
           <div className="bg-white w-full max-w-md rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -1593,6 +2237,7 @@ export default function HealthWorkerDashboard() {
               <div className="bg-amber-50 p-3.5 rounded-2xl border border-amber-200">
                 <strong className="text-slate-900 font-black block">{selectedVaccine.childName} ({selectedVaccine.age})</strong>
                 <p className="text-slate-600 font-semibold mt-0.5">{selectedVaccine.vaccineName} • {selectedVaccine.doseNumber}</p>
+                <p className="text-[11px] text-amber-900 font-bold mt-0.5">Assigned ASHA Mobilizer: {selectedVaccine.assignedAsha}</p>
               </div>
 
               <div>
@@ -1608,7 +2253,7 @@ export default function HealthWorkerDashboard() {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-slate-700 uppercase mb-1">Administered At Facility / Kiosk</label>
+                <label className="block text-xs font-black text-slate-700 uppercase mb-1">Administered At Facility / Booth</label>
                 <input
                   type="text"
                   value={vaccineLogForm.facility}
@@ -1618,7 +2263,7 @@ export default function HealthWorkerDashboard() {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-slate-700 uppercase mb-1">Observations &amp; Cold Chain Notes</label>
+                <label className="block text-xs font-black text-slate-700 uppercase mb-1">Cold Chain &amp; Observation Notes</label>
                 <textarea
                   rows="2"
                   value={vaccineLogForm.notes}
@@ -1647,7 +2292,7 @@ export default function HealthWorkerDashboard() {
         </div>
       )}
 
-      {/* MODAL 5: NATIONAL VACCINE SCHEDULE CHART */}
+      {/* MODAL 7: NATIONAL VACCINE SCHEDULE CHART */}
       {activeModal === 'schedule-chart' && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
           <div className="bg-white w-full max-w-2xl rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -1688,6 +2333,113 @@ export default function HealthWorkerDashboard() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 8: ONBOARD NEW ASHA WORKER */}
+      {activeModal === 'add-asha' && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-white w-full max-w-md rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                  <span className="material-symbols-outlined text-[22px]">badge</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-white font-heading">Onboard New ASHA Field Worker</h3>
+                  <p className="text-xs text-amber-300/80 font-bold">Register grassroot worker in sector roster</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setActiveModal(null)} 
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 transition-colors cursor-pointer shadow-sm"
+                title="Close"
+              >
+                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleRegisterAsha} className="p-6 space-y-3.5 text-xs">
+              <div>
+                <label className="block text-xs font-black text-slate-700 uppercase mb-1">ASHA Worker Name <span className="text-rose-500">*</span></label>
+                <input
+                  type="text"
+                  value={newAshaForm.name}
+                  onChange={e => setNewAshaForm({...newAshaForm, name: e.target.value})}
+                  placeholder="e.g. ASHA Rekha Sharma"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-slate-700 uppercase mb-1">Mobile Phone Number <span className="text-rose-500">*</span></label>
+                <input
+                  type="tel"
+                  value={newAshaForm.phone}
+                  onChange={e => setNewAshaForm({...newAshaForm, phone: e.target.value})}
+                  placeholder="9876543235"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-black text-slate-700 uppercase mb-1">Assigned Sector / Ward</label>
+                  <select
+                    value={newAshaForm.ward}
+                    onChange={e => setNewAshaForm({...newAshaForm, ward: e.target.value})}
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  >
+                    <option value="Sitapur Ward 4">Sitapur Ward 4</option>
+                    <option value="Rampur Ward 1">Rampur Ward 1</option>
+                    <option value="Rampur Ward 2">Rampur Ward 2</option>
+                    <option value="Rampur Ward 3">Rampur Ward 3</option>
+                    <option value="Sitapur Ward 2">Sitapur Ward 2</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-black text-slate-700 uppercase mb-1">Households Covered</label>
+                  <input
+                    type="number"
+                    value={newAshaForm.households}
+                    onChange={e => setNewAshaForm({...newAshaForm, households: e.target.value})}
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-slate-700 uppercase mb-1">Initial Duty Status</label>
+                <select
+                  value={newAshaForm.status}
+                  onChange={e => setNewAshaForm({...newAshaForm, status: e.target.value})}
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                >
+                  <option value="Active on Duty">Active on Duty</option>
+                  <option value="Field Survey">Field Survey</option>
+                  <option value="On Leave">On Leave</option>
+                </select>
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveModal(null)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black shadow-xs"
+                >
+                  Onboard to Roster
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

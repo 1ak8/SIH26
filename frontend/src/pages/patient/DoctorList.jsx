@@ -6,7 +6,7 @@ import api from '../../services/api';
 
 const DOCTORS = [
   {
-    id: '6a9e1a35040b705825b50aba',
+    id: '6aa9747f7fbaf7f52bfb36e8',
     name: 'Dr. Rajesh Sharma',
     specialty: 'General Medicine (सामान्य चिकित्सा)',
     facility: 'CHC Sitapur Central',
@@ -19,7 +19,7 @@ const DOCTORS = [
     languages: 'Hindi, English',
   },
   {
-    id: 'doc-2',
+    id: '6aa974807fbaf7f52bfb36ea',
     name: 'Dr. Ananya Gupta',
     specialty: 'Pediatrics (बाल रोग विशेषज्ञ)',
     facility: 'District Hospital Sitapur',
@@ -32,7 +32,7 @@ const DOCTORS = [
     languages: 'Hindi, Bhojpuri',
   },
   {
-    id: 'doc-3',
+    id: '6aa974817fbaf7f52bfb36ec',
     name: 'Dr. Vikramaditya Rathore',
     specialty: 'Cardiology (हृदय रोग)',
     facility: 'State Medical College Tele-Hub',
@@ -45,7 +45,7 @@ const DOCTORS = [
     languages: 'Hindi, English',
   },
   {
-    id: 'doc-4',
+    id: '6aa974817fbaf7f52bfb36ee',
     name: 'Dr. Priya Verma',
     specialty: 'Gynecology & Maternal Care (महिला रोग)',
     facility: 'Sub-Divisional Hospital Ward 2',

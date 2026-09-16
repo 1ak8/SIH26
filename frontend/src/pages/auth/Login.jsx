@@ -36,8 +36,8 @@ export default function Login() {
 
   const ROLES = [
     { key: 'patient', label: t('citizen') || 'Citizen', icon: 'person' },
-    { key: 'health_worker', label: 'ASHA Worker', icon: 'volunteer_activism' },
-    { key: 'doctor', label: 'Doctor', icon: 'medical_services' },
+    { key: 'health_worker', label: 'Health Worker', icon: 'medical_services' },
+    { key: 'doctor', label: 'Doctor', icon: 'stethoscope' },
     { key: 'admin', label: 'Admin', icon: 'admin_panel_settings' },
   ];
 
@@ -281,7 +281,7 @@ export default function Login() {
                       <select className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         value={regForm.role} onChange={e => setRegForm({...regForm, role: e.target.value})}>
                         <option value="patient">Citizen</option>
-                        <option value="health_worker">ASHA Worker</option>
+                        <option value="health_worker">Health Worker (ANM / CHO)</option>
                         <option value="doctor">Doctor</option>
                         <option value="admin">Admin</option>
                       </select>

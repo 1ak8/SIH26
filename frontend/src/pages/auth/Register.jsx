@@ -58,7 +58,7 @@ export default function Register() {
           <div className="grid grid-cols-2 gap-3">
             <select className="bg-surface-container-low px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary" value={form.role} onChange={e => set('role', e.target.value)}>
               <option value="patient">Patient</option>
-              <option value="health_worker">ASHA / Health Worker</option>
+              <option value="health_worker">Health Worker (ANM / CHO)</option>
               <option value="doctor">Doctor</option>
               <option value="admin">Admin</option>
             </select>

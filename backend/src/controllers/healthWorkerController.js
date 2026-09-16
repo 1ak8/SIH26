@@ -7,6 +7,7 @@ const PatientProfile = require('../models/PatientProfile');
 const VisitRequest = require('../models/VisitRequest');
 const Immunization = require('../models/Immunization');
 const MaternalCheckup = require('../models/MaternalCheckup');
+const AshaTask = require('../models/AshaTask');
 
 const submitTriage = asyncHandler(async (req, res) => {
   const { patientId, vitals, symptoms, riskLevel, notes, tags, requiresReferral, requiresAmbulance, followUpDate } = req.body;
@@ -191,6 +192,133 @@ const updateVisitStatus = asyncHandler(async (req, res) => {
   res.json({ success: true, data: visit });
 });
 
+// GET /api/health-worker/tasks
+const getAshaTasks = asyncHandler(async (req, res) => {
+  const tasks = await AshaTask.find().sort('-createdAt');
+  res.json({ success: true, count: tasks.length, data: tasks });
+});
+
+// POST /api/health-worker/tasks
+const createAshaTask = asyncHandler(async (req, res) => {
+  const {
+    ashaWorker,
+    patientId,
+    patientName,
+    patientPhone,
+    patientAddress,
+    taskType,
+    priority,
+    scheduledDate,
+    scheduledTime,
+    instructions,
+  } = req.body;
+
+  if (!ashaWorker || !patientName) {
+    res.status(400);
+    throw new Error('ASHA worker and patient details are required');
+  }
+
+  const task = await AshaTask.create({
+    assignedBy: req.user._id,
+    assignedByName: req.user.name || 'Community Health Worker (CHO)',
+    ashaWorker: typeof ashaWorker === 'string' ? { name: ashaWorker, phone: '9876543230', ward: 'Sitapur Sector' } : ashaWorker,
+    patient: patientId || undefined,
+    patientName,
+    patientPhone: patientPhone || '',
+    patientAddress: patientAddress || '',
+    taskType: taskType || 'Home Visit & Vitals',
+    priority: priority || 'routine',
+    scheduledDate: scheduledDate || 'Today',
+    scheduledTime: scheduledTime || 'Morning (10:00 AM)',
+    instructions: instructions || 'Conduct field checkup and report vitals.',
+    status: 'pending',
+  });
+
+  const io = req.app.get('io');
+  if (io) {
+    io.emit('asha:task_assigned', task);
+  }
+
+  res.status(201).json({ success: true, message: 'Task assigned to ASHA successfully!', data: task });
+});
+
+// PATCH /api/health-worker/tasks/:id/status
+const updateAshaTaskStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status, outcomeNotes } = req.body;
+
+  const task = await AshaTask.findById(id);
+  if (!task) {
+    res.status(404);
+    throw new Error('Task not found');
+  }
+
+  if (status) task.status = status;
+  if (outcomeNotes) task.outcomeNotes = outcomeNotes;
+  if (status === 'completed') task.completedAt = new Date();
+
+  await task.save();
+
+  const io = req.app.get('io');
+  if (io) {
+    io.emit('asha:task_status_updated', task);
+  }
+
+  res.json({ success: true, message: 'Task status updated!', data: task });
+});
+
+// POST /api/health-worker/register-citizen
+const registerCitizen = asyncHandler(async (req, res) => {
+  const { name, phone, gender, village, condition, allergies } = req.body;
+  if (!name) {
+    res.status(400);
+    throw new Error('Name is required');
+  }
+
+  const email = `citizen.${Date.now()}@sehatsaarthi.gov.in`;
+  const randomAbha = `91-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+  const user = await User.create({
+    name,
+    email,
+    phone: phone || '9876543299',
+    role: 'patient',
+    gender: gender ? gender.toLowerCase() : 'female',
+    address: village || 'Sitapur Ward 4',
+    abhaId: randomAbha,
+    password: 'password123',
+  });
+
+  await PatientProfile.create({
+    user: user._id,
+    abhaId: randomAbha,
+    allergies: allergies ? [{ name: allergies, severity: 'mild' }] : [],
+    chronicConditions: condition ? [{ condition, diagnosedDate: new Date(), status: 'active' }] : [],
+    vitals: {
+      systolicBP: 120,
+      diastolicBP: 80,
+      heartRate: 72,
+      spO2: 98,
+      temperature: 98.6,
+      bloodSugar: 100,
+      lastUpdated: new Date(),
+    },
+  });
+
+  res.status(201).json({
+    success: true,
+    message: 'Citizen registered successfully!',
+    data: {
+      _id: user._id,
+      name: user.name,
+      phone: user.phone,
+      abhaId: randomAbha,
+      address: user.address,
+      gender: user.gender,
+    },
+  });
+});
+
 module.exports = {
   submitTriage,
   createReferral,
@@ -201,4 +329,8 @@ module.exports = {
   updateVisitStatus,
   getVillageImmunizations,
   logImmunizationDose,
+  getAshaTasks,
+  createAshaTask,
+  updateAshaTaskStatus,
+  registerCitizen,
 };

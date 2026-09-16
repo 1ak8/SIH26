@@ -12,6 +12,10 @@ const {
   updateVisitStatus,
   getVillageImmunizations,
   logImmunizationDose,
+  getAshaTasks,
+  createAshaTask,
+  updateAshaTaskStatus,
+  registerCitizen,
 } = require('../controllers/healthWorkerController');
 
 router.use(protect, authorize('health_worker'));
@@ -24,5 +28,9 @@ router.get('/visit-requests', getVisitRequests);
 router.patch('/visit-requests/:id/status', updateVisitStatus);
 router.get('/village-immunizations', getVillageImmunizations);
 router.post('/immunizations/:id/complete', logImmunizationDose);
+router.get('/tasks', getAshaTasks);
+router.post('/tasks', createAshaTask);
+router.patch('/tasks/:id/status', updateAshaTaskStatus);
+router.post('/register-citizen', registerCitizen);
 
 module.exports = router;

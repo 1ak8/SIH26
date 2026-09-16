@@ -39,6 +39,73 @@ export default function PatientDashboard() {
   const [isEditingVitals, setIsEditingVitals] = useState(false);
   const [vitalsSaving, setVitalsSaving] = useState(false);
   const [vitalsToast, setVitalsToast] = useState(null);
+  const [dashboardToast, setDashboardToast] = useState(null);
+
+  const showToast = (msg) => {
+    setDashboardToast(msg);
+    setTimeout(() => setDashboardToast(null), 4000);
+  };
+
+  // Edit Profile Form State
+  const [editProfileForm, setEditProfileForm] = useState({
+    name: user?.name || '',
+    phone: user?.phone || '',
+    address: user?.address || 'Sitapur Rural (Ward 4)',
+  });
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [bookingSpecialty, setBookingSpecialty] = useState('General Medicine');
+
+  useEffect(() => {
+    if (user) {
+      setEditProfileForm({
+        name: user.name || '',
+        phone: user.phone || '',
+        address: user.address || 'Sitapur Rural (Ward 4)',
+      });
+    }
+  }, [user]);
+
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    setSavingProfile(true);
+    try {
+      const res = await api.put('/patient/profile', editProfileForm);
+      if (res.data?.success) {
+        const stored = JSON.parse(localStorage.getItem('sehatsaarthi_user') || localStorage.getItem('aarogyanet_user') || '{}');
+        const updated = { ...stored, ...editProfileForm };
+        localStorage.setItem('sehatsaarthi_user', JSON.stringify(updated));
+        localStorage.setItem('aarogyanet_user', JSON.stringify(updated));
+        showToast('Profile details successfully updated & saved to database!');
+        setActiveModal(null);
+        api.get('/patient/dashboard').then(r => setData(r.data?.data)).catch(() => {});
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Failed to save profile. Please check connection.');
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const handleQuickBookAppointment = async () => {
+    try {
+      const tomorrowStr = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const res = await api.post('/patient/appointments', {
+        date: tomorrowStr,
+        timeSlot: '11:00 AM',
+        type: 'teleconsultation',
+        reason: `${bookingSpecialty} OPD Tele-Consultation`,
+      });
+      if (res.data?.success) {
+        showToast(`Appointment for ${bookingSpecialty} booked & saved directly in database!`);
+        setActiveModal(null);
+        api.get('/patient/dashboard').then(r => setData(r.data?.data)).catch(() => {});
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Failed to book appointment. Please try again.');
+    }
+  };
 
   // Video Call Tele-OPD States
   const localVideoRef = useRef(null);
@@ -602,6 +669,14 @@ export default function PatientDashboard() {
   return (
     <div className="bg-surface-container-lowest text-on-surface font-sans min-h-screen">
       <PatientNavbar activeTab={activeTab} setActiveTab={setActiveTab} />
+
+      {/* Real Toast Notification */}
+      {dashboardToast && (
+        <div className="fixed top-24 right-6 z-[150] bg-slate-900 text-amber-300 px-5 py-3 rounded-2xl shadow-xl border border-amber-400/50 flex items-center gap-3 text-sm font-bold animate-bounce">
+          <span className="material-symbols-outlined text-amber-400">check_circle</span>
+          <span>{dashboardToast}</span>
+        </div>
+      )}
 
       {/* MAIN */}
       <main className="w-full bg-surface-container-lowest px-6 lg:px-12 xl:px-16 pt-28">
@@ -1803,32 +1878,53 @@ export default function PatientDashboard() {
                 {/* Book Consult */}
                 {activeModal === 'book-consult' && (
                   <div className="flex flex-col gap-4">
-                    <p className="text-body-md text-secondary">Select a specialty to consult with a doctor from your district hospital or state medical college.</p>
-                    <select className="w-full bg-surface-container px-4 py-3 rounded-xl border border-surface-variant text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-bold">
-                      <option>General Medicine</option>
-                      <option>Pediatrics</option>
-                      <option>Gynecology</option>
-                      <option>Dermatology</option>
-                      <option>Mental Health</option>
+                    <p className="text-xs text-slate-600 font-semibold">Select a specialty to consult with a doctor from your district hospital or state medical college.</p>
+                    <select 
+                      value={bookingSpecialty}
+                      onChange={e => setBookingSpecialty(e.target.value)}
+                      className="w-full bg-slate-50 px-4 py-3 rounded-xl border-2 border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-bold"
+                    >
+                      <option value="General Medicine">General Medicine (Dr. Rajesh Sharma)</option>
+                      <option value="Pediatrics">Pediatrics (Dr. Ananya Gupta)</option>
+                      <option value="Gynecology">Gynecology (Dr. Priya Verma)</option>
+                      <option value="Cardiology">Cardiology (Dr. Vikramaditya Rathore)</option>
                     </select>
-                    <button onClick={() => { setActiveModal(null); alert('Appointment Booked!'); }} className="w-full bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white py-3.5 rounded-xl font-bold shadow-sm transition-all mt-2">Find Next Available Doctor</button>
+                    <button 
+                      type="button"
+                      onClick={handleQuickBookAppointment} 
+                      className="w-full bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white py-3.5 rounded-xl font-black text-xs shadow-sm transition-all mt-2 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">event_available</span>
+                      <span>Confirm &amp; Book Next Available Slot</span>
+                    </button>
                   </div>
                 )}
                 {/* Order Meds */}
                 {activeModal === 'order-meds' && (
                   <div className="flex flex-col gap-4">
-                    <div className="bg-primary-container/20 p-4 rounded-xl border border-primary-container">
-                      <p className="text-body-md text-on-surface font-bold">Upload your prescription or select from past records to order medicines from Jan Aushadhi Kendra.</p>
+                    <div className="bg-amber-50 p-4 rounded-xl border border-amber-300">
+                      <p className="text-xs text-amber-950 font-bold">Jan Aushadhi generic medicines are synchronized from your attending doctor's digital prescription.</p>
                     </div>
-                    <button className="w-full bg-surface-container px-4 py-3 rounded-xl border border-surface-variant text-on-surface text-sm hover:bg-surface-variant transition-colors flex items-center justify-between font-bold">
-                      <span>Select Past Prescription</span>
-                      <span className="material-symbols-outlined text-primary">history</span>
+                    <button 
+                      onClick={() => {
+                        setActiveModal(null);
+                        navigate('/patient/medicines');
+                      }}
+                      className="w-full bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-xs hover:bg-slate-100 transition-colors flex items-center justify-between font-bold cursor-pointer"
+                    >
+                      <span>View Active Jan Aushadhi Prescriptions</span>
+                      <span className="material-symbols-outlined text-amber-700">medication</span>
                     </button>
-                    <button className="w-full bg-surface-container px-4 py-3 rounded-xl border border-surface-variant text-on-surface text-sm hover:bg-surface-variant transition-colors flex items-center justify-between font-bold">
-                      <span>Upload New Prescription (PDF/Image)</span>
-                      <span className="material-symbols-outlined text-primary">upload_file</span>
+                    <button 
+                      onClick={() => {
+                        setActiveModal(null);
+                        navigate('/patient/medicines');
+                      }}
+                      className="w-full bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white py-3.5 rounded-xl font-black text-xs shadow-sm transition-all mt-2 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">shopping_cart_checkout</span>
+                      <span>Proceed to Medicines Portal</span>
                     </button>
-                    <button onClick={() => { setActiveModal(null); alert('Order Placed!'); }} className="w-full bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white py-3.5 rounded-xl font-bold shadow-sm transition-all mt-2">Proceed to Order</button>
                   </div>
                 )}
                 {/* Lab Tests & Diagnostic Reports - Real MongoDB Atlas Integration */}
@@ -2390,23 +2486,57 @@ export default function PatientDashboard() {
                     </div>
                   </div>
                 )}
-                {/* Edit Profile */}
+                {/* Edit Profile - Fully Controlled & Saves Directly to MongoDB Database */}
                 {activeModal === 'edit-profile' && (
-                  <div className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-label-sm font-bold text-secondary">{t('fullName')}</label>
-                      <input type="text" defaultValue={user?.name || 'Aditya Sharma'} className="w-full bg-surface-container px-4 py-3 rounded-xl border border-surface-variant text-on-surface text-sm focus:outline-none focus:border-primary font-bold" />
+                  <form onSubmit={handleSaveProfile} className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-black text-slate-700 uppercase tracking-wider">{t('fullName')}</label>
+                      <input 
+                        type="text" 
+                        value={editProfileForm.name} 
+                        onChange={e => setEditProfileForm({...editProfileForm, name: e.target.value})} 
+                        className="w-full bg-slate-50 px-4 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-bold focus:outline-none focus:border-amber-500" 
+                        required
+                      />
                     </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-label-sm font-bold text-secondary">{t('mobileNumber')}</label>
-                      <input type="tel" defaultValue={user?.phone || '+91 9876543210'} className="w-full bg-surface-container px-4 py-3 rounded-xl border border-surface-variant text-on-surface text-sm focus:outline-none focus:border-primary font-bold" />
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-black text-slate-700 uppercase tracking-wider">{t('mobileNumber')}</label>
+                      <input 
+                        type="tel" 
+                        value={editProfileForm.phone} 
+                        onChange={e => setEditProfileForm({...editProfileForm, phone: e.target.value})} 
+                        className="w-full bg-slate-50 px-4 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-bold focus:outline-none focus:border-amber-500" 
+                        required
+                      />
                     </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-label-sm font-bold text-secondary">Address / Ward</label>
-                      <input type="text" defaultValue="Sitapur Rural (Ward 4)" className="w-full bg-surface-container px-4 py-3 rounded-xl border border-surface-variant text-on-surface text-sm focus:outline-none focus:border-primary font-bold" />
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-black text-slate-700 uppercase tracking-wider">Address / Ward</label>
+                      <input 
+                        type="text" 
+                        value={editProfileForm.address} 
+                        onChange={e => setEditProfileForm({...editProfileForm, address: e.target.value})} 
+                        className="w-full bg-slate-50 px-4 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-bold focus:outline-none focus:border-amber-500" 
+                        required
+                      />
                     </div>
-                    <button onClick={() => { setActiveModal(null); alert('Profile updated successfully!'); }} className="w-full bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white py-3.5 rounded-xl font-bold shadow-sm transition-all mt-2">Save Changes</button>
-                  </div>
+                    <button 
+                      type="submit" 
+                      disabled={savingProfile}
+                      className="w-full bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white py-3.5 rounded-xl font-black text-xs shadow-sm transition-all mt-2 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {savingProfile ? (
+                        <>
+                          <span className="material-symbols-outlined text-[18px] animate-spin">sync</span>
+                          <span>Saving to Database...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="material-symbols-outlined text-[18px]">save</span>
+                          <span>Save Changes Permanently to Database</span>
+                        </>
+                      )}
+                    </button>
+                  </form>
                 )}
             </div>
           </div>
