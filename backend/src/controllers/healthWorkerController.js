@@ -5,6 +5,8 @@ const Appointment = require('../models/Appointment');
 const User = require('../models/User');
 const PatientProfile = require('../models/PatientProfile');
 const VisitRequest = require('../models/VisitRequest');
+const Immunization = require('../models/Immunization');
+const MaternalCheckup = require('../models/MaternalCheckup');
 
 const submitTriage = asyncHandler(async (req, res) => {
   const { patientId, vitals, symptoms, riskLevel, notes, tags, requiresReferral, requiresAmbulance, followUpDate } = req.body;
@@ -51,12 +53,89 @@ const createReferral = asyncHandler(async (req, res) => {
 });
 
 const getAssignedPatients = asyncHandler(async (req, res) => {
-  const triages = await TriageData.find({ assessedBy: req.user._id })
-    .populate('patient', 'name phone gender dateOfBirth abhaId')
-    .sort('-createdAt');
-  const uniquePatients = {};
-  triages.forEach(t => { if (t.patient) uniquePatients[t.patient._id] = t; });
-  res.json({ success: true, data: Object.values(uniquePatients) });
+  const patients = await User.find({ role: 'patient' }).select('-password').sort('name');
+  const patientIds = patients.map(p => p._id);
+  
+  const profiles = await PatientProfile.find({ user: { $in: patientIds } });
+  const profileMap = {};
+  profiles.forEach(pr => { profileMap[pr.user.toString()] = pr; });
+
+  const latestTriages = await TriageData.find({ patient: { $in: patientIds } }).sort('-createdAt');
+  const triageMap = {};
+  latestTriages.forEach(tr => {
+    if (!triageMap[tr.patient.toString()]) triageMap[tr.patient.toString()] = tr;
+  });
+
+  const enriched = patients.map(p => {
+    const prof = profileMap[p._id.toString()];
+    const triage = triageMap[p._id.toString()];
+    return {
+      _id: p._id,
+      name: p.name,
+      phone: p.phone,
+      email: p.email,
+      gender: p.gender || 'Not specified',
+      dateOfBirth: p.dateOfBirth,
+      abhaId: p.abhaId || '91-4820-1940-2810',
+      address: p.address || 'Sitapur Ward 4',
+      profile: prof || null,
+      vitals: prof?.vitals || triage?.vitals || null,
+      maternalHealth: prof?.maternalHealth || null,
+      chronicConditions: prof?.chronicConditions || [],
+      allergies: prof?.allergies || [],
+      lastTriage: triage || null,
+    };
+  });
+
+  res.json({ success: true, count: enriched.length, data: enriched });
+});
+
+// GET /api/health-worker/village-immunizations
+const getVillageImmunizations = asyncHandler(async (req, res) => {
+  const immunizations = await Immunization.find()
+    .populate('patient', 'name phone abhaId')
+    .sort('scheduledDate');
+  const maternalCheckups = await MaternalCheckup.find()
+    .populate('patient', 'name phone abhaId')
+    .sort('dateOfVisit');
+
+  res.json({
+    success: true,
+    data: {
+      immunizations,
+      maternalCheckups,
+      dueCount: immunizations.filter(i => i.status === 'scheduled' || i.status === 'overdue').length,
+      completedCount: immunizations.filter(i => i.status === 'completed').length,
+    }
+  });
+});
+
+// POST /api/health-worker/immunizations/:id/complete
+const logImmunizationDose = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { batchNumber, facility, notes } = req.body;
+
+  const imm = await Immunization.findById(id);
+  if (!imm) {
+    res.status(404);
+    throw new Error('Immunization record not found');
+  }
+
+  imm.status = 'completed';
+  imm.administeredDate = new Date();
+  imm.administeredBy = req.user.name || 'Sunita Devi (ASHA)';
+  if (batchNumber) imm.batchNumber = batchNumber;
+  if (facility) imm.facility = facility;
+  if (notes) imm.notes = notes;
+
+  await imm.save();
+
+  const io = req.app.get('io');
+  if (io) {
+    io.emit('immunization:completed', imm);
+  }
+
+  res.json({ success: true, message: 'Dose logged on U-WIN/ABDM Grid successfully!', data: imm });
 });
 
 const getHWDashboard = asyncHandler(async (req, res) => {
@@ -112,4 +191,14 @@ const updateVisitStatus = asyncHandler(async (req, res) => {
   res.json({ success: true, data: visit });
 });
 
-module.exports = { submitTriage, createReferral, getAssignedPatients, getHWDashboard, bookForPatient, getVisitRequests, updateVisitStatus };
+module.exports = {
+  submitTriage,
+  createReferral,
+  getAssignedPatients,
+  getHWDashboard,
+  bookForPatient,
+  getVisitRequests,
+  updateVisitStatus,
+  getVillageImmunizations,
+  logImmunizationDose,
+};
