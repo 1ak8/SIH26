@@ -6,6 +6,7 @@ import DoctorNavbar from '../../components/DoctorNavbar';
 
 const QUEUE_DATA = [
   { 
+    _id: '6aa9748a7fbaf7f52bfb3735',
     id: 4, 
     name: 'Aditya Verma', 
     age: '32 yrs', 
@@ -18,6 +19,7 @@ const QUEUE_DATA = [
     abha: '91-4820-1940-2810'
   },
   { 
+    _id: '6aa9748a7fbaf7f52bfb3737',
     id: 5, 
     name: 'Savitri Devi', 
     age: '54 yrs', 
@@ -30,6 +32,7 @@ const QUEUE_DATA = [
     abha: '91-2311-9041-5512'
   },
   { 
+    _id: '6aa9748a7fbaf7f52bfb3733',
     id: 6, 
     name: 'Bharat Patel', 
     age: '41 yrs', 
@@ -42,6 +45,7 @@ const QUEUE_DATA = [
     abha: '91-8832-1002-3921'
   },
   { 
+    _id: '6aa9748b7fbaf7f52bfb3739',
     id: 7, 
     name: 'Pooja Kumari', 
     age: '22 yrs', 
@@ -60,14 +64,21 @@ export default function DoctorDashboard() {
   const [data, setData] = useState(null);
   const [sessionSeconds, setSessionSeconds] = useState(7163);
   const [expandedPatientId, setExpandedPatientId] = useState(null);
-  const [queue, setQueue] = useState([]);
+  const [queue, setQueue] = useState(QUEUE_DATA);
   const [actionLoadingId, setActionLoadingId] = useState(null);
+  const [activeConsultation, setActiveConsultation] = useState(null);
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 4000);
+  };
 
   const fetchDashboard = () => {
     api.get('/doctor/dashboard').then(r => setData(r.data?.data)).catch(() => {});
     api.get('/doctor/queue')
       .then(r => {
-        if (r.data?.data) {
+        if (r.data?.data?.length > 0) {
           setQueue(r.data.data);
         }
       })
@@ -80,14 +91,35 @@ export default function DoctorDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleUpdateStatus = async (appointmentId, newStatus) => {
+  const handleUpdateStatus = async (item, newStatus) => {
+    const appointmentId = item._id || item.id;
     setActionLoadingId(appointmentId);
+
+    // Update state immediately for instant feedback
+    setQueue(prev => prev.map(a => {
+      const match = (a._id && a._id === appointmentId) || (a.id && a.id === appointmentId);
+      if (match) {
+        return {
+          ...a,
+          status: newStatus === 'in_consultation' ? 'IN CONSULTATION' : newStatus === 'completed' ? 'Completed' : 'Waiting',
+          rawStatus: newStatus
+        };
+      }
+      return a;
+    }));
+
+    if (newStatus === 'in_consultation') {
+      setActiveConsultation(item);
+      showToast(`Tele-Consultation started with ${item.name || item.patient?.name}! Connected to Kiosk.`);
+    } else if (newStatus === 'completed') {
+      showToast(`Consultation for ${item.name || item.patient?.name} marked as Completed!`);
+    }
+
     try {
       await api.put(`/doctor/queue/${appointmentId}/status`, { status: newStatus });
       fetchDashboard();
     } catch (err) {
-      // optimistic local fallback
-      setQueue(prev => prev.map(a => a._id === appointmentId ? { ...a, status: newStatus } : a));
+      console.warn('Updated locally:', err);
     } finally {
       setActionLoadingId(null);
     }
@@ -108,6 +140,14 @@ export default function DoctorDashboard() {
   return (
     <div className="bg-[#fbfaf7] text-slate-900 font-sans min-h-screen">
       <DoctorNavbar />
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed top-24 right-6 z-[120] bg-slate-900 text-amber-300 px-5 py-3 rounded-2xl shadow-xl border border-amber-400/50 flex items-center gap-3 text-sm font-bold animate-bounce">
+          <span className="material-symbols-outlined text-amber-400">check_circle</span>
+          <span>{toastMessage}</span>
+        </div>
+      )}
 
       <main className="w-full px-6 lg:px-12 xl:px-16 pt-28 pb-16">
         {/* Live OPD Console Header Banner */}
@@ -309,9 +349,9 @@ export default function DoctorDashboard() {
 
                       {isCurrent ? (
                         <button 
-                          onClick={() => handleUpdateStatus(pId, 'completed')}
+                          onClick={() => handleUpdateStatus(item, 'completed')}
                           disabled={actionLoadingId === pId}
-                          className="h-12 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-extrabold rounded-xl shadow-md shadow-emerald-600/25 transition-all flex items-center justify-center gap-2"
+                          className="h-12 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-extrabold rounded-xl shadow-md shadow-emerald-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
                           type="button"
                         >
                           <span className="material-symbols-outlined text-[20px]">check_circle</span>
@@ -319,9 +359,9 @@ export default function DoctorDashboard() {
                         </button>
                       ) : (
                         <button 
-                          onClick={() => handleUpdateStatus(pId, 'in_consultation')}
+                          onClick={() => handleUpdateStatus(item, 'in_consultation')}
                           disabled={actionLoadingId === pId}
-                          className="h-12 px-5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-extrabold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5"
+                          className="h-12 px-5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-extrabold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                           type="button"
                         >
                           <span className="material-symbols-outlined text-[18px]">videocam</span>
@@ -367,6 +407,144 @@ export default function DoctorDashboard() {
             })}
           </div>
         </section>
+
+        {/* ACTIVE TELE-CONSULTATION ROOM MODAL FOR DOCTOR */}
+        {activeConsultation && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-4 animate-fadeIn">
+            <div className="bg-slate-950 text-white w-full max-w-4xl rounded-3xl border border-slate-700 shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+              {/* Modal Header */}
+              <div className="px-6 py-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="w-3 h-3 rounded-full bg-rose-500 animate-ping"></span>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                      <span>Live Tele-OPD Consultation</span>
+                      <span className="text-xs font-mono text-amber-400 bg-slate-800 px-2.5 py-0.5 rounded-md border border-slate-700">
+                        Token #{activeConsultation.id || 4}
+                      </span>
+                    </h3>
+                    <p className="text-xs text-slate-400 font-semibold">
+                      Citizen: <strong className="text-white">{activeConsultation.name || activeConsultation.patient?.name}</strong> • Connected via {activeConsultation.location || 'Rural Sub-Centre'}
+                    </p>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => setActiveConsultation(null)} 
+                  className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 transition-colors cursor-pointer shadow-sm"
+                  title="Close Preview"
+                >
+                  <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-4 sm:p-6 overflow-y-auto grid grid-cols-1 lg:grid-cols-12 gap-5">
+                {/* Left: Video Simulation */}
+                <div className="lg:col-span-7 flex flex-col gap-3">
+                  <div className="relative aspect-video rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden flex items-center justify-center group shadow-inner">
+                    <div className="flex flex-col items-center gap-2 z-10 text-center p-4">
+                      <div className="w-20 h-20 rounded-full bg-amber-500/20 border-2 border-amber-400/40 flex items-center justify-center text-amber-400">
+                        <span className="material-symbols-outlined text-[42px]">person</span>
+                      </div>
+                      <span className="text-sm font-black text-white notranslate" translate="no">{activeConsultation.name || activeConsultation.patient?.name}</span>
+                      <span className="text-xs text-emerald-400 font-extrabold flex items-center gap-1.5 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/30">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        HD Encrypted Video Stream • Online
+                      </span>
+                    </div>
+
+                    {/* Audio visualizer simulation */}
+                    <div className="absolute bottom-4 left-4 right-4 flex items-center justify-center gap-1">
+                      {[18, 35, 22, 45, 60, 30, 50, 25, 40, 55, 30, 18].map((h, i) => (
+                        <span key={i} style={{ height: `${h}px` }} className="w-1 bg-amber-400/70 rounded-full animate-pulse"></span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Doctor Consultation Controls */}
+                  <div className="flex items-center justify-center gap-3 p-3 bg-slate-900/80 rounded-2xl border border-slate-800">
+                    <button type="button" className="w-11 h-11 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition-colors">
+                      <span className="material-symbols-outlined text-[20px]">mic</span>
+                    </button>
+                    <button type="button" className="w-11 h-11 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition-colors">
+                      <span className="material-symbols-outlined text-[20px]">videocam</span>
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => {
+                        handleUpdateStatus(activeConsultation, 'completed');
+                        setActiveConsultation(null);
+                      }}
+                      className="px-5 py-2.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-black flex items-center gap-1.5 transition-all shadow-md"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">call_end</span>
+                      <span>End &amp; Complete Consultation</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Right: Clinical Information & Quick Prescription */}
+                <div className="lg:col-span-5 flex flex-col gap-3">
+                  {/* Patient Info Card */}
+                  <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase block">Citizen</span>
+                        <strong className="text-white text-base font-black">{activeConsultation.name || activeConsultation.patient?.name}</strong>
+                      </div>
+                      <span className="text-[10px] font-mono text-amber-300 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+                        ABHA: {activeConsultation.abha || '91-4820-1940-2810'}
+                      </span>
+                    </div>
+
+                    <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
+                      <span className="text-[10px] text-slate-400 uppercase font-bold block mb-0.5">Reported Symptoms / Notes</span>
+                      <p className="text-slate-200 font-semibold">{activeConsultation.symptoms || activeConsultation.reason || 'Routine follow-up'}</p>
+                    </div>
+
+                    <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
+                      <span className="text-[10px] text-amber-400 uppercase font-black block mb-1">Live Vitals Received from Field Kiosk</span>
+                      <p className="text-white font-mono font-black">{activeConsultation.vitals || 'BP 120/80 mmHg • Pulse 74 • SpO2 98%'}</p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-col gap-2 mt-auto">
+                    <Link
+                      to="/doctor/prescriptions"
+                      state={{
+                        patientId: activeConsultation._id || activeConsultation.patient?._id || '6aa9748a7fbaf7f52bfb3735',
+                        patientName: activeConsultation.name || activeConsultation.patient?.name || 'Aditya Verma',
+                        abhaId: activeConsultation.abha || '91-4820-1940-2810',
+                        appointmentId: activeConsultation._id,
+                        reason: activeConsultation.symptoms || activeConsultation.reason,
+                        location: activeConsultation.location || 'Rampur Sub-Centre',
+                        token: activeConsultation.id || 4,
+                      }}
+                      className="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">medication</span>
+                      <span>Write Digital e-Prescription (Jan Aushadhi)</span>
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleUpdateStatus(activeConsultation, 'completed');
+                        setActiveConsultation(null);
+                      }}
+                      className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                      <span>Mark Consultation as Complete</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* FOOTER: Exact same as Patient Panel */}

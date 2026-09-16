@@ -29,7 +29,7 @@ export default function Prescriptions() {
     setSending(true);
     try {
       // Find patient ID or fallback to seeded test patient
-      const pId = stateData.patientId || '6aa6fd7cf6544cc0d0ab1eb1';
+      const pId = stateData.patientId || '6aa974837fbaf7f52bfb36fc';
       const payload = {
         patientId: pId,
         appointmentId: stateData.appointmentId,
