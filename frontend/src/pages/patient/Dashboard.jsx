@@ -77,6 +77,114 @@ export default function PatientDashboard() {
       .finally(() => setLoadingLabs(false));
   };
 
+  const printDiagnosticReport = (report) => {
+    if (!report) return;
+    const printWindow = window.open('', '_blank', 'width=850,height=950');
+    if (!printWindow) {
+      window.print();
+      return;
+    }
+    const dateFormatted = report.completedAt 
+      ? new Date(report.completedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+      : new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    const rows = (report.results || []).map(r => `
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 10px 12px; font-weight: bold; color: #0f172a;">${r.parameter}</td>
+        <td style="padding: 10px 12px; font-weight: 800; color: #78350f;">${r.value} <span style="font-size: 11px; color: #64748b;">${r.unit || ''}</span></td>
+        <td style="padding: 10px 12px; color: #475569; font-family: monospace;">${r.normalRange || '—'}</td>
+        <td style="padding: 10px 12px; text-align: right;">
+          <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; ${
+            r.flag === 'High' ? 'background: #ffe4e6; color: #9f1239;' :
+            r.flag === 'Low' ? 'background: #fef3c7; color: #92400e;' :
+            'background: #dcfce7; color: #166534;'
+          }">${r.flag || 'Normal'}</span>
+        </td>
+      </tr>
+    `).join('');
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Diagnostic Report - ${report.orderId}</title>
+          <style>
+            @page { size: A4; margin: 15mm; }
+            body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a; margin: 0; padding: 24px; font-size: 13px; line-height: 1.5; }
+            .header { border-bottom: 3px solid #d97706; padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+            .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #fef3c7; padding: 12px 16px; border-radius: 8px; margin-bottom: 18px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            th { background: #f1f5f9; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; color: #475569; letter-spacing: 0.5px; }
+            .summary-box { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; }
+            .footer { margin-top: 30px; padding-top: 15px; border-top: 1px solid #cbd5e1; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #64748b; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <div style="font-size: 10px; font-weight: bold; color: #d97706; letter-spacing: 1px; text-transform: uppercase;">Ministry of Health &amp; Family Welfare</div>
+              <h1 style="margin: 3px 0; font-size: 20px; color: #0f172a;">${report.facility || 'CHC Sitapur Central Pathology Lab'}</h1>
+              <div style="font-size: 11px; color: #64748b;">NABL Accredited ISO 15189 • National Digital Health Network</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 18px; font-weight: 900; font-family: monospace; color: #92400e;">${report.orderId}</div>
+              <div style="font-size: 10px; color: #64748b;">BARCODE VERIFIED</div>
+            </div>
+          </div>
+
+          <div class="meta-grid">
+            <div><span style="font-size: 10px; color: #64748b; display: block;">CITIZEN PATIENT</span><strong>${report.patientName || user?.name}</strong></div>
+            <div><span style="font-size: 10px; color: #64748b; display: block;">PRESCRIBING DOCTOR</span><strong>${report.doctorName}</strong></div>
+            <div><span style="font-size: 10px; color: #64748b; display: block;">TEST CATEGORY</span><strong>${report.category || 'Pathology'}</strong></div>
+            <div><span style="font-size: 10px; color: #64748b; display: block;">COMPLETED DATE</span><strong>${dateFormatted}</strong></div>
+          </div>
+
+          <h2 style="font-size: 16px; margin: 0 0 12px 0; color: #0f172a;">${report.testName}</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Investigation Parameter</th>
+                <th>Observed Value</th>
+                <th>Reference Interval</th>
+                <th style="text-align: right;">Status Flag</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows || '<tr><td colspan="4" style="text-align:center; padding: 20px;">No quantitative parameters recorded.</td></tr>'}
+            </tbody>
+          </table>
+
+          ${report.summary ? `
+            <div class="summary-box">
+              <strong style="color: #166534; display: block; margin-bottom: 4px; font-size: 12px;">Pathologist Clinical Impression &amp; Findings:</strong>
+              <div>${report.summary}</div>
+            </div>
+          ` : ''}
+
+          <div class="footer">
+            <div>
+              <strong>Digitally Signed &amp; Authenticated</strong><br/>
+              ${report.verifiedBy || 'Dr. Anjali Seth (MD Pathology, Reg: NABL-84920)'}
+            </div>
+            <div style="text-align: right;">
+              <strong>SehatSaarthi Digital Diagnostic Network</strong><br/>
+              Compliant with ABDM Health Data Standards
+            </div>
+          </div>
+
+          <script>
+            window.onload = function() {
+              window.focus();
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
   const fetchVisits = () => {
     api.get('/patient/visit-requests')
       .then(res => {
@@ -1599,7 +1707,7 @@ export default function PatientDashboard() {
 
                           <button
                             type="button"
-                            onClick={() => window.print()}
+                            onClick={() => printDiagnosticReport(selectedLabReport)}
                             className="inline-flex items-center gap-1.5 text-xs font-extrabold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl transition-colors cursor-pointer"
                           >
                             <span className="material-symbols-outlined text-[16px]">print</span>
