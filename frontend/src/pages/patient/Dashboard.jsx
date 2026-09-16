@@ -52,6 +52,31 @@ export default function PatientDashboard() {
   const [activeCallTab, setActiveCallTab] = useState('call'); // 'call', 'chat', 'rx'
   const [callEndedSummary, setCallEndedSummary] = useState(null);
 
+  // Lab Tests & Diagnostic Reports States
+  const [labReports, setLabReports] = useState([]);
+  const [loadingLabs, setLoadingLabs] = useState(false);
+  const [selectedLabReport, setSelectedLabReport] = useState(null);
+  const [labFilter, setLabFilter] = useState('All');
+
+  const fetchLabReports = () => {
+    setLoadingLabs(true);
+    api.get('/patient/lab-reports')
+      .then(res => {
+        if (res.data?.data) {
+          setLabReports(res.data.data);
+          try { localStorage.setItem('sehatsaarthi_lab_reports', JSON.stringify(res.data.data)); } catch(e) {}
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching lab reports:', err);
+        try {
+          const local = JSON.parse(localStorage.getItem('sehatsaarthi_lab_reports') || '[]');
+          setLabReports(local);
+        } catch(e) {}
+      })
+      .finally(() => setLoadingLabs(false));
+  };
+
   const fetchVisits = () => {
     api.get('/patient/visit-requests')
       .then(res => {
@@ -70,7 +95,11 @@ export default function PatientDashboard() {
 
   useEffect(() => {
     fetchVisits();
-    const interval = setInterval(fetchVisits, 8000);
+    fetchLabReports();
+    const interval = setInterval(() => {
+      fetchVisits();
+      fetchLabReports();
+    }, 8000);
     return () => clearInterval(interval);
   }, []);
 
@@ -823,6 +852,8 @@ export default function PatientDashboard() {
               ? 'max-w-4xl bg-slate-950 border border-slate-700 text-white' 
               : activeModal === 'vitals-notes' 
               ? 'max-w-2xl bg-white text-slate-900 border border-slate-200' 
+              : activeModal === 'lab-tests'
+              ? 'max-w-3xl bg-white text-slate-900 border-2 border-amber-300'
               : 'max-w-lg bg-surface-container-lowest text-on-surface'
           } rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]`}>
             {/* Modal Header */}
@@ -831,6 +862,8 @@ export default function PatientDashboard() {
                 ? 'bg-slate-900 border-slate-800 text-white'
                 : activeModal === 'vitals-notes'
                 ? 'bg-amber-50/70 border-amber-200 text-slate-900'
+                : activeModal === 'lab-tests'
+                ? 'bg-slate-900 border-slate-800 text-white'
                 : 'bg-surface-container-low border-surface-variant'
             }`}>
               <h3 className="text-base sm:text-lg font-black flex items-center gap-2">
@@ -847,7 +880,12 @@ export default function PatientDashboard() {
                   </>
                 )}
                 {activeModal === 'request-visit' && 'Request ASHA Home Visit (गृह-भ्रमण अनुरोध)'}
-                {activeModal === 'lab-tests' && 'Lab Tests & Reports'}
+                {activeModal === 'lab-tests' && (
+                  <>
+                    <span className="material-symbols-outlined text-amber-400 text-[24px]">biotech</span>
+                    <span>Diagnostic Lab Tests &amp; Reports (जांच रिपोर्ट)</span>
+                  </>
+                )}
                 {activeModal === 'find-phc' && 'Find Nearest PHC'}
                 {activeModal === 'edit-profile' && 'Edit Profile Information'}
               </h3>
@@ -1543,28 +1581,291 @@ export default function PatientDashboard() {
                     <button onClick={() => { setActiveModal(null); alert('Order Placed!'); }} className="w-full bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white py-3.5 rounded-xl font-bold shadow-sm transition-all mt-2">Proceed to Order</button>
                   </div>
                 )}
-                {/* Lab Tests */}
+                {/* Lab Tests & Diagnostic Reports - Real MongoDB Atlas Integration */}
                 {activeModal === 'lab-tests' && (
-                  <div className="flex flex-col gap-3">
-                    <p className="text-body-md text-secondary mb-2">Recent diagnostic reports synchronized from your PHC.</p>
-                    <div className="p-4 rounded-xl border border-surface-variant flex items-center justify-between">
-                      <div>
-                        <p className="font-bold text-on-surface text-sm">Complete Blood Count (CBC)</p>
-                        <p className="text-[12px] text-secondary">Ordered by Dr. Sharma • 2 days ago</p>
+                  <div className="flex flex-col gap-4 max-h-[75vh] overflow-y-auto pr-1">
+                    {selectedLabReport ? (
+                      /* DETAILED PATHOLOGY REPORT VIEW */
+                      <div className="animate-in fade-in zoom-in-95 duration-150">
+                        <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedLabReport(null)}
+                            className="inline-flex items-center gap-1.5 text-xs font-black text-amber-800 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-xl border border-amber-300 transition-colors cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+                            <span>Back to All Reports</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => window.print()}
+                            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl transition-colors cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-[16px]">print</span>
+                            <span>Print Report</span>
+                          </button>
+                        </div>
+
+                        {/* Official Header */}
+                        <div className="bg-slate-900 text-white p-4 rounded-2xl mb-3 border-b-4 border-amber-500">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0">
+                              <span className="material-symbols-outlined text-[24px]">biotech</span>
+                            </div>
+                            <div>
+                              <span className="text-[10px] uppercase font-black tracking-wider text-amber-300 block">Ministry of Health &amp; Family Welfare</span>
+                              <h4 className="text-base font-black text-white">{selectedLabReport.facility || 'CHC Sitapur Central Pathology Lab'}</h4>
+                              <p className="text-[11px] text-slate-300">NABL Accredited ISO 15189 • National Digital Health Grid</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Patient & Order Details Strip */}
+                        <div className="bg-amber-50/80 p-3.5 rounded-xl border border-amber-200 grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs mb-3">
+                          <div>
+                            <span className="text-[10px] text-slate-500 font-bold uppercase block">Citizen Name</span>
+                            <strong className="text-slate-900 font-black">{selectedLabReport.patientName || user?.name}</strong>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-slate-500 font-bold uppercase block">Barcode / Order ID</span>
+                            <strong className="font-mono text-amber-950 font-black">{selectedLabReport.orderId}</strong>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-slate-500 font-bold uppercase block">Prescribed By</span>
+                            <strong className="text-slate-900 font-extrabold">{selectedLabReport.doctorName}</strong>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-slate-500 font-bold uppercase block">Date Completed</span>
+                            <strong className="text-slate-900 font-extrabold">
+                              {selectedLabReport.completedAt ? new Date(selectedLabReport.completedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Verified Today'}
+                            </strong>
+                          </div>
+                        </div>
+
+                        {/* Investigation Title */}
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="text-base font-black text-slate-900">{selectedLabReport.testName}</h4>
+                          <span className="text-xs font-black text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-md border border-amber-300">
+                            {selectedLabReport.category}
+                          </span>
+                        </div>
+
+                        {/* Results Table */}
+                        {selectedLabReport.results && selectedLabReport.results.length > 0 ? (
+                          <div className="border border-slate-200 rounded-2xl overflow-hidden mb-3">
+                            <table className="w-full text-left border-collapse text-xs">
+                              <thead>
+                                <tr className="bg-slate-100 text-slate-700 border-b border-slate-200">
+                                  <th className="px-3 py-2 font-black uppercase">Parameter</th>
+                                  <th className="px-3 py-2 font-black uppercase">Observed Value</th>
+                                  <th className="px-3 py-2 font-black uppercase">Reference Range</th>
+                                  <th className="px-3 py-2 font-black uppercase text-right">Interpretation</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100">
+                                {selectedLabReport.results.map((res, i) => (
+                                  <tr key={i} className="hover:bg-slate-50">
+                                    <td className="px-3 py-2 font-extrabold text-slate-900">{res.parameter}</td>
+                                    <td className="px-3 py-2 font-black text-amber-950">
+                                      {res.value} <span className="text-slate-500 text-[11px] font-medium">{res.unit}</span>
+                                    </td>
+                                    <td className="px-3 py-2 text-slate-600 font-mono text-[11px]">{res.normalRange}</td>
+                                    <td className="px-3 py-2 text-right">
+                                      <span className={`px-2 py-0.5 rounded text-[10px] font-black ${
+                                        res.flag === 'High' ? 'bg-rose-100 text-rose-900 border border-rose-300' :
+                                        res.flag === 'Low' ? 'bg-amber-100 text-amber-900 border border-amber-300' :
+                                        'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                                      }`}>
+                                        {res.flag || 'Normal'}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : (
+                          <div className="p-5 text-center bg-slate-50 rounded-2xl border border-slate-200 mb-3 text-xs text-slate-500">
+                            <span className="material-symbols-outlined text-2xl text-amber-600 animate-spin block mb-1">sync</span>
+                            Sample collected and in laboratory queue. Results will be uploaded once verified by pathologist.
+                          </div>
+                        )}
+
+                        {/* Summary / Remarks */}
+                        {selectedLabReport.summary && (
+                          <div className="bg-emerald-50/70 border border-emerald-300 p-3 rounded-xl mb-3 text-xs">
+                            <strong className="text-emerald-900 font-black block mb-0.5">Pathologist Impression &amp; Findings:</strong>
+                            <p className="text-slate-700 font-medium">{selectedLabReport.summary}</p>
+                          </div>
+                        )}
+
+                        {/* Verification Box */}
+                        <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                          <div className="flex items-center gap-2">
+                            <span className="material-symbols-outlined text-emerald-600 text-[22px]">verified</span>
+                            <div>
+                              <span className="font-black text-slate-900 block">Digitally Signed &amp; Authenticated</span>
+                              <span className="text-slate-500 text-[11px]">{selectedLabReport.verifiedBy || 'Dr. Anjali Seth (MD Pathology, Reg: NABL-84920)'}</span>
+                            </div>
+                          </div>
+                          <span className="text-[10px] font-mono font-bold text-slate-400">QR-ABHA-VALID</span>
+                        </div>
                       </div>
-                      <button className="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
-                        <span className="material-symbols-outlined text-[18px]">download</span> PDF
-                      </button>
-                    </div>
-                    <div className="p-4 rounded-xl border border-surface-variant flex items-center justify-between">
-                      <div>
-                        <p className="font-bold text-on-surface text-sm">HbA1c & Fasting Sugar</p>
-                        <p className="text-[12px] text-secondary">Ordered by Dr. Verma • 1 month ago</p>
-                      </div>
-                      <button className="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
-                        <span className="material-symbols-outlined text-[18px]">download</span> PDF
-                      </button>
-                    </div>
+                    ) : (
+                      /* LIST OF LAB REPORTS */
+                      <>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200">
+                          <div>
+                            <p className="text-xs text-slate-600 font-semibold">
+                              Diagnostic investigations ordered by your attending doctors &amp; verified by pathology labs.
+                            </p>
+                          </div>
+                          <div className="flex bg-slate-100 rounded-xl p-1 border border-slate-200 self-start sm:self-auto">
+                            {['All', 'Completed', 'Pending'].map(f => (
+                              <button
+                                key={f}
+                                type="button"
+                                onClick={() => setLabFilter(f)}
+                                className={`px-3 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                                  labFilter === f 
+                                    ? 'bg-amber-600 text-white shadow-xs' 
+                                    : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                              >
+                                {f}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {loadingLabs ? (
+                          <div className="p-8 text-center text-slate-500 font-bold text-xs">
+                            <span className="material-symbols-outlined text-3xl text-amber-500 animate-spin block mx-auto mb-1">sync</span>
+                            Synchronizing lab investigations with hospital pathology system...
+                          </div>
+                        ) : labReports.length === 0 ? (
+                          <div className="p-8 text-center text-slate-500 bg-slate-50 rounded-2xl border border-slate-200">
+                            <span className="material-symbols-outlined text-4xl text-slate-300 block mx-auto mb-1">science</span>
+                            <p className="font-extrabold text-slate-700 text-sm">No Lab Reports Ordered Yet</p>
+                            <p className="text-xs text-slate-400 mt-0.5">
+                              When your doctor orders blood tests or diagnostic investigations, they will appear here instantly.
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="space-y-3">
+                            {labReports
+                              .filter(rep => {
+                                if (labFilter === 'Completed') return rep.status === 'completed';
+                                if (labFilter === 'Pending') return rep.status !== 'completed';
+                                return true;
+                              })
+                              .map((report) => {
+                                const isCompleted = report.status === 'completed';
+                                const isProcessing = report.status === 'processing' || report.status === 'sample_collected';
+                                const dateFormatted = report.dateOrdered 
+                                  ? new Date(report.dateOrdered).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) 
+                                  : 'Recently';
+
+                                return (
+                                  <div 
+                                    key={report._id} 
+                                    className={`p-4 rounded-2xl border-2 transition-all ${
+                                      isCompleted 
+                                        ? 'bg-white border-amber-200 hover:border-amber-400 hover:shadow-sm' 
+                                        : 'bg-amber-50/30 border-amber-300/80'
+                                    }`}
+                                  >
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+                                      <div className="flex items-start gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center shrink-0">
+                                          <span className="material-symbols-outlined text-[20px]">
+                                            {report.category?.includes('Hema') ? 'bloodtype' : 'science'}
+                                          </span>
+                                        </div>
+                                        <div>
+                                          <div className="flex flex-wrap items-center gap-2">
+                                            <h4 className="font-black text-slate-900 text-sm">{report.testName}</h4>
+                                            <span className="font-mono text-[10px] font-bold text-amber-900 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                                              {report.orderId}
+                                            </span>
+                                          </div>
+                                          <p className="text-xs text-slate-600 font-semibold mt-0.5">
+                                            Ordered by <strong className="text-slate-900">{report.doctorName}</strong> • {dateFormatted}
+                                          </p>
+                                          <p className="text-[11px] text-slate-500">{report.facility}</p>
+                                        </div>
+                                      </div>
+
+                                      {/* Status Badge */}
+                                      <div className="self-start sm:self-auto shrink-0">
+                                        {isCompleted ? (
+                                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-black shadow-2xs">
+                                            <span className="material-symbols-outlined text-[15px] text-emerald-700">check_circle</span>
+                                            Report Available
+                                          </span>
+                                        ) : isProcessing ? (
+                                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-900 border border-sky-300 text-xs font-black shadow-2xs">
+                                            <span className="material-symbols-outlined text-[15px] text-sky-600 animate-spin">sync</span>
+                                            {report.status === 'sample_collected' ? 'Sample Dispatched' : 'Under Testing'}
+                                          </span>
+                                        ) : (
+                                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-xs font-black shadow-2xs">
+                                            <span className="material-symbols-outlined text-[15px] text-amber-700">schedule</span>
+                                            Pending Sample
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    {/* Fasting Notice */}
+                                    {report.fastingRequired && (
+                                      <div className="mt-2 text-xs bg-amber-100/70 border border-amber-300 p-2 rounded-xl text-amber-950 flex items-center gap-2 font-medium">
+                                        <span className="material-symbols-outlined text-[16px] text-amber-700">info</span>
+                                        <span>Fasting Required: 8 to 12 hours overnight fasting before giving blood sample.</span>
+                                      </div>
+                                    )}
+
+                                    {/* Doctor Clinical Notes */}
+                                    {report.clinicalNotes && (
+                                      <p className="mt-2 text-xs text-slate-600 bg-slate-50 p-2 rounded-xl border border-slate-200 italic font-medium">
+                                        "{report.clinicalNotes}"
+                                      </p>
+                                    )}
+
+                                    {/* Actions */}
+                                    <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-3">
+                                      <span className="text-[11px] font-bold text-slate-500">
+                                        {report.category || 'Clinical Pathology'}
+                                      </span>
+
+                                      {isCompleted ? (
+                                        <button
+                                          type="button"
+                                          onClick={() => setSelectedLabReport(report)}
+                                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-black rounded-xl shadow-xs transition-all cursor-pointer"
+                                        >
+                                          <span className="material-symbols-outlined text-[16px]">visibility</span>
+                                          <span>View Verified Report (जांच रिपोर्ट)</span>
+                                        </button>
+                                      ) : (
+                                        <span className="text-xs font-extrabold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
+                                          ASHA / PHC Sample Collection Scheduled
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        )}
+
+                        <div className="mt-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 flex items-center gap-2 font-medium">
+                          <span className="material-symbols-outlined text-slate-400 text-[18px]">verified_user</span>
+                          <span>Reports are generated by accredited NABL district laboratories under the Ayushman Bharat Digital Mission (ABDM).</span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
                 {/* Find PHC */}

@@ -3,6 +3,7 @@ const router = express.Router();
 const { protect } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/roleMiddleware');
 const { getProfile, updateProfile, bookAppointment, getAppointments, getPrescriptions, getReferrals, getDashboard, requestVisit, getPatientVisits } = require('../controllers/patientController');
+const { getPatientLabReports } = require('../controllers/labController');
 
 router.use(protect, authorize('patient'));
 router.get('/dashboard', getDashboard);
@@ -14,5 +15,6 @@ router.get('/prescriptions', getPrescriptions);
 router.get('/referrals', getReferrals);
 router.post('/visit-request', requestVisit);
 router.get('/visit-requests', getPatientVisits);
+router.get('/lab-reports', getPatientLabReports);
 
 module.exports = router;
