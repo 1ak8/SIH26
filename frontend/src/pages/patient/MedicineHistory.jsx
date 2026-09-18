@@ -66,6 +66,136 @@ export default function MedicineHistory() {
     fetchPrescriptions();
   }, []);
 
+  const handleDownloadPDF = (rx) => {
+    const medicinesHTML = rx.medicines.map((m, i) => `
+      <tr style="border-bottom:1px solid #e5e7eb;">
+        <td style="padding:10px 8px;font-weight:700;color:#111c2d;">${i + 1}</td>
+        <td style="padding:10px 8px;font-weight:800;color:#111c2d;">${m.name}</td>
+        <td style="padding:10px 8px;color:#475569;">${m.generic || m.name}</td>
+        <td style="padding:10px 8px;color:#475569;">${m.dosage}</td>
+        <td style="padding:10px 8px;color:#475569;">${m.frequency}</td>
+        <td style="padding:10px 8px;color:#475569;">${m.duration}</td>
+        <td style="padding:10px 8px;font-weight:800;color:#92400e;">${m.janAushadhiCode || 'N/A'}</td>
+      </tr>
+    `).join('');
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Prescription ${rx.id} - SehatSaarthi</title>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: 'Plus Jakarta Sans', sans-serif; color: #111c2d; padding: 40px; background: #fff; }
+          .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #f59e0b; padding-bottom: 20px; margin-bottom: 24px; }
+          .brand h1 { font-size: 22px; font-weight: 800; color: #111c2d; }
+          .brand p { font-size: 12px; color: #64748b; margin-top: 2px; }
+          .logo { text-align: right; }
+          .logo .app-name { font-size: 18px; font-weight: 800; color: #d97706; }
+          .logo .sub { font-size: 10px; color: #94a3b8; }
+          .rx-header { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+          .rx-header .rx-id { font-size: 14px; font-weight: 800; color: #92400e; }
+          .rx-header .rx-date { font-size: 12px; color: #78716c; }
+          .rx-header .rx-status { font-size: 11px; font-weight: 800; background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 20px; border: 1px solid #fde68a; }
+          .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+          .info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 16px; }
+          .info-box label { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.05em; display: block; margin-bottom: 4px; }
+          .info-box span { font-size: 13px; font-weight: 700; color: #111c2d; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+          th { background: #111c2d; color: #fbbf24; font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 10px 8px; text-align: left; letter-spacing: 0.05em; }
+          .notes { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+          .notes h4 { font-size: 12px; font-weight: 800; color: #92400e; margin-bottom: 6px; }
+          .notes p { font-size: 12px; color: #78716c; line-height: 1.6; }
+          .footer { border-top: 2px solid #e2e8f0; padding-top: 16px; display: flex; justify-content: space-between; align-items: center; }
+          .footer .signed { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #16a34a; }
+          .footer .disclaimer { font-size: 9px; color: #94a3b8; max-width: 300px; text-align: right; line-height: 1.4; }
+          @media print { body { padding: 20px; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="brand">
+            <h1>SehatSaarthi Digital Prescription</h1>
+            <p>Ayushman Bharat Digital Mission (ABDM) Verified</p>
+          </div>
+          <div class="logo">
+            <div class="app-name">SehatSaarthi</div>
+            <div class="sub">National Digital Health Framework</div>
+          </div>
+        </div>
+
+        <div class="rx-header">
+          <div>
+            <div class="rx-id">${rx.id}</div>
+            <div class="rx-date">${rx.date}</div>
+          </div>
+          <div class="rx-status">${rx.status}</div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-box">
+            <label>Patient Name</label>
+            <span>${prescriptions.length > 0 ? 'Patient' : 'N/A'}</span>
+          </div>
+          <div class="info-box">
+            <label>Diagnosis</label>
+            <span>${rx.diagnosis}</span>
+          </div>
+          <div class="info-box">
+            <label>Prescribing Doctor</label>
+            <span>${rx.doctor}</span>
+          </div>
+          <div class="info-box">
+            <label>Health Facility</label>
+            <span>${rx.facility}</span>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Medicine</th>
+              <th>Generic Name</th>
+              <th>Dosage</th>
+              <th>Frequency</th>
+              <th>Duration</th>
+              <th>Jan Aushadhi Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${medicinesHTML}
+          </tbody>
+        </table>
+
+        <div class="notes">
+          <h4>Doctor's Clinical Advice</h4>
+          <p>${rx.notes}</p>
+        </div>
+
+        <div class="footer">
+          <div class="signed">
+            <span style="font-size:18px;">&#10003;</span>
+            Digitally Signed — Ayushman Bharat Health Account
+          </div>
+          <div class="disclaimer">
+            This is a digitally generated prescription verified under the National Digital Health Framework. 
+            For queries, contact your nearest CHC or call helpline 1075.
+          </div>
+        </div>
+
+        <script>window.onload = function() { window.print(); }</script>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  };
+
   const handleReorder = (id) => {
     setReorderedId(id);
     setTimeout(() => setReorderedId(null), 3000);
@@ -156,7 +286,7 @@ export default function MedicineHistory() {
 
                 <div className="flex items-center gap-2 self-start sm:self-auto">
                   <button 
-                    onClick={() => alert(`Prescription ${rx.id} downloaded as ABDM verified PDF.`)}
+                    onClick={() => handleDownloadPDF(rx)}
                     className="h-11 px-4 rounded-xl border-2 border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs"
                     type="button"
                   >

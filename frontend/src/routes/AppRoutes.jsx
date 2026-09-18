@@ -7,12 +7,15 @@ import DoctorList from '../pages/patient/DoctorList';
 import MedicineHistory from '../pages/patient/MedicineHistory';
 import AmbulanceAvailability from '../pages/patient/AmbulanceAvailability';
 import ImmunizationMaternal from '../pages/patient/ImmunizationMaternal';
+import PatientReferrals from '../pages/patient/Referrals';
+import PatientLabReports from '../pages/patient/LabReports';
 import HealthWorkerDashboard from '../pages/health-worker/Dashboard';
 import DoctorDashboard from '../pages/doctor/Dashboard';
 import PatientQueue from '../pages/doctor/PatientQueue';
 import Prescriptions from '../pages/doctor/Prescriptions';
 import LabOrders from '../pages/doctor/LabOrders';
 import ConsultationHistory from '../pages/doctor/ConsultationHistory';
+import DoctorReferrals from '../pages/doctor/Referrals';
 import AdminDashboard from '../pages/government/Dashboard';
 import { useAuth } from '../context/AuthContext';
 
@@ -32,6 +35,8 @@ const AppRoutes = () => {
       <Route path="/patient/medicines" element={<ProtectedRoute roles={['patient']}><MedicineHistory /></ProtectedRoute>} />
       <Route path="/patient/ambulance" element={<ProtectedRoute roles={['patient']}><AmbulanceAvailability /></ProtectedRoute>} />
       <Route path="/patient/immunization" element={<ProtectedRoute roles={['patient']}><ImmunizationMaternal /></ProtectedRoute>} />
+      <Route path="/patient/referrals" element={<ProtectedRoute roles={['patient']}><PatientReferrals /></ProtectedRoute>} />
+      <Route path="/patient/lab-reports" element={<ProtectedRoute roles={['patient']}><PatientLabReports /></ProtectedRoute>} />
       
       {/* Health Worker Routes */}
       <Route path="/health-worker/*" element={<ProtectedRoute roles={['health_worker']}><HealthWorkerDashboard /></ProtectedRoute>} />
@@ -42,6 +47,7 @@ const AppRoutes = () => {
       <Route path="/doctor/prescriptions" element={<ProtectedRoute roles={['doctor']}><Prescriptions /></ProtectedRoute>} />
       <Route path="/doctor/labs" element={<ProtectedRoute roles={['doctor']}><LabOrders /></ProtectedRoute>} />
       <Route path="/doctor/history" element={<ProtectedRoute roles={['doctor']}><ConsultationHistory /></ProtectedRoute>} />
+      <Route path="/doctor/referrals" element={<ProtectedRoute roles={['doctor']}><DoctorReferrals /></ProtectedRoute>} />
       
       {/* Admin Routes */}
       <Route path="/admin/*" element={<ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>} />

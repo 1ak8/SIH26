@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 import LanguageSelector from '../../components/LanguageSelector';
+import ReferralTrackingPanel from '../../components/ReferralTrackingPanel';
 
 const ASHA_WORKFORCE = [
   { id: 'ASHA-01', name: 'ASHA Sunita Devi', phone: '9876543230', ward: 'Sitapur Ward 4', households: 245, status: 'Active on Duty' },
@@ -288,7 +289,7 @@ const INITIAL_VACCINES = [
 export default function HealthWorkerDashboard() {
   const { user, logout } = useAuth();
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('tasks'); // 'tasks', 'vitals-triage', 'registry', 'immunization', 'requests'
+  const [activeTab, setActiveTab] = useState('tasks'); // 'tasks', 'vitals-triage', 'registry', 'immunization', 'requests', 'referrals'
   const [activeModal, setActiveModal] = useState(null); // 'assign-task', 'vitals', 'dossier', 'register-citizen', 'log-vaccine', 'schedule-chart', 'update-task'
   
   // Data States with permanent LocalStorage persistence on top of MongoDB Atlas
@@ -370,18 +371,22 @@ export default function HealthWorkerDashboard() {
     urgent: false,
   });
 
-  // Form: Register New Citizen
+  // Form: Register New Citizen with Patient Portal Credentials
   const [newCitizen, setNewCitizen] = useState({
     name: '',
+    email: '',
+    password: '123456',
+    phone: '',
     age: '',
     gender: 'Female',
-    phone: '',
     village: 'Sitapur Ward 4',
     condition: 'Routine Health Check',
     allergies: 'None reported',
     risk: 'Routine',
     assignedAsha: 'ASHA Sunita Devi',
   });
+  const [showCitizenPass, setShowCitizenPass] = useState(false);
+  const [createdCredentialsModal, setCreatedCredentialsModal] = useState(null);
 
   // Form: Log Vaccine
   const [vaccineLogForm, setVaccineLogForm] = useState({
@@ -420,19 +425,63 @@ export default function HealthWorkerDashboard() {
       .then(r => {
         if (r.data?.data && r.data.data.length > 0) {
           const backendPatients = r.data.data;
-          const merged = INITIAL_VILLAGE_PATIENTS.map(ip => {
-            const found = backendPatients.find(bp => bp._id === ip._id || bp.name.toLowerCase() === ip.name.toLowerCase());
+          const localPatients = patients;
+
+          const merged = localPatients.map(lp => {
+            const found = backendPatients.find(bp => bp._id === lp._id || bp.name.toLowerCase() === lp.name.toLowerCase());
             if (found) {
+              const backendAllergies = Array.isArray(found.allergies)
+                ? found.allergies.map(a => a.name || a).filter(Boolean).join(', ') || 'None reported'
+                : found.allergies || 'None reported';
+              const backendConditions = Array.isArray(found.chronicConditions)
+                ? found.chronicConditions.map(c => c.condition || c).filter(Boolean).join(', ') || lp.condition
+                : found.chronicConditions || lp.condition;
               return {
-                ...ip,
+                ...lp,
                 ...found,
-                vitals: found.vitals || ip.vitals,
-                lastVitals: found.vitals ? `BP ${found.vitals.systolicBP}/${found.vitals.diastolicBP} • Pulse ${found.vitals.heartRate}` : ip.lastVitals,
+                email: found.email || lp.email,
+                phone: found.phone || lp.phone,
+                allergies: backendAllergies,
+                condition: backendConditions,
+                meds: lp.meds,
+                emergencyContact: lp.emergencyContact,
+                lastVitals: found.vitals ? `BP ${found.vitals.systolicBP}/${found.vitals.diastolicBP} • Pulse ${found.vitals.heartRate}` : lp.lastVitals,
+                vitals: found.vitals || lp.vitals,
               };
             }
-            return ip;
+            return lp;
           });
+
+          backendPatients.forEach(bp => {
+            const exists = merged.find(m => m._id === bp._id || m.name.toLowerCase() === bp.name.toLowerCase());
+            if (!exists) {
+              merged.unshift({
+                _id: bp._id,
+                id: merged.length + 1,
+                name: bp.name,
+                email: bp.email || '',
+                phone: bp.phone || '',
+                age: bp.dateOfBirth ? `${Math.floor((Date.now() - new Date(bp.dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000))} yrs` : '30 yrs',
+                gender: bp.gender || 'Female',
+                icon: bp.gender === 'male' ? 'person' : 'person_4',
+                risk: 'Routine',
+                type: 'Registered Citizen (पंजीकृत नागरिक)',
+                village: typeof bp.address === 'string' ? bp.address : bp.address?.line1 || 'Sitapur Ward 4',
+                abha: bp.abhaId || '91-4820-1940-2810',
+                condition: bp.chronicConditions?.[0]?.condition || 'Routine Health Check',
+                meds: 'Pending clinical assessment',
+                allergies: bp.allergies?.[0]?.name || 'None reported',
+                emergencyContact: `Family Member (+91 ${bp.phone})`,
+                lastVitals: bp.vitals ? `BP ${bp.vitals.systolicBP}/${bp.vitals.diastolicBP} • Pulse ${bp.vitals.heartRate}` : 'Pending first vitals check',
+                vitals: bp.vitals || { systolicBP: 120, diastolicBP: 80, heartRate: 72, spO2: 98, temperature: 98.6 },
+                referredDoctor: 'Dr. Rajesh Sharma (CHC Sitapur Central)',
+                assignedAsha: 'ASHA Sunita Devi',
+              });
+            }
+          });
+
           setPatients(merged);
+          try { localStorage.setItem('sehatsaarthi_village_patients', JSON.stringify(merged)); } catch(e) {}
         }
       })
       .catch(err => {
@@ -651,40 +700,63 @@ export default function HealthWorkerDashboard() {
     }
   };
 
-  // 5. Register New Citizen
+  // 5. Register New Citizen with Patient Portal Account
   const handleRegisterCitizen = async (e) => {
     e.preventDefault();
     if (!newCitizen.name) {
       showToast('Please enter citizen name');
       return;
     }
+    if (!newCitizen.phone) {
+      showToast('Please enter citizen mobile number');
+      return;
+    }
 
-    const randomAbha = `91-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const citizenEmail = newCitizen.email && newCitizen.email.trim()
+      ? newCitizen.email.trim().toLowerCase()
+      : `citizen.${newCitizen.phone.trim()}@sehatsaarthi.gov.in`;
+
+    const citizenPassword = newCitizen.password && newCitizen.password.trim().length >= 6
+      ? newCitizen.password.trim()
+      : '123456';
+
+    const payload = {
+      ...newCitizen,
+      email: citizenEmail,
+      password: citizenPassword,
+    };
+
     let serverId = `local-${Date.now()}`;
+    let finalAbha = `91-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`;
+
     try {
-      const res = await api.post('/health-worker/register-citizen', newCitizen);
-      if (res.data?.data?._id) serverId = res.data.data._id;
+      const res = await api.post('/health-worker/register-citizen', payload);
+      if (res.data?.data?._id) {
+        serverId = res.data.data._id;
+        finalAbha = res.data.data.abhaId || finalAbha;
+      }
     } catch(err) {
-      console.warn('Citizen saved locally:', err);
+      console.warn('Citizen registered locally:', err);
     }
 
     const newEntry = {
       _id: serverId,
       id: patients.length + 1,
       name: newCitizen.name,
+      email: citizenEmail,
+      phone: newCitizen.phone,
       age: `${newCitizen.age || '30'} yrs`,
       gender: newCitizen.gender,
       icon: newCitizen.gender === 'Female' ? 'person_4' : 'person',
       risk: newCitizen.risk,
       riskColor: newCitizen.risk === 'High Risk',
       type: 'New Household Registration (नवीन पंजीयन)',
-      phone: newCitizen.phone || '9876543299',
       village: newCitizen.village,
-      abha: randomAbha,
+      abha: finalAbha,
       condition: newCitizen.condition,
       meds: 'Pending clinical assessment',
       allergies: newCitizen.allergies,
-      emergencyContact: `Family Member (+91 ${newCitizen.phone || '9876543299'})`,
+      emergencyContact: `Family Member (+91 ${newCitizen.phone})`,
       lastVitals: 'Pending first vitals check',
       vitals: { systolicBP: 120, diastolicBP: 80, heartRate: 72, spO2: 98, temperature: 98.6 },
       referredDoctor: 'Dr. Rajesh Sharma (CHC Sitapur Central)',
@@ -695,13 +767,23 @@ export default function HealthWorkerDashboard() {
     setPatients(updated);
     try { localStorage.setItem('sehatsaarthi_village_patients', JSON.stringify(updated)); } catch(e) {}
 
-    showToast(`Citizen "${newCitizen.name}" registered with ABHA: ${randomAbha}! Assigned to ${newCitizen.assignedAsha}.`);
+    setCreatedCredentialsModal({
+      name: newCitizen.name,
+      email: citizenEmail,
+      phone: newCitizen.phone,
+      password: citizenPassword,
+      abhaId: finalAbha,
+    });
+
+    showToast(`Citizen "${newCitizen.name}" registered! Portal account created.`);
     setActiveModal(null);
     setNewCitizen({
       name: '',
+      email: '',
+      password: '123456',
+      phone: '',
       age: '',
       gender: 'Female',
-      phone: '',
       village: 'Sitapur Ward 4',
       condition: 'Routine Health Check',
       allergies: 'None reported',
@@ -773,14 +855,14 @@ export default function HealthWorkerDashboard() {
 
       {/* HEADER: Health Worker Supervisor Console */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs w-full">
-        <div className="w-full px-6 lg:px-12 xl:px-16 flex items-center justify-between gap-8 h-20">
+        <div className="w-full px-4 lg:px-8 xl:px-12 flex items-center justify-between gap-4 h-[72px]">
           {/* Logo with Govt Health Worker Console Badge */}
-          <Link to="/health-worker" className="flex items-center gap-3.5 shrink-0 group">
-            <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-11 h-11 rounded-2xl object-cover shrink-0 notranslate" translate="no" />
+          <Link to="/health-worker" className="flex items-center gap-2.5 shrink-0 group">
+            <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-10 h-10 rounded-xl object-cover shrink-0 notranslate" translate="no" />
             <div className="flex flex-col">
-              <span className="font-brand font-black text-slate-900 tracking-tight text-2xl leading-none group-hover:text-amber-700 transition-colors notranslate" translate="no">SehatSaarthi</span>
-              <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 self-start mt-1">
-                Govt Portal • Health Worker Console
+              <span className="font-brand font-black text-slate-900 tracking-tight text-[22px] leading-none group-hover:text-amber-700 transition-colors notranslate" translate="no">SehatSaarthi</span>
+              <span className="text-[9px] uppercase font-black tracking-wider px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 self-start mt-0.5">
+                Health Worker Console
               </span>
             </div>
           </Link>
@@ -789,14 +871,14 @@ export default function HealthWorkerDashboard() {
           <nav className="hidden lg:flex items-center gap-2 xl:gap-3">
             <button 
               onClick={() => setActiveTab('tasks')} 
-              className={`px-3 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'tasks' 
                   ? 'bg-amber-600 text-white shadow-sm' 
                   : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">assignment_turned_in</span>
-              <span>ASHA Task Delegation</span>
+              <span>Tasks</span>
               <span className="bg-amber-100 text-amber-900 text-[10px] font-black px-1.5 py-0.2 rounded-full border border-amber-300">
                 {tasks.filter(t => t.status !== 'completed').length}
               </span>
@@ -806,21 +888,21 @@ export default function HealthWorkerDashboard() {
 
             <button 
               onClick={() => setActiveTab('vitals-triage')} 
-              className={`px-3 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'vitals-triage' 
                   ? 'bg-amber-600 text-white shadow-sm' 
                   : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">favorite</span>
-              <span>Vitals &amp; Triage</span>
+              <span>Vitals</span>
             </button>
 
             <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveTab('registry')} 
-              className={`px-3 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'registry' 
                   ? 'bg-amber-600 text-white shadow-sm' 
                   : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -834,7 +916,7 @@ export default function HealthWorkerDashboard() {
 
             <button 
               onClick={() => setActiveTab('immunization')} 
-              className={`px-3 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'immunization' 
                   ? 'bg-amber-600 text-white shadow-sm' 
                   : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -848,31 +930,45 @@ export default function HealthWorkerDashboard() {
 
             <button 
               onClick={() => setActiveTab('requests')} 
-              className={`px-3 py-2 font-extrabold text-sm rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'requests' 
                   ? 'bg-amber-600 text-white shadow-sm' 
                   : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">home_health</span>
-              <span>Visit Requests</span>
+              <span>Requests</span>
               {citizenRequests.filter(r => r.status === 'pending').length > 0 && (
-                <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full animate-pulse shadow-2xs">
+                <span className="bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.2 rounded-full animate-pulse shadow-2xs">
                   {citizenRequests.filter(r => r.status === 'pending').length}
                 </span>
               )}
             </button>
+
+            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+
+            <button 
+              onClick={() => setActiveTab('referrals')} 
+              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'referrals' 
+                  ? 'bg-amber-600 text-white shadow-sm' 
+                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">forward</span>
+              <span>Referrals</span>
+            </button>
           </nav>
 
           {/* Right Action Controls: Clean Language + Logout */}
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="h-8 w-[2px] bg-slate-300 rounded-full hidden lg:block mr-1"></div>
+          <div className="flex items-center gap-2.5 shrink-0">
+            <div className="h-7 w-[2px] bg-slate-300 rounded-full hidden lg:block mr-1"></div>
 
             <LanguageSelector />
 
             <button 
               onClick={() => { if (window.confirm('Are you sure you want to logout?')) logout(); }} 
-              className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 border border-slate-200 flex items-center justify-center transition-all shadow-xs cursor-pointer" 
+              className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 border border-slate-200 flex items-center justify-center transition-all shadow-xs cursor-pointer" 
               title="Logout"
             >
               <span className="material-symbols-outlined text-[18px]">logout</span>
@@ -882,7 +978,7 @@ export default function HealthWorkerDashboard() {
       </header>
 
       {/* MAIN CONTENT AREA */}
-      <main className="w-full px-6 lg:px-12 xl:px-16 pt-28 pb-16">
+      <main className="w-full px-6 lg:px-12 xl:px-16 pt-[92px] pb-16">
         {/* Top Health Worker Hero Banner */}
         <div className="bg-gradient-to-r from-amber-500/15 via-amber-100/40 to-transparent p-6 sm:p-8 rounded-3xl border-2 border-amber-300 shadow-sm mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
@@ -1296,8 +1392,20 @@ export default function HealthWorkerDashboard() {
                               <h4 className="text-base font-extrabold text-slate-900">{c.name}</h4>
                               <span className="text-xs text-slate-500 font-bold">• {c.age}</span>
                               <span className="text-xs font-mono font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-300">{c.abha}</span>
+                              {c.email && (
+                                <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-[10px]">lock</span>
+                                  Portal Active
+                                </span>
+                              )}
                             </div>
                             <p className="text-xs text-slate-500 font-semibold mt-0.5">{c.village} • Ph: {c.phone} • Assigned ASHA: <strong className="text-slate-800">{c.assignedAsha || 'ASHA Sunita Devi'}</strong></p>
+                            {c.email && (
+                              <p className="text-[10px] text-emerald-700 font-bold mt-0.5 flex items-center gap-1">
+                                <span className="material-symbols-outlined text-[10px]">mail</span>
+                                Login: {c.email}
+                              </p>
+                            )}
                             <p className="text-[11px] text-slate-600 mt-0.5">
                               <strong>Clinical State:</strong> {c.condition}
                             </p>
@@ -1668,6 +1776,11 @@ export default function HealthWorkerDashboard() {
               </div>
             )}
           </div>
+        )}
+
+        {/* TAB 6: REFERRAL TRACKING */}
+        {activeTab === 'referrals' && (
+          <ReferralTrackingPanel userRole="health_worker" />
         )}
       </main>
 
@@ -2142,13 +2255,14 @@ export default function HealthWorkerDashboard() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-black text-slate-700 uppercase mb-1">Mobile Phone</label>
+                  <label className="block text-xs font-black text-slate-700 uppercase mb-1">Mobile Phone <span className="text-rose-500">*</span></label>
                   <input
                     type="tel"
                     value={newCitizen.phone}
                     onChange={e => setNewCitizen({...newCitizen, phone: e.target.value})}
                     placeholder="9876543210"
                     className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    required
                   />
                 </div>
                 <div>
@@ -2163,6 +2277,48 @@ export default function HealthWorkerDashboard() {
                     <option value="Rampur Ward 2">Rampur Ward 2</option>
                     <option value="Rampur Ward 3">Rampur Ward 3</option>
                   </select>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 p-3 rounded-xl border border-blue-200">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <span className="material-symbols-outlined text-[14px] text-blue-700">lock</span>
+                  <span className="text-[10px] font-black text-blue-800 uppercase">Patient Portal Login Credentials</span>
+                </div>
+                <p className="text-[10px] text-blue-600 font-bold mb-2.5">Citizen can log in at <strong>/login</strong> using these credentials.</p>
+                <div className="space-y-2.5">
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-600 uppercase mb-0.5">Login Email Address</label>
+                    <input
+                      type="email"
+                      value={newCitizen.email}
+                      onChange={e => setNewCitizen({...newCitizen, email: e.target.value})}
+                      placeholder="e.g. rohit.kumar@gmail.com"
+                      className="w-full bg-white px-3 py-2 rounded-lg border border-slate-300 text-slate-900 font-bold text-xs focus:outline-none focus:border-blue-500"
+                    />
+                    <p className="text-[9px] text-slate-500 mt-0.5">If empty, auto-generated from mobile number.</p>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-600 uppercase mb-0.5">Set Portal Password</label>
+                    <div className="relative">
+                      <input
+                        type={showCitizenPass ? 'text' : 'password'}
+                        value={newCitizen.password}
+                        onChange={e => setNewCitizen({...newCitizen, password: e.target.value})}
+                        placeholder="Min 6 characters"
+                        className="w-full bg-white px-3 py-2 pr-10 rounded-lg border border-slate-300 text-slate-900 font-bold text-xs focus:outline-none focus:border-blue-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowCitizenPass(!showCitizenPass)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 cursor-pointer"
+                        title={showCitizenPass ? 'Hide Password' : 'Show Password'}
+                      >
+                        <span className="material-symbols-outlined text-[18px]">{showCitizenPass ? 'visibility_off' : 'visibility'}</span>
+                      </button>
+                    </div>
+                    <p className="text-[9px] text-slate-500 mt-0.5">Default: <strong>123456</strong>. Citizen can change later.</p>
+                  </div>
                 </div>
               </div>
 
@@ -2202,10 +2358,85 @@ export default function HealthWorkerDashboard() {
                   type="submit"
                   className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black shadow-xs"
                 >
-                  Register &amp; Generate ABHA
+                  Register &amp; Create Patient Portal Account
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: CITIZEN PORTAL CREDENTIALS CONFIRMATION */}
+      {createdCredentialsModal && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-white w-full max-w-md rounded-3xl border-2 border-emerald-400 shadow-2xl overflow-hidden flex flex-col">
+            <div className="px-6 py-5 bg-emerald-600 text-white flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white text-emerald-600 flex items-center justify-center font-bold">
+                  <span className="material-symbols-outlined text-[22px]">verified</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-white font-heading">Portal Account Created!</h3>
+                  <p className="text-xs text-emerald-100 font-bold">Share these credentials with the citizen</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setCreatedCredentialsModal(null)} 
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer"
+                title="Close"
+              >
+                <span className="material-symbols-outlined text-[20px] font-bold">close</span>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="bg-emerald-50 p-4 rounded-2xl border-2 border-dashed border-emerald-300">
+                <div className="text-center mb-3">
+                  <span className="material-symbols-outlined text-[36px] text-emerald-600">badge</span>
+                  <p className="text-sm font-black text-slate-900 mt-1">{createdCredentialsModal.name}</p>
+                  <p className="text-[10px] text-emerald-700 font-bold">ABHA ID: {createdCredentialsModal.abhaId}</p>
+                </div>
+
+                <div className="space-y-2.5">
+                  <div className="bg-white p-3 rounded-xl border border-emerald-200">
+                    <span className="text-[9px] text-slate-500 font-bold uppercase block">Login Email / Username</span>
+                    <p className="text-xs font-black text-slate-900 font-mono">{createdCredentialsModal.email}</p>
+                  </div>
+                  <div className="bg-white p-3 rounded-xl border border-emerald-200">
+                    <span className="text-[9px] text-slate-500 font-bold uppercase block">Login Phone (Alternative)</span>
+                    <p className="text-xs font-black text-slate-900 font-mono">{createdCredentialsModal.phone}</p>
+                  </div>
+                  <div className="bg-white p-3 rounded-xl border border-emerald-200">
+                    <span className="text-[9px] text-slate-500 font-bold uppercase block">Portal Password</span>
+                    <p className="text-xs font-black text-slate-900 font-mono tracking-wider">{createdCredentialsModal.password}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-amber-50 p-3 rounded-xl border border-amber-200 flex items-start gap-2">
+                <span className="material-symbols-outlined text-[16px] text-amber-600 mt-0.5">info</span>
+                <p className="text-[10px] text-amber-800 font-bold">Citizen can now log in at <strong>/login</strong> using their email or phone number + password. They will land in their personal Patient Panel.</p>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    const creds = `SehatSaarthi Patient Login Credentials\n\nName: ${createdCredentialsModal.name}\nABHA ID: ${createdCredentialsModal.abhaId}\n\nLogin Email: ${createdCredentialsModal.email}\nLogin Phone: ${createdCredentialsModal.phone}\nPassword: ${createdCredentialsModal.password}\n\nPortal: ${window.location.origin}/login`;
+                    navigator.clipboard.writeText(creds).then(() => showToast('Credentials copied to clipboard!'));
+                  }}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[16px]">content_copy</span>
+                  Copy Credentials
+                </button>
+                <button
+                  onClick={() => setCreatedCredentialsModal(null)}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs cursor-pointer"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '../../components/LanguageSelector';
+import api from '../../services/api';
 
 export default function Login() {
   const { login, register } = useAuth();
@@ -18,6 +19,90 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRegPassword, setShowRegPassword] = useState(false);
   const [regForm, setRegForm] = useState({ name: '', phone: '', gender: 'male', role: 'patient', email: '', password: '' });
+
+  // Forgot Password States
+  const [forgotModalOpen, setForgotModalOpen] = useState(false);
+  const [forgotStep, setForgotStep] = useState(1); // 1 = input identity, 2 = verify OTP & new pass, 3 = success
+  const [forgotIdentity, setForgotIdentity] = useState('');
+  const [forgotOtp, setForgotOtp] = useState('');
+  const [forgotNewPassword, setForgotNewPassword] = useState('');
+  const [forgotConfirmPassword, setForgotConfirmPassword] = useState('');
+  const [showForgotPass, setShowForgotPass] = useState(false);
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotError, setForgotError] = useState('');
+  const [forgotSuccess, setForgotSuccess] = useState('');
+  const [receivedOtpHint, setReceivedOtpHint] = useState('');
+
+  const openForgotPasswordModal = () => {
+    setForgotIdentity(email || '');
+    setForgotStep(1);
+    setForgotOtp('');
+    setForgotNewPassword('');
+    setForgotConfirmPassword('');
+    setForgotError('');
+    setForgotSuccess('');
+    setReceivedOtpHint('');
+    setForgotModalOpen(true);
+  };
+
+  const handleSendForgotOtp = async (e) => {
+    e.preventDefault();
+    if (!forgotIdentity) {
+      setForgotError('Please enter your registered email or mobile number.');
+      return;
+    }
+    setForgotLoading(true);
+    setForgotError('');
+    setForgotSuccess('');
+    try {
+      const res = await api.post('/auth/forgot-password', { identity: forgotIdentity });
+      if (res.data?.success) {
+        setForgotSuccess(res.data.message || 'OTP sent successfully!');
+        setReceivedOtpHint(res.data.otp || '849201');
+        setForgotStep(2);
+      }
+    } catch (err) {
+      setForgotError(err.response?.data?.message || 'No account found with this email or mobile number.');
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleResetPasswordSubmit = async (e) => {
+    e.preventDefault();
+    if (!forgotOtp) {
+      setForgotError('Please enter the 6-digit verification code.');
+      return;
+    }
+    if (!forgotNewPassword || forgotNewPassword.length < 6) {
+      setForgotError('New password must be at least 6 characters long.');
+      return;
+    }
+    if (forgotNewPassword !== forgotConfirmPassword) {
+      setForgotError('New password and confirm password do not match.');
+      return;
+    }
+
+    setForgotLoading(true);
+    setForgotError('');
+    try {
+      const res = await api.post('/auth/reset-password', {
+        identity: forgotIdentity,
+        otp: forgotOtp,
+        newPassword: forgotNewPassword,
+      });
+
+      if (res.data?.success) {
+        setForgotStep(3);
+        setPassword(forgotNewPassword);
+        setEmail(forgotIdentity);
+      }
+    } catch (err) {
+      setForgotError(err.response?.data?.message || 'Invalid or expired OTP. Please try again.');
+    } finally {
+      setForgotLoading(false);
+    }
+  };
 
   const ROLE_CREDS = {
     patient: { email: 'patient@test.com', pass: '123456' },
@@ -229,7 +314,13 @@ export default function Login() {
                       <input defaultChecked className="w-4 h-4 rounded border-slate-300 accent-amber-500 focus:ring-amber-500" type="checkbox" />
                       <span>{t('rememberMe')}</span>
                     </label>
-                    <a className="font-bold text-amber-600 hover:text-amber-700 hover:underline" href="#">{t('forgotPassword')}</a>
+                    <button 
+                      type="button" 
+                      onClick={openForgotPasswordModal} 
+                      className="font-bold text-amber-600 hover:text-amber-700 hover:underline cursor-pointer bg-transparent border-0 p-0"
+                    >
+                      {t('forgotPassword')}
+                    </button>
                   </div>
                   <button className="w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-[14px] rounded-xl shadow-lg shadow-amber-500/30 transition-all flex items-center justify-center gap-2 mt-1 disabled:opacity-70"
                     type="submit" disabled={loading}>
@@ -318,6 +409,233 @@ export default function Login() {
           </div>
         </div>
       </main>
+
+      {/* FORGOT PASSWORD & CREDENTIAL RECOVERY MODAL */}
+      {forgotModalOpen && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-white w-full max-w-md rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+            {/* Modal Header */}
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold shadow-xs">
+                  <span className="material-symbols-outlined text-[24px]">lock_reset</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-white font-heading">
+                    {forgotStep === 3 ? 'Password Changed!' : 'Reset Account Password'}
+                  </h3>
+                  <p className="text-[11px] text-amber-300/80 font-bold">ABDM Secure Identity Recovery</p>
+                </div>
+              </div>
+              <button 
+                type="button"
+                onClick={() => setForgotModalOpen(false)} 
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 transition-colors cursor-pointer shadow-sm"
+                title="Close"
+              >
+                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto space-y-4 text-xs">
+              {/* Error Message */}
+              {forgotError && (
+                <div className="p-3 bg-rose-50 border border-rose-300 rounded-xl text-rose-900 font-bold flex items-center gap-2">
+                  <span className="material-symbols-outlined text-rose-600 text-[18px]">error</span>
+                  <span>{forgotError}</span>
+                </div>
+              )}
+
+              {/* Success Notification */}
+              {forgotSuccess && forgotStep !== 3 && (
+                <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl text-amber-950 font-bold flex items-center gap-2">
+                  <span className="material-symbols-outlined text-amber-600 text-[18px]">verified</span>
+                  <span>{forgotSuccess}</span>
+                </div>
+              )}
+
+              {/* STEP 1: ENTER EMAIL OR PHONE */}
+              {forgotStep === 1 && (
+                <form onSubmit={handleSendForgotOtp} className="space-y-4">
+                  <p className="text-slate-600 font-medium leading-relaxed">
+                    Enter your registered <strong>Mobile Number</strong> (+91) or <strong>Email Address</strong>. We will generate an authentication OTP to verify your identity.
+                  </p>
+
+                  <div>
+                    <label className="block text-xs font-black text-slate-700 uppercase mb-1">
+                      Registered Email or Mobile Phone <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <span className="material-symbols-outlined text-[18px]">contact_mail</span>
+                      </span>
+                      <input
+                        type="text"
+                        required
+                        value={forgotIdentity}
+                        onChange={e => setForgotIdentity(e.target.value)}
+                        placeholder="e.g. 9876543211 or patient@test.com"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 text-xs font-bold focus:outline-none focus:border-amber-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-amber-600 text-[18px]">shield</span>
+                    <span>Supports Citizen, Doctor, Health Worker &amp; Admin accounts.</span>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={forgotLoading}
+                    className="w-full py-3 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white rounded-xl font-black text-xs shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {forgotLoading ? (
+                      <>
+                        <span className="material-symbols-outlined text-[18px] animate-spin">sync</span>
+                        <span>Verifying Account &amp; Sending OTP...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="material-symbols-outlined text-[18px]">send_to_mobile</span>
+                        <span>Send 6-Digit Verification Code</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+
+              {/* STEP 2: ENTER OTP & NEW PASSWORD */}
+              {forgotStep === 2 && (
+                <form onSubmit={handleResetPasswordSubmit} className="space-y-3.5">
+                  <div className="flex items-center justify-between pb-1">
+                    <span className="text-slate-500 font-bold">Target Account: <strong className="text-slate-900">{forgotIdentity}</strong></span>
+                    <button
+                      type="button"
+                      onClick={() => { setForgotStep(1); setForgotError(''); }}
+                      className="text-amber-700 hover:underline font-bold text-[11px] cursor-pointer"
+                    >
+                      Change
+                    </button>
+                  </div>
+
+                  {/* Demo OTP auto-fill badge */}
+                  {receivedOtpHint && (
+                    <div className="p-2.5 bg-amber-50 border border-amber-300 rounded-xl flex items-center justify-between">
+                      <span className="text-[11px] text-amber-950 font-bold">Demo OTP Code:</span>
+                      <button
+                        type="button"
+                        onClick={() => setForgotOtp(receivedOtpHint)}
+                        className="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-mono font-black text-xs transition-colors cursor-pointer"
+                      >
+                        Auto-Fill: {receivedOtpHint}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* 6-Digit OTP */}
+                  <div>
+                    <label className="block text-xs font-black text-slate-700 uppercase mb-1">
+                      Enter 6-Digit OTP <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      maxLength="6"
+                      value={forgotOtp}
+                      onChange={e => setForgotOtp(e.target.value)}
+                      placeholder="e.g. 849201"
+                      className="w-full text-center tracking-widest text-lg font-mono font-black bg-slate-50 border-2 border-slate-200 rounded-xl py-2 text-slate-900 focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+
+                  {/* New Password */}
+                  <div>
+                    <label className="block text-xs font-black text-slate-700 uppercase mb-1">
+                      New Password <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showForgotPass ? 'text' : 'password'}
+                        required
+                        minLength="6"
+                        value={forgotNewPassword}
+                        onChange={e => setForgotNewPassword(e.target.value)}
+                        placeholder="At least 6 characters"
+                        className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3.5 py-2.5 pr-10 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowForgotPass(!showForgotPass)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-600"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">
+                          {showForgotPass ? 'visibility_off' : 'visibility'}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Confirm Password */}
+                  <div>
+                    <label className="block text-xs font-black text-slate-700 uppercase mb-1">
+                      Confirm New Password <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type={showForgotPass ? 'text' : 'password'}
+                      required
+                      value={forgotConfirmPassword}
+                      onChange={e => setForgotConfirmPassword(e.target.value)}
+                      placeholder="Re-enter password"
+                      className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={forgotLoading}
+                    className="w-full py-3 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white rounded-xl font-black text-xs shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-50"
+                  >
+                    {forgotLoading ? (
+                      <>
+                        <span className="material-symbols-outlined text-[18px] animate-spin">sync</span>
+                        <span>Updating Password in MongoDB...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="material-symbols-outlined text-[18px]">lock_reset</span>
+                        <span>Verify OTP &amp; Reset Password</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+
+              {/* STEP 3: SUCCESS VIEW */}
+              {forgotStep === 3 && (
+                <div className="py-4 text-center space-y-3">
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 border-2 border-emerald-300 flex items-center justify-center mx-auto shadow-sm">
+                    <span className="material-symbols-outlined text-[36px]">check_circle</span>
+                  </div>
+                  <h4 className="text-lg font-black text-slate-900">Password Changed Successfully!</h4>
+                  <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                    Your password has been updated in the database and hashed with bcrypt. Your new credentials have been auto-filled into the sign-in form.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => setForgotModalOpen(false)}
+                    className="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-black text-xs shadow-sm transition-all cursor-pointer mt-2"
+                  >
+                    Sign In Now with New Password
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* FOOTER */}
       <footer className="relative z-10 w-full border-t border-slate-200/80 bg-white/70 backdrop-blur-xs py-2 px-4 sm:px-6 lg:px-24 text-center">

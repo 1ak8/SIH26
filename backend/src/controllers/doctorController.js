@@ -122,19 +122,32 @@ const getDoctorDashboard = asyncHandler(async (req, res) => {
 
 // GET /api/doctor/history
 const getConsultationHistory = asyncHandler(async (req, res) => {
-  const prescriptions = await Prescription.find({ doctor: req.user._id })
-    .populate('patient', 'name phone gender dateOfBirth abhaId address')
-    .sort('-createdAt')
-    .limit(30);
+  const [prescriptions, appointments] = await Promise.all([
+    Prescription.find({ doctor: req.user._id })
+      .populate('patient', 'name phone gender dateOfBirth abhaId address')
+      .sort('-createdAt')
+      .limit(30),
+    Appointment.find({ doctor: req.user._id, status: 'completed' })
+      .populate('patient', 'name phone gender dateOfBirth abhaId address')
+      .sort('-updatedAt')
+      .limit(30),
+  ]);
 
-  const formatted = prescriptions.map((rx, idx) => {
+  const list = [];
+  const seenIds = new Set();
+
+  // 1. Add completed prescriptions
+  prescriptions.forEach((rx, idx) => {
     const pat = rx.patient || {};
     const ageStr = pat.dateOfBirth
       ? `${Math.floor((Date.now() - new Date(pat.dateOfBirth)) / (365.25 * 24 * 3600 * 1000))} yrs`
       : '32 yrs';
-    return {
+    const id = rx.prescriptionId || `SEHAT-${1000 + idx}`;
+    if (rx.appointment) seenIds.add(String(rx.appointment));
+
+    list.push({
       _id: rx._id,
-      id: rx.prescriptionId || `SEHAT-${1000 + idx}`,
+      id,
       patient: `${pat.name || 'Citizen'} (${ageStr}/${pat.gender ? pat.gender.charAt(0).toUpperCase() : 'M'})`,
       patientName: pat.name || 'Citizen',
       date: new Date(rx.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
@@ -146,10 +159,42 @@ const getConsultationHistory = asyncHandler(async (req, res) => {
       medicines: rx.medicines || [],
       clinicalNotes: rx.clinicalNotes || '',
       isDigitallySigned: rx.isDigitallySigned,
-    };
+      createdAt: rx.createdAt,
+    });
   });
 
-  res.json({ success: true, count: formatted.length, data: formatted });
+  // 2. Add completed appointments that don't have a prescription record yet
+  appointments.forEach((appt, idx) => {
+    if (!seenIds.has(String(appt._id))) {
+      const pat = appt.patient || {};
+      const ageStr = pat.dateOfBirth
+        ? `${Math.floor((Date.now() - new Date(pat.dateOfBirth)) / (365.25 * 24 * 3600 * 1000))} yrs`
+        : '32 yrs';
+      const id = `APPT-${appt.tokenNumber ? String(appt.tokenNumber).padStart(2, '0') : 100 + idx}`;
+
+      list.push({
+        _id: appt._id,
+        id,
+        patient: `${pat.name || 'Citizen'} (${ageStr}/${pat.gender ? pat.gender.charAt(0).toUpperCase() : 'M'})`,
+        patientName: pat.name || 'Citizen',
+        date: new Date(appt.date || appt.updatedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+        time: appt.timeSlot || new Date(appt.updatedAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }),
+        diagnosis: appt.reason || 'Tele-Consultation Completed',
+        type: appt.type === 'in_person' ? 'In-Person' : 'Tele-Consult',
+        facility: 'CHC Sitapur Central',
+        abha: pat.abhaId || '91-4820-1940-2810',
+        medicines: [],
+        clinicalNotes: 'Consultation concluded by attending physician.',
+        isDigitallySigned: true,
+        createdAt: appt.updatedAt || appt.date,
+      });
+    }
+  });
+
+  // Sort newest first
+  list.sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
+
+  res.json({ success: true, count: list.length, data: list });
 });
 
 // POST /api/doctor/walkin

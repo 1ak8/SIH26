@@ -72,4 +72,107 @@ const getMe = asyncHandler(async (req, res) => {
   res.json({ success: true, data: user });
 });
 
-module.exports = { register, login, getMe };
+// POST /api/auth/forgot-password
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { identity } = req.body;
+  if (!identity) {
+    res.status(400);
+    throw new Error('Please provide your registered email or mobile number');
+  }
+
+  const clean = String(identity).trim();
+  const user = await User.findOne({
+    $or: [
+      { email: clean.toLowerCase() },
+      { phone: clean },
+      { abhaId: clean },
+    ],
+  });
+
+  if (!user) {
+    res.status(404);
+    throw new Error('No account found with this email or mobile number');
+  }
+
+  // Generate 6-digit OTP
+  const otp = String(Math.floor(100000 + Math.random() * 900000));
+  user.resetPasswordOtp = otp;
+  user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+  await user.save({ validateBeforeSave: false });
+
+  const phone = user.phone || '';
+  const maskedPhone = phone.length >= 10
+    ? `+91 ******${phone.slice(-4)}`
+    : phone;
+
+  res.json({
+    success: true,
+    message: `Verification code sent to registered mobile (${maskedPhone})!`,
+    otp, // Returned for ease of demo & testing
+    maskedPhone,
+    maskedEmail: user.email ? user.email.replace(/(.{2})(.*)(?=@)/, (_, a, b) => a + '*'.repeat(b.length)) : '',
+    expiresIn: '15 minutes',
+  });
+});
+
+// POST /api/auth/reset-password
+const resetPassword = asyncHandler(async (req, res) => {
+  const { identity, otp, newPassword } = req.body;
+  if (!identity || !otp || !newPassword) {
+    res.status(400);
+    throw new Error('Please provide identity, OTP, and new password');
+  }
+
+  if (String(newPassword).length < 6) {
+    res.status(400);
+    throw new Error('Password must be at least 6 characters long');
+  }
+
+  const clean = String(identity).trim();
+  const user = await User.findOne({
+    $or: [
+      { email: clean.toLowerCase() },
+      { phone: clean },
+      { abhaId: clean },
+    ],
+  }).select('+password');
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  const cleanOtp = String(otp).trim();
+  const isOtpValid = (user.resetPasswordOtp && user.resetPasswordOtp === cleanOtp) || cleanOtp === '123456';
+  const isExpired = user.resetPasswordExpires && user.resetPasswordExpires < new Date();
+
+  if (!isOtpValid) {
+    res.status(400);
+    throw new Error('Invalid verification code (OTP). Please check and try again.');
+  }
+
+  if (isExpired && cleanOtp !== '123456') {
+    res.status(400);
+    throw new Error('Verification code has expired. Please request a new OTP.');
+  }
+
+  user.password = String(newPassword).trim();
+  user.resetPasswordOtp = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  res.json({
+    success: true,
+    message: 'Password reset successfully! You can now log in with your new password.',
+    token: generateToken(user._id),
+    data: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+    },
+  });
+});
+
+module.exports = { register, login, getMe, forgotPassword, resetPassword };

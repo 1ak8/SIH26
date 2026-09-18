@@ -74,20 +74,50 @@ export default function PatientQueue() {
     const targetId = item._id || item.id;
     setActionLoading(targetId);
 
-    // Update queue state immediately for instant responsive feedback
-    setQueue(prev => prev.map(p => {
-      const match = (p._id && p._id === targetId) || (p.id && p.id === targetId);
-      if (match) {
-        return {
-          ...p,
-          status: newStatus === 'in_consultation' ? 'IN CONSULTATION' : newStatus === 'completed' ? 'Completed' : 'Waiting',
-          rawStatus: newStatus,
-        };
-      }
-      return p;
-    }));
+    if (newStatus === 'completed') {
+      // Remove from queue immediately
+      setQueue(prev => prev.filter(p => (p._id !== targetId && p.id !== targetId)));
 
-    showToast(`Token #${item.id} (${item.name}) marked as "${newStatus.replace('_', ' ')}"!`);
+      // Save to Doctor Consultation History cache immediately
+      const historyItem = {
+        _id: targetId,
+        id: `SEHAT-${Math.floor(1000 + Math.random() * 9000)}`,
+        patient: `${item.name} (${item.age || '32 yrs'}/${item.gender || 'M'})`,
+        patientName: item.name,
+        date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+        time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }),
+        diagnosis: item.reason || 'General Tele-Consultation Completed',
+        type: 'Tele-Consult',
+        facility: item.location || 'CHC Sitapur Central',
+        abha: item.abha || '91-4820-1940-2810',
+        medicines: [],
+        clinicalNotes: 'Consultation concluded by attending physician.',
+        isDigitallySigned: true,
+        createdAt: new Date().toISOString(),
+      };
+
+      try {
+        const existing = JSON.parse(localStorage.getItem('sehatsaarthi_doctor_history') || '[]');
+        localStorage.setItem('sehatsaarthi_doctor_history', JSON.stringify([historyItem, ...existing]));
+      } catch(e) {}
+
+      showToast(`Token #${item.id} (${item.name}) marked as Completed & moved to History!`);
+    } else {
+      // Update queue state for in-consultation
+      setQueue(prev => prev.map(p => {
+        const match = (p._id && p._id === targetId) || (p.id && p.id === targetId);
+        if (match) {
+          return {
+            ...p,
+            status: 'IN CONSULTATION',
+            rawStatus: 'in_consultation',
+          };
+        }
+        return p;
+      }));
+
+      showToast(`Token #${item.id} (${item.name}) marked as IN CONSULTATION!`);
+    }
 
     try {
       await api.put(`/doctor/queue/${targetId}/status`, { status: newStatus });

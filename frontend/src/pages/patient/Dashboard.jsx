@@ -668,7 +668,7 @@ export default function PatientDashboard() {
 
   return (
     <div className="bg-surface-container-lowest text-on-surface font-sans min-h-screen">
-      <PatientNavbar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <PatientNavbar activeTab={activeTab} setActiveTab={setActiveTab} setActiveModal={setActiveModal} />
 
       {/* Real Toast Notification */}
       {dashboardToast && (
@@ -727,8 +727,8 @@ export default function PatientDashboard() {
                 {[
                   { icon: 'calendar_month', title: t('bookTeleConsult'), desc: t('consultChc'), badge: t('freeGovService'), action: () => navigate('/patient/doctors'), color: 'amber', bg: 'from-amber-500/10 to-amber-50/50' },
                   { icon: 'airport_shuttle', title: 'Check Ambulance Availability', desc: 'Real-time GPS tracking, nearest ALS/BLS units & 108 emergency dispatch', badge: '108 Fleet • Live', action: () => navigate('/patient/ambulance'), color: 'rose', bg: 'from-rose-500/10 to-rose-50/50' },
-                  { icon: 'science', title: t('labTestsReports'), desc: t('diagnosticHistoryVitals'), badge: t('instantSync'), action: () => setActiveModal('lab-tests'), color: 'sky', bg: 'from-sky-500/10 to-sky-50/50' },
                   { icon: 'near_me', title: t('findNearestPhc'), desc: t('dispensariesSubCentres'), badge: 'Sitapur Ward 4', action: () => setActiveModal('find-phc'), color: 'violet', bg: 'from-violet-500/10 to-violet-50/50' },
+                  { icon: 'forward', title: 'My Referrals', desc: 'Track referrals to specialists, hospitals & labs with real-time status', badge: 'Live Tracking', action: () => navigate('/patient/referrals'), color: 'emerald', bg: 'from-emerald-500/10 to-emerald-50/50' },
                 ].map(card => (
                   <button 
                     key={card.title} 
@@ -872,97 +872,93 @@ export default function PatientDashboard() {
             </section>
 
               {/* Bottom Grid: Camp & ASHA Companion */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Village Health Camp */}
-                <div className="bg-white p-6 sm:p-7 rounded-3xl border-2 border-slate-200/90 hover:border-amber-400 shadow-sm flex flex-col justify-between gap-5 transition-all duration-200">
-                  <div>
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center shrink-0 shadow-xs">
-                        <span className="material-symbols-outlined text-[32px]">vaccines</span>
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex flex-wrap items-center gap-2 mb-1">
-                          <span className="text-xs uppercase tracking-wider text-slate-500 font-extrabold">Village Health Camp</span>
-                          <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-900 border border-amber-300 text-xs font-black px-3 py-0.5 rounded-full shadow-xs">
-                            <span className="w-2 h-2 rounded-full bg-amber-600"></span>
-                            This Thursday • इस गुरुवार
-                          </span>
-                        </div>
-                        <h3 className="text-xl font-extrabold text-slate-900 leading-snug">Immunization &amp; Maternal Health Checkup</h3>
-                        <p className="text-sm text-slate-600 font-medium mt-0.5">Anganwadi Centre 3 • Walk-in free for all mothers and infants</p>
-                      </div>
+                <div className="bg-white p-5 rounded-2xl border-2 border-slate-200/90 hover:border-amber-400 shadow-sm transition-all duration-200 flex flex-col">
+                  <div className="flex items-start gap-3.5 mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-[26px]">vaccines</span>
                     </div>
-
-                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-xs font-semibold text-slate-700 flex flex-wrap gap-2">
-                      <span className="bg-white px-3 py-1 rounded-xl border border-slate-200 shadow-xs text-slate-800">✓ Free Vaccination (Polio/BCG/TT)</span>
-                      <span className="bg-white px-3 py-1 rounded-xl border border-slate-200 shadow-xs text-slate-800">✓ BP, Sugar &amp; Weight Check</span>
-                      <span className="bg-white px-3 py-1 rounded-xl border border-slate-200 shadow-xs text-slate-800">✓ Nutrition Supplements Refill</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <span className="text-xs uppercase tracking-wider text-slate-500 font-extrabold">Village Health Camp</span>
+                        <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-black px-2.5 py-0.5 rounded-full">
+                          <span className="w-2 h-2 rounded-full bg-amber-600"></span>
+                          This Thursday
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-extrabold text-slate-900 leading-snug">Immunization & Maternal Health Checkup</h3>
+                      <p className="text-sm text-slate-600 font-medium mt-0.5">Anganwadi Centre 3 • Walk-in free for all mothers and infants</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 gap-3">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700">✓ Free Vaccination (Polio/BCG/TT)</span>
+                    <span className="bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700">✓ BP, Sugar & Weight Check</span>
+                    <span className="bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700">✓ Nutrition Supplements Refill</span>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-100 mt-auto">
                     <div className="flex items-center gap-1.5 text-xs text-slate-600 font-semibold">
-                      <span className="material-symbols-outlined text-[18px] text-amber-600">location_on</span>
+                      <span className="material-symbols-outlined text-[16px] text-amber-600">location_on</span>
                       <span>Anganwadi Centre 3 (Ward 4)</span>
                     </div>
                     <button 
                       type="button" 
                       onClick={() => navigate('/patient/immunization')}
-                      className="h-11 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-sm"
+                      className="h-9 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
                     >
-                      <span className="material-symbols-outlined text-[18px]">vaccines</span>
+                      <span className="material-symbols-outlined text-[16px]">vaccines</span>
                       <span>View Immunization Records</span>
                     </button>
                   </div>
                 </div>
 
                 {/* ASHA Companion Card */}
-                <div className="bg-white p-6 sm:p-7 rounded-3xl border-2 border-amber-300 hover:border-amber-500 shadow-sm flex flex-col justify-between gap-5 transition-all duration-200">
-                  <div>
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="relative shrink-0">
-                        <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-14 h-14 rounded-2xl object-cover border-2 border-amber-400 shadow-xs notranslate" translate="no" />
-                        <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white shadow-xs" title="Active in Village"></span>
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex flex-wrap items-center gap-2 mb-1">
-                          <span className="text-xs uppercase tracking-wider text-slate-500 font-extrabold">Village ASHA Companion</span>
-                          <span className="inline-flex items-center gap-1 text-emerald-900 text-xs font-extrabold bg-emerald-50 px-3 py-0.5 rounded-full border border-emerald-300 shadow-xs">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            Active Today • उपलब्ध
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-xl font-extrabold text-slate-900 leading-tight notranslate" translate="no">Sunita Devi</h3>
-                          <span className="material-symbols-outlined text-amber-600 text-[20px]" title="Govt Certified ASHA">verified</span>
-                        </div>
-                        <p className="text-xs text-slate-600 font-semibold mt-0.5">Govt Certified Field Health Worker • Sitapur Ward 4</p>
-                      </div>
+                <div className="bg-white p-5 rounded-2xl border-2 border-amber-300 hover:border-amber-500 shadow-sm transition-all duration-200 flex flex-col">
+                  <div className="flex items-start gap-3.5 mb-4">
+                    <div className="relative shrink-0">
+                      <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-12 h-12 rounded-xl object-cover border-2 border-amber-400 notranslate" translate="no" />
+                      <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" title="Active in Village"></span>
                     </div>
-
-                    <div className="bg-amber-50/60 p-3.5 rounded-2xl border border-amber-200/80 text-xs font-medium text-slate-700 leading-relaxed">
-                      Assigned for home visits, child immunizations, Jan Aushadhi refills &amp; emergency PHC escort.
-                      <div className="mt-2 text-xs font-extrabold text-amber-950 flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[16px] text-amber-700">schedule</span>
-                        <span>Working Hours: 8:00 AM – 6:00 PM</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <span className="text-xs uppercase tracking-wider text-slate-500 font-extrabold">Village ASHA Companion</span>
+                        <span className="inline-flex items-center gap-1.5 text-emerald-900 text-[11px] font-extrabold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                          Active Today
+                        </span>
                       </div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg font-extrabold text-slate-900 leading-tight notranslate" translate="no">Sunita Devi</h3>
+                        <span className="material-symbols-outlined text-amber-600 text-[18px]" title="Govt Certified ASHA">verified</span>
+                      </div>
+                      <p className="text-xs text-slate-600 font-semibold mt-0.5">Govt Certified Field Health Worker • Sitapur Ward 4</p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100">
+                  <div className="bg-amber-50/60 p-3 rounded-xl border border-amber-200/80 text-xs font-medium text-slate-700 leading-relaxed mb-4">
+                    Assigned for home visits, child immunizations, Jan Aushadhi refills & emergency PHC escort.
+                    <div className="mt-2 text-xs font-extrabold text-amber-950 flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[14px] text-amber-700">schedule</span>
+                      <span>Working Hours: 8:00 AM – 6:00 PM</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 mt-auto">
                     <a 
                       href="tel:9876543210" 
-                      className="h-12 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-sm font-extrabold flex items-center justify-center gap-2 shadow-sm transition-all text-center"
+                      className="h-9 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-sm transition-all"
                     >
-                      <span className="material-symbols-outlined text-[20px]">call</span>
+                      <span className="material-symbols-outlined text-[16px]">call</span>
                       <span>Call Sunita Devi</span>
                     </a>
                     <button 
                       type="button" 
                       onClick={() => setActiveModal('request-visit')}
-                      className="h-12 px-4 rounded-xl bg-white border-2 border-amber-400 hover:bg-amber-50 text-slate-800 text-sm font-extrabold flex items-center justify-center gap-2 transition-all shadow-xs text-center"
+                      className="h-9 px-4 rounded-xl bg-white border-2 border-amber-400 hover:bg-amber-50 text-slate-800 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                     >
-                      <span className="material-symbols-outlined text-[20px] text-amber-600">home_health</span>
+                      <span className="material-symbols-outlined text-[16px] text-amber-600">home_health</span>
                       <span>Request Visit</span>
                     </button>
                   </div>

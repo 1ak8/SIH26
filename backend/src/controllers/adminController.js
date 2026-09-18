@@ -50,4 +50,52 @@ const getUsers = asyncHandler(async (req, res) => {
   res.json({ success: true, data: users });
 });
 
-module.exports = { getAnalytics, getFacilities, getUsers };
+// POST /api/admin/facilities/:id/inventory
+const updateFacilityStock = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { name, quantity, unit, status } = req.body;
+
+  const facility = await Facility.findById(id);
+  if (!facility) {
+    res.status(404);
+    throw new Error('Facility not found');
+  }
+
+  const existingIndex = facility.medicineInventory.findIndex(m => m.name.toLowerCase() === (name || '').toLowerCase());
+  if (existingIndex >= 0) {
+    facility.medicineInventory[existingIndex].quantity = (facility.medicineInventory[existingIndex].quantity || 0) + Number(quantity || 1000);
+    facility.medicineInventory[existingIndex].status = facility.medicineInventory[existingIndex].quantity < 2000 ? 'low_stock' : 'in_stock';
+  } else {
+    facility.medicineInventory.push({
+      name: name || 'Generic Paracetamol 500mg',
+      quantity: Number(quantity || 2500),
+      unit: unit || 'units',
+      status: status || 'in_stock',
+    });
+  }
+
+  await facility.save();
+  res.json({ success: true, message: `Stock replenished for ${name}!`, data: facility });
+});
+
+// POST /api/admin/directives
+const broadcastDirective = asyncHandler(async (req, res) => {
+  const { title, priority, message } = req.body;
+  const directive = {
+    id: `DIR-${Date.now()}`,
+    title: title || 'Emergency Public Health Surveillance Alert',
+    priority: priority || 'high',
+    message: message || 'All sub-centres to expedite vector-borne fever screening.',
+    issuedBy: req.user?.name || 'Mission Directorate',
+    issuedAt: new Date(),
+  };
+
+  const io = req.app.get('io');
+  if (io) {
+    io.emit('state:directive', directive);
+  }
+
+  res.status(201).json({ success: true, message: 'Directive broadcasted across state tele-health network!', data: directive });
+});
+
+module.exports = { getAnalytics, getFacilities, getUsers, updateFacilityStock, broadcastDirective };

@@ -97,8 +97,6 @@ const bookAppointment = asyncHandler(async (req, res) => {
   }
   res.status(201).json({ success: true, data: appointment });
 });
-  res.status(201).json({ success: true, data: appointment });
-});
 
 const getAppointments = asyncHandler(async (req, res) => {
   const appointments = await Appointment.find({ patient: req.user._id })

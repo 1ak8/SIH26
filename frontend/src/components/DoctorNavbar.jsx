@@ -65,6 +65,13 @@ export default function DoctorNavbar() {
             <span className="material-symbols-outlined text-[18px]">history</span>
             <span>Consult History</span>
           </Link>
+
+          <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+
+          <Link to="/doctor/referrals" className={getLinkClass('/doctor/referrals')}>
+            <span className="material-symbols-outlined text-[18px]">forward</span>
+            <span>Referrals</span>
+          </Link>
         </nav>
 
         {/* Right Action Controls */}

@@ -269,52 +269,80 @@ const updateAshaTaskStatus = asyncHandler(async (req, res) => {
 
 // POST /api/health-worker/register-citizen
 const registerCitizen = asyncHandler(async (req, res) => {
-  const { name, phone, gender, village, condition, allergies } = req.body;
-  if (!name) {
+  const { name, email, password, phone, gender, village, condition, allergies } = req.body;
+  if (!name || !phone) {
     res.status(400);
-    throw new Error('Name is required');
+    throw new Error('Citizen name and phone number are required');
   }
 
-  const email = `citizen.${Date.now()}@sehatsaarthi.gov.in`;
-  const randomAbha = `91-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`;
+  const cleanPhone = String(phone).trim();
+  const citizenEmail = email && String(email).trim() 
+    ? String(email).trim().toLowerCase() 
+    : `citizen.${cleanPhone}@sehatsaarthi.gov.in`;
 
-  const user = await User.create({
-    name,
-    email,
-    phone: phone || '9876543299',
-    role: 'patient',
-    gender: gender ? gender.toLowerCase() : 'female',
-    address: village || 'Sitapur Ward 4',
-    abhaId: randomAbha,
-    password: 'password123',
+  const citizenPassword = password && String(password).trim().length >= 6
+    ? String(password).trim()
+    : '123456';
+
+  // Check if user with this email or phone exists
+  let user = await User.findOne({
+    $or: [
+      { email: citizenEmail },
+      { phone: cleanPhone },
+    ]
   });
 
-  await PatientProfile.create({
-    user: user._id,
-    abhaId: randomAbha,
-    allergies: allergies ? [{ name: allergies, severity: 'mild' }] : [],
-    chronicConditions: condition ? [{ condition, diagnosedDate: new Date(), status: 'active' }] : [],
-    vitals: {
-      systolicBP: 120,
-      diastolicBP: 80,
-      heartRate: 72,
-      spO2: 98,
-      temperature: 98.6,
-      bloodSugar: 100,
-      lastUpdated: new Date(),
-    },
-  });
+  if (user) {
+    // If user already exists, update their role/password
+    user.name = name;
+    user.password = citizenPassword;
+    await user.save();
+  } else {
+    const randomAbha = `91-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`;
+    user = await User.create({
+      name: String(name).trim(),
+      email: citizenEmail,
+      phone: cleanPhone,
+      password: citizenPassword,
+      role: 'patient',
+      gender: gender ? gender.toLowerCase() : 'female',
+      address: village || 'Sitapur Ward 4',
+      abhaId: randomAbha,
+    });
+
+    await PatientProfile.create({
+      user: user._id,
+      abhaId: randomAbha,
+      allergies: allergies ? [{ name: allergies, severity: 'mild' }] : [],
+      chronicConditions: condition ? [{ condition, diagnosedDate: new Date(), status: 'active' }] : [],
+      vitals: {
+        systolicBP: 120,
+        diastolicBP: 80,
+        heartRate: 72,
+        spO2: 98,
+        temperature: 98.6,
+        bloodSugar: 100,
+        lastUpdated: new Date(),
+      },
+    });
+  }
 
   res.status(201).json({
     success: true,
-    message: 'Citizen registered successfully!',
+    message: `Citizen ${user.name} successfully registered with portal access!`,
     data: {
       _id: user._id,
       name: user.name,
+      email: user.email,
       phone: user.phone,
-      abhaId: randomAbha,
+      abhaId: user.abhaId || '91-4820-1940-2810',
       address: user.address,
       gender: user.gender,
+      credentials: {
+        email: user.email,
+        phone: user.phone,
+        password: citizenPassword,
+      }
     },
   });
 });

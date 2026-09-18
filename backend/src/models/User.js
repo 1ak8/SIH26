@@ -19,6 +19,8 @@ const userSchema = new mongoose.Schema({
   registrationNumber: { type: String },
   isActive: { type: Boolean, default: true },
   lastLogin: { type: Date },
+  resetPasswordOtp: { type: String },
+  resetPasswordExpires: { type: Date },
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

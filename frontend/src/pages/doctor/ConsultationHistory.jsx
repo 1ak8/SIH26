@@ -80,7 +80,16 @@ const DEFAULT_HISTORY = [
 
 export default function ConsultationHistory() {
   const { user } = useAuth();
-  const [history, setHistory] = useState(DEFAULT_HISTORY);
+  const [history, setHistory] = useState(() => {
+    try {
+      const local = JSON.parse(localStorage.getItem('sehatsaarthi_doctor_history') || '[]');
+      if (local && local.length > 0) {
+        return [...local, ...DEFAULT_HISTORY];
+      }
+    } catch(e) {}
+    return DEFAULT_HISTORY;
+  });
+
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [modeFilter, setModeFilter] = useState('All');
@@ -90,10 +99,22 @@ export default function ConsultationHistory() {
     setLoading(true);
     api.get('/doctor/history')
       .then(res => {
-        if (res.data?.data && res.data.data.length > 0) {
-          // Merge with default history for maximum richness
-          const serverList = res.data.data;
-          setHistory([...serverList, ...DEFAULT_HISTORY]);
+        const serverList = res.data?.data || [];
+        try {
+          const local = JSON.parse(localStorage.getItem('sehatsaarthi_doctor_history') || '[]');
+          const combined = [...local, ...serverList, ...DEFAULT_HISTORY];
+          const seen = new Set();
+          const unique = [];
+          for (const item of combined) {
+            const key = item.id || item._id;
+            if (key && !seen.has(key)) {
+              seen.add(key);
+              unique.push(item);
+            }
+          }
+          setHistory(unique);
+        } catch(e) {
+          if (serverList.length > 0) setHistory([...serverList, ...DEFAULT_HISTORY]);
         }
       })
       .catch(() => {})
@@ -102,6 +123,8 @@ export default function ConsultationHistory() {
 
   useEffect(() => {
     fetchHistory();
+    const interval = setInterval(fetchHistory, 6000);
+    return () => clearInterval(interval);
   }, []);
 
   const printConsultation = (rec) => {
@@ -322,11 +345,12 @@ export default function ConsultationHistory() {
                     </td>
                     <td className="px-6 py-5 text-right">
                       <button 
+                        type="button"
                         onClick={() => setSelectedRecord(record)}
                         className="inline-flex items-center gap-1.5 px-4 py-2 border-2 border-slate-300 hover:border-amber-400 bg-white hover:bg-amber-50 text-slate-800 hover:text-amber-900 rounded-xl font-extrabold text-xs transition-all shadow-xs cursor-pointer"
                       >
                         <span className="material-symbols-outlined text-[16px] text-amber-600">visibility</span>
-                        <span>Summary &amp; Rx</span>
+                        <span>Summary</span>
                       </button>
                     </td>
                   </tr>
@@ -447,6 +471,16 @@ export default function ConsultationHistory() {
                 </div>
                 <span className="font-mono text-[10px] text-slate-400 font-black">E-SANJEEVANI-VALID</span>
               </div>
+            </div>
+
+            <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setSelectedRecord(null)}
+                className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black transition-colors cursor-pointer"
+              >
+                Close Summary
+              </button>
             </div>
           </div>
         </div>

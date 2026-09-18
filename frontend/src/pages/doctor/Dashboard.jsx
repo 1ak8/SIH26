@@ -95,24 +95,61 @@ export default function DoctorDashboard() {
     const appointmentId = item._id || item.id;
     setActionLoadingId(appointmentId);
 
-    // Update state immediately for instant feedback
-    setQueue(prev => prev.map(a => {
-      const match = (a._id && a._id === appointmentId) || (a.id && a.id === appointmentId);
-      if (match) {
-        return {
-          ...a,
-          status: newStatus === 'in_consultation' ? 'IN CONSULTATION' : newStatus === 'completed' ? 'Completed' : 'Waiting',
-          rawStatus: newStatus
-        };
-      }
-      return a;
-    }));
+    if (newStatus === 'completed') {
+      // Remove from active queue immediately
+      setQueue(prev => prev.filter(a => {
+        const match = (a._id && a._id === appointmentId) || (a.id && a.id === appointmentId);
+        return !match;
+      }));
 
-    if (newStatus === 'in_consultation') {
-      setActiveConsultation(item);
-      showToast(`Tele-Consultation started with ${item.name || item.patient?.name}! Connected to Kiosk.`);
-    } else if (newStatus === 'completed') {
-      showToast(`Consultation for ${item.name || item.patient?.name} marked as Completed!`);
+      // Increment completed counter
+      setData(prev => ({
+        ...prev,
+        completedToday: (prev?.completedToday || 19) + 1,
+      }));
+
+      // Save to Doctor Consultation History cache immediately
+      const historyItem = {
+        _id: appointmentId,
+        id: `SEHAT-${Math.floor(1000 + Math.random() * 9000)}`,
+        patient: `${item.name || item.patient?.name || 'Citizen'} (${item.age || '32 yrs'}/${item.gender ? item.gender.charAt(0).toUpperCase() : 'M'})`,
+        patientName: item.name || item.patient?.name || 'Citizen',
+        date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+        time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }),
+        diagnosis: item.symptoms || item.reason || 'General Tele-Consultation Completed',
+        type: 'Tele-Consult',
+        facility: item.location || 'CHC Sitapur Central',
+        abha: item.abha || '91-4820-1940-2810',
+        medicines: [],
+        clinicalNotes: 'Consultation concluded by doctor. Patient advised routine care.',
+        isDigitallySigned: true,
+        createdAt: new Date().toISOString(),
+      };
+
+      try {
+        const existing = JSON.parse(localStorage.getItem('sehatsaarthi_doctor_history') || '[]');
+        localStorage.setItem('sehatsaarthi_doctor_history', JSON.stringify([historyItem, ...existing]));
+      } catch(e) {}
+
+      showToast(`Consultation for ${item.name || item.patient?.name} completed & moved to History!`);
+    } else {
+      // Update in-consultation status
+      setQueue(prev => prev.map(a => {
+        const match = (a._id && a._id === appointmentId) || (a.id && a.id === appointmentId);
+        if (match) {
+          return {
+            ...a,
+            status: 'IN CONSULTATION',
+            rawStatus: 'in_consultation',
+          };
+        }
+        return a;
+      }));
+
+      if (newStatus === 'in_consultation') {
+        setActiveConsultation(item);
+        showToast(`Tele-Consultation started with ${item.name || item.patient?.name}! Connected to Kiosk.`);
+      }
     }
 
     try {
@@ -198,7 +235,7 @@ export default function DoctorDashboard() {
           >
             <div>
               <span className="text-xs uppercase font-extrabold text-amber-800 tracking-wider block mb-1">Live Queue Waiting</span>
-              <span className="text-4xl font-black text-amber-950">{queue.length || 4}</span>
+              <span className="text-4xl font-black text-amber-950">{queue.filter(a => a.status !== 'completed' && a.status !== 'Completed' && a.rawStatus !== 'completed').length}</span>
               <p className="text-xs text-amber-800 font-bold mt-1">Ready for consultation</p>
             </div>
             <div className="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-all">
@@ -251,160 +288,172 @@ export default function DoctorDashboard() {
               to="/doctor/queue"
               className="inline-flex items-center gap-1.5 text-xs font-extrabold text-amber-800 bg-amber-100 hover:bg-amber-200 px-3.5 py-1.5 rounded-full border border-amber-300 transition-all self-start sm:self-auto"
             >
-              <span>View Full Queue ({queue.length || 4})</span>
+              <span>View Full Queue ({queue.filter(a => a.status !== 'completed' && a.status !== 'Completed' && a.rawStatus !== 'completed').length})</span>
               <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
             </Link>
           </div>
 
           <div className="flex flex-col gap-4 w-full">
-            {(queue.length > 0 ? queue.slice(0, 4) : QUEUE_DATA.slice(0, 4)).map((item, idx) => {
-              const isApi = !!item._id;
-              const pId = isApi ? item._id : item.id;
-              const pName = isApi ? (item.patient?.name || 'Patient') : item.name;
-              const pAge = isApi ? (item.patient?.dateOfBirth ? `${Math.floor((Date.now() - new Date(item.patient.dateOfBirth))/(365.25*24*3600*1000))} yrs` : '32 yrs') : item.age;
-              const pGender = isApi ? (item.patient?.gender ? (item.patient.gender.charAt(0).toUpperCase() + item.patient.gender.slice(1)) : 'Male') : item.gender;
-              const pToken = isApi ? (item.tokenNumber || idx + 1) : item.id;
-              const isCurrent = isApi ? (item.status === 'in_consultation') : (item.status === 'IN CONSULTATION');
-              const pStatus = isCurrent ? 'IN CONSULTATION' : item.status === 'in_queue' ? 'Next in Line' : item.status === 'completed' ? 'Completed' : 'Waiting';
-              const pSymptoms = isApi ? (item.reason || item.notes || 'General Tele-Consultation') : item.symptoms;
-              const pLocation = isApi ? (item.facility?.name || 'Rampur Sub-Centre') : item.location;
-              const pAsha = 'Sunita Devi';
-              const pAbha = isApi ? (item.patient?.abhaId || '91-4820-1940-2810') : item.abha;
-
-              return (
-                <div 
-                  key={pId}
-                  className={`bg-white p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 shadow-sm hover:shadow-md ${
-                    isCurrent 
-                      ? 'border-amber-500 bg-amber-50/25' 
-                      : 'border-slate-200 hover:border-amber-400'
-                  }`}
-                >
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-                    <div className="flex items-start sm:items-center gap-4">
-                      <div className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center font-bold text-xl shrink-0 ${
-                        isCurrent 
-                          ? 'bg-amber-100 border-amber-400 text-amber-900 shadow-xs' 
-                          : 'bg-slate-50 border-slate-200 text-slate-700'
-                      }`}>
-                        #{String(pToken).padStart(2, '0')}
-                      </div>
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2.5 mb-1">
-                          <h3 className="text-xl font-extrabold text-slate-900 leading-snug notranslate" translate="no">{pName}</h3>
-                          <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{pAge} • {pGender}</span>
-                          <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-black border ${
-                            isCurrent 
-                              ? 'bg-amber-100 text-amber-950 border-amber-400 shadow-2xs animate-pulse' 
-                              : pStatus === 'Next in Line'
-                                ? 'bg-sky-100 text-sky-900 border-sky-300'
-                                : 'bg-slate-100 text-slate-700 border-slate-200'
-                          }`}>
-                            {isCurrent && <span className="material-symbols-outlined text-[14px]">videocam</span>}
-                            {pStatus}
-                          </span>
-                        </div>
-                        <p className="text-sm font-bold text-slate-700">{pSymptoms}</p>
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 font-semibold mt-1">
-                          <span>{pLocation}</span>
-                          <span>•</span>
-                          <span className="text-amber-900 font-extrabold">ASHA: {pAsha}</span>
-                          <span>•</span>
-                          <span className="font-mono text-slate-700 font-bold notranslate" translate="no">ABHA: {pAbha}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2.5 shrink-0 pt-2 lg:pt-0">
-                      {/* Info "i" Button */}
-                      <button 
-                        type="button"
-                        onClick={() => setExpandedPatientId(expandedPatientId === pId ? null : pId)}
-                        className={`h-12 w-12 rounded-xl border-2 flex items-center justify-center transition-all shadow-xs ${
-                          expandedPatientId === pId 
-                            ? 'bg-amber-600 text-white border-amber-600 shadow-sm' 
-                            : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-700 hover:text-amber-700 hover:border-amber-400'
-                        }`}
-                        title="View Patient Clinical Dossier"
-                      >
-                        <span className="material-symbols-outlined text-[22px]">info</span>
-                      </button>
-
-                      <Link 
-                        to="/doctor/prescriptions"
-                        state={{
-                          patientId: isApi ? item.patient?._id : 'pat-demo',
-                          patientName: pName,
-                          abhaId: pAbha,
-                          appointmentId: isApi ? item._id : null,
-                          reason: pSymptoms,
-                          location: pLocation,
-                          token: pToken
-                        }}
-                        className="h-12 px-4 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-xs"
-                      >
-                        <span className="material-symbols-outlined text-[18px] text-amber-600">medication</span>
-                        <span>Prescribe</span>
-                      </Link>
-
-                      {isCurrent ? (
-                        <button 
-                          onClick={() => handleUpdateStatus(item, 'completed')}
-                          disabled={actionLoadingId === pId}
-                          className="h-12 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-extrabold rounded-xl shadow-md shadow-emerald-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                          type="button"
-                        >
-                          <span className="material-symbols-outlined text-[20px]">check_circle</span>
-                          <span>Complete Consultation</span>
-                        </button>
-                      ) : (
-                        <button 
-                          onClick={() => handleUpdateStatus(item, 'in_consultation')}
-                          disabled={actionLoadingId === pId}
-                          className="h-12 px-5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-extrabold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                          type="button"
-                        >
-                          <span className="material-symbols-outlined text-[18px]">videocam</span>
-                          <span>Call In (Consult)</span>
-                        </button>
-                      )}
-                    </div>
+            {(() => {
+              const activeList = queue.filter(a => a.status !== 'completed' && a.status !== 'Completed' && a.rawStatus !== 'completed');
+              if (activeList.length === 0) {
+                return (
+                  <div className="p-8 text-center bg-white rounded-3xl border-2 border-slate-200">
+                    <span className="material-symbols-outlined text-4xl text-emerald-600 block mx-auto mb-2">check_circle</span>
+                    <h4 className="text-base font-black text-slate-900">All Scheduled Consultations Completed!</h4>
+                    <p className="text-xs text-slate-500 mt-1">All patients in queue have been attended. Completed records have automatically moved to Consultation History.</p>
                   </div>
+                );
+              }
+              return activeList.slice(0, 4).map((item, idx) => {
+                const isApi = !!item._id;
+                const pId = isApi ? item._id : item.id;
+                const pName = isApi ? (item.patient?.name || 'Patient') : item.name;
+                const pAge = isApi ? (item.patient?.dateOfBirth ? `${Math.floor((Date.now() - new Date(item.patient.dateOfBirth))/(365.25*24*3600*1000))} yrs` : '32 yrs') : item.age;
+                const pGender = isApi ? (item.patient?.gender ? (item.patient.gender.charAt(0).toUpperCase() + item.patient.gender.slice(1)) : 'Male') : item.gender;
+                const pToken = isApi ? (item.tokenNumber || idx + 1) : item.id;
+                const isCurrent = isApi ? (item.status === 'in_consultation') : (item.status === 'IN CONSULTATION');
+                const pStatus = isCurrent ? 'IN CONSULTATION' : item.status === 'in_queue' ? 'Next in Line' : item.status === 'completed' ? 'Completed' : 'Waiting';
+                const pSymptoms = isApi ? (item.reason || item.notes || 'General Tele-Consultation') : item.symptoms;
+                const pLocation = isApi ? (item.facility?.name || 'Rampur Sub-Centre') : item.location;
+                const pAsha = 'Sunita Devi';
+                const pAbha = isApi ? (item.patient?.abhaId || '91-4820-1940-2810') : item.abha;
 
-                  {/* In-Place Expanded Patient Clinical Dossier */}
-                  {expandedPatientId === pId && (
-                    <div className="w-full pt-4 mt-4 border-t-2 border-slate-100 animate-fadeIn">
-                      <div className="bg-amber-50/60 rounded-2xl border-2 border-amber-200/80 p-5">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-amber-200/70">
-                          <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-amber-700 text-[20px]">clinical_notes</span>
-                            <span className="text-xs uppercase font-black text-amber-950 tracking-wider">Clinical Vitals &amp; ASHA Triage Dossier</span>
-                          </div>
-                          <span className="text-xs font-mono font-extrabold bg-white text-amber-950 px-3 py-1 rounded-lg border border-amber-300 shadow-2xs self-start sm:self-auto">
-                            ABHA: {pAbha}
-                          </span>
+                return (
+                  <div 
+                    key={pId}
+                    className={`bg-white p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 shadow-sm hover:shadow-md ${
+                      isCurrent 
+                        ? 'border-amber-500 bg-amber-50/25' 
+                        : 'border-slate-200 hover:border-amber-400'
+                    }`}
+                  >
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                      <div className="flex items-start sm:items-center gap-4">
+                        <div className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center font-bold text-xl shrink-0 ${
+                          isCurrent 
+                            ? 'bg-amber-100 border-amber-400 text-amber-900 shadow-xs' 
+                            : 'bg-slate-50 border-slate-200 text-slate-700'
+                        }`}>
+                          #{String(pToken).padStart(2, '0')}
                         </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
-                          <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
-                            <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Reported Symptoms</span>
-                            <p className="text-xs font-extrabold text-slate-900">{pSymptoms}</p>
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2.5 mb-1">
+                            <h3 className="text-xl font-extrabold text-slate-900 leading-snug notranslate" translate="no">{pName}</h3>
+                            <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{pAge} • {pGender}</span>
+                            <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-black border ${
+                              isCurrent 
+                                ? 'bg-amber-100 text-amber-950 border-amber-400 shadow-2xs animate-pulse' 
+                                : pStatus === 'Next in Line'
+                                  ? 'bg-sky-100 text-sky-900 border-sky-300'
+                                  : 'bg-slate-100 text-slate-700 border-slate-200'
+                            }`}>
+                              {isCurrent && <span className="material-symbols-outlined text-[14px]">videocam</span>}
+                              {pStatus}
+                            </span>
                           </div>
-                          <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
-                            <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Logged Vitals</span>
-                            <p className="text-xs font-black text-amber-950">BP 120/80 • Pulse 74 • SpO2 98%</p>
-                          </div>
-                          <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
-                            <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Assigned ASHA Worker</span>
-                            <p className="text-xs font-extrabold text-slate-900">{pAsha} • {pLocation}</p>
+                          <p className="text-sm font-bold text-slate-700">{pSymptoms}</p>
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 font-semibold mt-1">
+                            <span>{pLocation}</span>
+                            <span>•</span>
+                            <span className="text-amber-900 font-extrabold">ASHA: {pAsha}</span>
+                            <span>•</span>
+                            <span className="font-mono text-slate-700 font-bold notranslate" translate="no">ABHA: {pAbha}</span>
                           </div>
                         </div>
                       </div>
+
+                      <div className="flex items-center gap-2.5 shrink-0 pt-2 lg:pt-0">
+                        {/* Info "i" Button */}
+                        <button 
+                          type="button"
+                          onClick={() => setExpandedPatientId(expandedPatientId === pId ? null : pId)}
+                          className={`h-12 w-12 rounded-xl border-2 flex items-center justify-center transition-all shadow-xs ${
+                            expandedPatientId === pId 
+                              ? 'bg-amber-600 text-white border-amber-600 shadow-sm' 
+                              : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-700 hover:text-amber-700 hover:border-amber-400'
+                          }`}
+                          title="View Patient Clinical Dossier"
+                        >
+                          <span className="material-symbols-outlined text-[22px]">info</span>
+                        </button>
+
+                        <Link 
+                          to="/doctor/prescriptions"
+                          state={{
+                            patientId: isApi ? item.patient?._id : 'pat-demo',
+                            patientName: pName,
+                            abhaId: pAbha,
+                            appointmentId: isApi ? item._id : null,
+                            reason: pSymptoms,
+                            location: pLocation,
+                            token: pToken
+                          }}
+                          className="h-12 px-4 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-xs"
+                        >
+                          <span className="material-symbols-outlined text-[18px] text-amber-600">medication</span>
+                          <span>Prescribe</span>
+                        </Link>
+
+                        {isCurrent ? (
+                          <button 
+                            onClick={() => handleUpdateStatus(item, 'completed')}
+                            disabled={actionLoadingId === pId}
+                            className="h-12 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-extrabold rounded-xl shadow-md shadow-emerald-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                            type="button"
+                          >
+                            <span className="material-symbols-outlined text-[20px]">check_circle</span>
+                            <span>Complete Consultation</span>
+                          </button>
+                        ) : (
+                          <button 
+                            onClick={() => handleUpdateStatus(item, 'in_consultation')}
+                            disabled={actionLoadingId === pId}
+                            className="h-12 px-5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-extrabold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                            type="button"
+                          >
+                            <span className="material-symbols-outlined text-[18px]">videocam</span>
+                            <span>Call In (Consult)</span>
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  )}
-                </div>
-              );
-            })}
+
+                    {/* In-Place Expanded Patient Clinical Dossier */}
+                    {expandedPatientId === pId && (
+                      <div className="w-full pt-4 mt-4 border-t-2 border-slate-100 animate-fadeIn">
+                        <div className="bg-amber-50/60 rounded-2xl border-2 border-amber-200/80 p-5">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-amber-200/70">
+                            <div className="flex items-center gap-2">
+                              <span className="material-symbols-outlined text-amber-700 text-[20px]">clinical_notes</span>
+                              <span className="text-xs uppercase font-black text-amber-950 tracking-wider">Clinical Vitals &amp; ASHA Triage Dossier</span>
+                            </div>
+                            <span className="text-xs font-mono font-extrabold bg-white text-amber-950 px-3 py-1 rounded-lg border border-amber-300 shadow-2xs self-start sm:self-auto">
+                              ABHA: {pAbha}
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
+                            <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
+                              <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Reported Symptoms</span>
+                              <p className="text-xs font-extrabold text-slate-900">{pSymptoms}</p>
+                            </div>
+                            <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
+                              <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Logged Vitals</span>
+                              <p className="text-xs font-black text-amber-950">BP 120/80 • Pulse 74 • SpO2 98%</p>
+                            </div>
+                            <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
+                              <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Assigned ASHA Worker</span>
+                              <p className="text-xs font-extrabold text-slate-900">{pAsha} • {pLocation}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              });
+            })()}
           </div>
         </section>
 
