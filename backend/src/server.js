@@ -16,6 +16,7 @@ const immunizationRoutes = require('./routes/immunizationRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
 const referralRoutes = require('./routes/referralRoutes');
 const treatmentRoutes = require('./routes/treatmentRoutes');
+const cacheMiddleware = require('./middleware/cacheMiddleware');
 
 connectDB();
 
@@ -42,10 +43,10 @@ io.on('connection', (socket) => {
 app.get('/api/health', (req, res) => res.json({ status: 'ok', service: 'SehatSaarthi Backend', timestamp: new Date() }));
 
 app.use('/api/auth', authRoutes);
-app.use('/api/patient', patientRoutes);
-app.use('/api/health-worker', healthWorkerRoutes);
-app.use('/api/doctor', doctorRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/api/patient', cacheMiddleware(10000), patientRoutes);
+app.use('/api/health-worker', cacheMiddleware(10000), healthWorkerRoutes);
+app.use('/api/doctor', cacheMiddleware(10000), doctorRoutes);
+app.use('/api/admin', cacheMiddleware(10000), adminRoutes);
 app.use('/api/patient', immunizationRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/referrals', referralRoutes);

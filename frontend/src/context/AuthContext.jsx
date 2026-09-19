@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import api from '../services/api';
+import api, { clearApiCache } from '../services/api';
 
 const AuthContext = createContext(null);
 export const useAuth = () => useContext(AuthContext);
@@ -14,13 +14,35 @@ export const AuthProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
+    // Instant load from localStorage cache
     const stored = localStorage.getItem('sehatsaarthi_user') || localStorage.getItem('aarogyanet_user');
     if (stored) {
-      const parsed = JSON.parse(stored);
-      setUser(parsed);
-      connectSocket(parsed);
+      try {
+        const parsed = JSON.parse(stored);
+        setUser(parsed);
+        connectSocket(parsed);
+      } catch (e) {
+        localStorage.removeItem('sehatsaarthi_user');
+        localStorage.removeItem('aarogyanet_user');
+      }
     }
     setLoading(false);
+
+    // Background token verification (non-blocking)
+    if (stored) {
+      api.get('/auth/me', { _cache: false }).then(res => {
+        if (res.data?.data) {
+          const updated = res.data.data;
+          const current = JSON.parse(stored);
+          // Update localStorage if user data changed
+          const merged = { ...current, ...updated, token: current.token };
+          localStorage.setItem('sehatsaarthi_user', JSON.stringify(merged));
+          setUser(merged);
+        }
+      }).catch(() => {
+        // Token invalid - but don't logout immediately, let cached data work
+      });
+    }
   }, []);
 
   const connectSocket = (userData) => {
@@ -57,6 +79,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
+    clearApiCache();
     const { data } = await api.post('/auth/login', { email, password });
     const userData = data.data;
     localStorage.setItem('sehatsaarthi_user', JSON.stringify(userData));
@@ -67,6 +90,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (formData) => {
+    clearApiCache();
     const { data } = await api.post('/auth/register', formData);
     const userData = data.data;
     localStorage.setItem('sehatsaarthi_user', JSON.stringify(userData));
@@ -77,6 +101,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    clearApiCache();
     localStorage.removeItem('sehatsaarthi_user');
     localStorage.removeItem('aarogyanet_user');
     setUser(null);
