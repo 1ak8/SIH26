@@ -156,7 +156,7 @@ export default function LanguageSelector() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-9 sm:h-10 px-2.5 sm:px-3.5 flex items-center gap-1.5 sm:gap-2 bg-white border-2 border-slate-200 hover:border-amber-400 rounded-xl text-slate-800 text-xs font-extrabold hover:bg-slate-50 transition-all shadow-xs shrink-0 cursor-pointer"
+        className="h-9 sm:h-10 px-2.5 sm:px-3.5 flex items-center gap-1.5 sm:gap-2 bg-white border-2 border-slate-200 hover:border-amber-400 rounded-xl text-slate-800 text-xs font-extrabold hover:bg-slate-50 transition-all shadow-xs shrink-0 cursor-pointer whitespace-nowrap"
         title="Select Language / भाषा चुनें (22 Indian Languages)"
         aria-haspopup="true"
         aria-expanded={isOpen}

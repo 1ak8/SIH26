@@ -29,7 +29,7 @@ export default function PatientNavbar({ activeTab, setActiveTab, setActiveModal 
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs w-full">
-      <div className="w-full px-4 lg:px-8 xl:px-12 flex items-center justify-between gap-4 h-[72px]">
+      <div className="w-full px-4 lg:px-8 xl:px-12 flex items-center justify-between gap-4 h-[72px] overflow-hidden">
         {/* Logo with Govt Portal Badge */}
         <Link to="/patient" className="flex items-center gap-2.5 shrink-0 group">
           <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-10 h-10 rounded-xl object-cover shrink-0 notranslate" translate="no" />
@@ -42,10 +42,10 @@ export default function PatientNavbar({ activeTab, setActiveTab, setActiveModal 
         </Link>
 
         {/* Navigation Items */}
-        <nav className="hidden lg:flex items-center gap-2 xl:gap-3">
+        <nav className="hidden lg:flex items-center gap-2 xl:gap-3 shrink overflow-x-auto min-w-0">
           <button 
             onClick={handleDashboardClick} 
-            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
               isDashboard && activeTab === 'dashboard' 
                 ? 'bg-amber-600 text-white shadow-sm' 
                 : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -59,7 +59,7 @@ export default function PatientNavbar({ activeTab, setActiveTab, setActiveModal 
 
           <Link 
             to="/patient/doctors" 
-            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
               location.pathname === '/patient/doctors' 
                 ? 'bg-amber-600 text-white shadow-sm' 
                 : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -73,7 +73,7 @@ export default function PatientNavbar({ activeTab, setActiveTab, setActiveModal 
 
           <Link 
             to="/patient/medicines" 
-            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
               location.pathname === '/patient/medicines' 
                 ? 'bg-amber-600 text-white shadow-sm' 
                 : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -93,7 +93,7 @@ export default function PatientNavbar({ activeTab, setActiveTab, setActiveModal 
                 setActiveModal('lab-tests');
               }
             }}
-            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
               (isDashboard && activeTab === 'lab-tests') || location.pathname === '/patient/lab-reports'
                 ? 'bg-amber-600 text-white shadow-sm' 
                 : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -107,7 +107,7 @@ export default function PatientNavbar({ activeTab, setActiveTab, setActiveModal 
 
           <Link 
             to="/patient/referrals" 
-            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
               location.pathname === '/patient/referrals' 
                 ? 'bg-amber-600 text-white shadow-sm' 
                 : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -121,7 +121,7 @@ export default function PatientNavbar({ activeTab, setActiveTab, setActiveModal 
 
           <Link 
             to="/patient/treatment" 
-            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
               location.pathname === '/patient/treatment' 
                 ? 'bg-amber-600 text-white shadow-sm' 
                 : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -135,7 +135,7 @@ export default function PatientNavbar({ activeTab, setActiveTab, setActiveModal 
 
           <button 
             onClick={handleProfileClick} 
-            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
               isDashboard && activeTab === 'profile' 
                 ? 'bg-amber-600 text-white shadow-sm' 
                 : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -154,7 +154,7 @@ export default function PatientNavbar({ activeTab, setActiveTab, setActiveModal 
         </nav>
 
         {/* Right Action Controls */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0 whitespace-nowrap">
           <div className="h-7 w-[2px] bg-slate-300 rounded-full hidden lg:block mr-1"></div>
 
           <LanguageSelector />

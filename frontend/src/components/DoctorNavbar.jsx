@@ -10,7 +10,7 @@ export default function DoctorNavbar() {
 
   const getLinkClass = (path) => {
     const isActive = location.pathname === path;
-    return `px-3 py-1.5 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 ${
+    return `px-3 py-1.5 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
       isActive 
         ? 'bg-amber-600 text-white shadow-sm' 
         : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
@@ -19,7 +19,7 @@ export default function DoctorNavbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs w-full">
-      <div className="w-full px-4 lg:px-8 xl:px-12 flex items-center justify-between gap-4 h-[72px]">
+      <div className="w-full px-4 lg:px-8 xl:px-12 flex items-center justify-between gap-4 h-[72px] overflow-hidden">
         {/* Logo */}
         <Link to="/doctor" className="flex items-center gap-2.5 shrink-0 group">
           <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-10 h-10 rounded-xl object-cover shrink-0 notranslate" translate="no" />
@@ -32,7 +32,7 @@ export default function DoctorNavbar() {
         </Link>
 
         {/* Nav Items */}
-        <nav className="hidden lg:flex items-center gap-2 xl:gap-2.5">
+        <nav className="hidden lg:flex items-center gap-2 xl:gap-2.5 shrink overflow-x-auto min-w-0">
           <Link to="/doctor" className={getLinkClass('/doctor')}>
             <span className="material-symbols-outlined text-[17px]">dashboard</span>
             <span>Dashboard</span>
@@ -70,7 +70,7 @@ export default function DoctorNavbar() {
         </nav>
 
         {/* Right Controls */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 whitespace-nowrap">
           <div className="h-6 w-[1.5px] bg-slate-300 rounded-full hidden lg:block mr-1"></div>
           <LanguageSelector />
           <a className="h-9 px-3 flex items-center gap-1.5 bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-extrabold rounded-xl hover:bg-rose-100 transition-all shadow-xs" href="tel:108">
