@@ -120,7 +120,7 @@ export default function Login() {
   };
 
   const ROLES = [
-    { key: 'patient', label: t('citizen') || 'Citizen', icon: 'person' },
+    { key: 'patient', label: 'Patient', icon: 'person' },
     { key: 'health_worker', label: 'Health Worker', icon: 'medical_services' },
     { key: 'doctor', label: 'Doctor', icon: 'stethoscope' },
     { key: 'admin', label: 'Admin', icon: 'admin_panel_settings' },
@@ -371,7 +371,7 @@ export default function Login() {
                       <label className="text-[12px] font-bold text-slate-700">{t('role')}</label>
                       <select className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-base lg:text-[14px] text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium shadow-sm hover:border-slate-400"
                         value={regForm.role} onChange={e => setRegForm({...regForm, role: e.target.value})}>
-                        <option value="patient">Citizen</option>
+                        <option value="patient">Patient</option>
                         <option value="health_worker">Health Worker (ANM / CHO)</option>
                         <option value="doctor">Doctor</option>
                         <option value="admin">Admin</option>
@@ -483,7 +483,7 @@ export default function Login() {
 
                   <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 flex items-center gap-2">
                     <span className="material-symbols-outlined text-amber-600 text-[18px]">shield</span>
-                    <span>Supports Citizen, Doctor, Health Worker &amp; Admin accounts.</span>
+                    <span>Supports Patient, Doctor, Health Worker &amp; Admin accounts.</span>
                   </div>
 
                   <button
@@ -641,7 +641,7 @@ export default function Login() {
       <footer className="relative z-10 w-full border-t border-slate-200/80 bg-white/70 backdrop-blur-xs py-2 px-4 sm:px-6 lg:px-24 text-center">
         <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-700 notranslate" translate="no">SehatSaarthi Citizen Portal</span>
+            <span className="font-semibold text-slate-700 notranslate" translate="no">SehatSaarthi Patient Portal</span>
             <span className="hidden sm:inline">•</span>
             <span>Ministry of Health &amp; Family Welfare, Govt. of India</span>
           </div>
