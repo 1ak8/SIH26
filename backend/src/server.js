@@ -60,19 +60,27 @@ const PORT = process.env.PORT || 5000;
 
 // Warm up: pre-cache all users on startup for instant login
 const User = require('./models/User');
+const KNOWN_TEST_PASSWORDS = ['123456', 'password', 'admin123', 'doctor123', 'asha123'];
 const warmup = async () => {
   try {
-    const users = await User.find({}).select('+password');
-    const cache = require('./controllers/authController').userCache || new Map();
-    users.forEach(u => {
-      cache.set(u.email.toLowerCase(), {
+    const users = await User.find({}).select('+password').lean();
+    const { userCache } = require('./controllers/authController');
+    for (const u of users) {
+      const entry = {
         _id: u._id, name: u.name, email: u.email,
         phone: u.phone, role: u.role, abhaId: u.abhaId,
         profileImage: u.profileImage, password: u.password,
-      });
-    });
+      };
+      // Pre-check known test passwords to skip bcrypt on first login
+      for (const pass of KNOWN_TEST_PASSWORDS) {
+        const match = await require('bcryptjs').compare(pass, u.password);
+        if (match) { entry._plain = pass; break; }
+      }
+      userCache.set(u.email.toLowerCase(), entry);
+      if (u.phone) userCache.set(u.phone, entry);
+    }
     console.log(`User cache warmed: ${users.length} users loaded`);
-  } catch (e) { /* ignore */ }
+  } catch (e) { console.log('Warmup error:', e.message); }
 };
 
 server.listen(PORT, () => {

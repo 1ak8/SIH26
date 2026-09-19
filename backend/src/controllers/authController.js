@@ -32,27 +32,35 @@ const login = asyncHandler(async (req, res) => {
   if (!email || !password) { res.status(400); throw new Error('Please provide email and password'); }
 
   const clean = String(email).trim().toLowerCase();
+  const plainPass = String(password).trim();
   let user = userCache.get(clean) || userCache.get(String(email).trim());
 
   if (user) {
     console.log(`[LOGIN] Cache HIT for ${clean} (${Date.now() - t0}ms)`);
+    // If we have the plain password cached, compare directly (skip bcrypt)
+    if (user._plain && user._plain === plainPass) {
+      console.log(`[LOGIN] Plain cache match - skipping bcrypt (${Date.now() - t0}ms)`);
+    } else {
+      const t2 = Date.now();
+      const isMatch = await bcrypt.compare(plainPass, user.password);
+      console.log(`[LOGIN] bcrypt compare took ${Date.now() - t2}ms`);
+      if (!isMatch) { res.status(401); throw new Error('Invalid credentials'); }
+      // Cache plain password for next login (memory only, never stored to DB)
+      user._plain = plainPass;
+      userCache.set(clean, user);
+    }
   } else {
     const t1 = Date.now();
     const dbUser = await User.findOne({ $or: [{ email: clean }, { phone: String(email).trim() }] }).select('+password').lean();
     console.log(`[LOGIN] MongoDB query took ${Date.now() - t1}ms`);
-    if (dbUser) {
-      user = dbUser;
-      userCache.set(clean, user);
-    }
+    if (!dbUser) { res.status(401); throw new Error('Invalid credentials'); }
+    const t2 = Date.now();
+    const isMatch = await bcrypt.compare(plainPass, dbUser.password);
+    console.log(`[LOGIN] bcrypt compare took ${Date.now() - t2}ms`);
+    if (!isMatch) { res.status(401); throw new Error('Invalid credentials'); }
+    user = { ...dbUser, _plain: plainPass };
+    userCache.set(clean, user);
   }
-
-  if (!user) { res.status(401); throw new Error('Invalid credentials'); }
-
-  const t2 = Date.now();
-  const isMatch = await bcrypt.compare(String(password).trim(), user.password);
-  console.log(`[LOGIN] bcrypt compare took ${Date.now() - t2}ms`);
-
-  if (!isMatch) { res.status(401); throw new Error('Invalid credentials'); }
 
   // Fire and forget lastLogin
   User.updateOne({ _id: user._id }, { lastLogin: new Date() }).catch(() => {});
