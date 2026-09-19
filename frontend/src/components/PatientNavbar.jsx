@@ -116,6 +116,20 @@ export default function PatientNavbar({ activeTab, setActiveTab, setActiveModal 
             <span className="material-symbols-outlined text-[18px]">forward</span>
             <span>Referrals</span>
           </Link>
+
+          <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+
+          <Link 
+            to="/patient/treatment" 
+            className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 ${
+              location.pathname === '/patient/treatment' 
+                ? 'bg-amber-600 text-white shadow-sm' 
+                : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[18px]">psychology</span>
+            <span>AI Treatment</span>
+          </Link>
           
           <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
 

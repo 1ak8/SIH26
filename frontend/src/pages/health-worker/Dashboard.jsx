@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 import LanguageSelector from '../../components/LanguageSelector';
 import ReferralTrackingPanel from '../../components/ReferralTrackingPanel';
+import MedicineAvailability from '../../components/MedicineAvailability';
 
 const ASHA_WORKFORCE = [
   { id: 'ASHA-01', name: 'ASHA Sunita Devi', phone: '9876543230', ward: 'Sitapur Ward 4', households: 245, status: 'Active on Duty' },
@@ -289,7 +290,7 @@ const INITIAL_VACCINES = [
 export default function HealthWorkerDashboard() {
   const { user, logout } = useAuth();
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('tasks'); // 'tasks', 'vitals-triage', 'registry', 'immunization', 'requests', 'referrals'
+  const [activeTab, setActiveTab] = useState('tasks'); // 'tasks', 'vitals-triage', 'registry', 'immunization', 'requests', 'referrals', 'medicine'
   const [activeModal, setActiveModal] = useState(null); // 'assign-task', 'vitals', 'dossier', 'register-citizen', 'log-vaccine', 'schedule-chart', 'update-task'
   
   // Data States with permanent LocalStorage persistence on top of MongoDB Atlas
@@ -957,6 +958,20 @@ export default function HealthWorkerDashboard() {
             >
               <span className="material-symbols-outlined text-[18px]">forward</span>
               <span>Referrals</span>
+            </button>
+
+            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+
+            <button 
+              onClick={() => setActiveTab('medicine')} 
+              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'medicine' 
+                  ? 'bg-amber-600 text-white shadow-sm' 
+                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">vaccines</span>
+              <span>Medicine</span>
             </button>
           </nav>
 
@@ -1781,6 +1796,11 @@ export default function HealthWorkerDashboard() {
         {/* TAB 6: REFERRAL TRACKING */}
         {activeTab === 'referrals' && (
           <ReferralTrackingPanel userRole="health_worker" />
+        )}
+
+        {/* TAB 7: MEDICINE AVAILABILITY */}
+        {activeTab === 'medicine' && (
+          <MedicineAvailability />
         )}
       </main>
 

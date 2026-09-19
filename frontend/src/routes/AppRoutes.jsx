@@ -9,6 +9,7 @@ import AmbulanceAvailability from '../pages/patient/AmbulanceAvailability';
 import ImmunizationMaternal from '../pages/patient/ImmunizationMaternal';
 import PatientReferrals from '../pages/patient/Referrals';
 import PatientLabReports from '../pages/patient/LabReports';
+import TreatmentAdvisor from '../pages/patient/TreatmentAdvisor';
 import HealthWorkerDashboard from '../pages/health-worker/Dashboard';
 import DoctorDashboard from '../pages/doctor/Dashboard';
 import PatientQueue from '../pages/doctor/PatientQueue';
@@ -37,6 +38,7 @@ const AppRoutes = () => {
       <Route path="/patient/immunization" element={<ProtectedRoute roles={['patient']}><ImmunizationMaternal /></ProtectedRoute>} />
       <Route path="/patient/referrals" element={<ProtectedRoute roles={['patient']}><PatientReferrals /></ProtectedRoute>} />
       <Route path="/patient/lab-reports" element={<ProtectedRoute roles={['patient']}><PatientLabReports /></ProtectedRoute>} />
+      <Route path="/patient/treatment" element={<ProtectedRoute roles={['patient']}><TreatmentAdvisor /></ProtectedRoute>} />
       
       {/* Health Worker Routes */}
       <Route path="/health-worker/*" element={<ProtectedRoute roles={['health_worker']}><HealthWorkerDashboard /></ProtectedRoute>} />

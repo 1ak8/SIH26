@@ -15,6 +15,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const immunizationRoutes = require('./routes/immunizationRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
 const referralRoutes = require('./routes/referralRoutes');
+const treatmentRoutes = require('./routes/treatmentRoutes');
 
 connectDB();
 
@@ -48,6 +49,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/patient', immunizationRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/referrals', referralRoutes);
+app.use('/api/treatment', treatmentRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

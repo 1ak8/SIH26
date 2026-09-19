@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import DoctorNavbar from '../../components/DoctorNavbar';
+import AIFollowUp from '../../components/AIFollowUp';
 
 const QUEUE_DATA = [
   { 
@@ -594,6 +595,11 @@ export default function DoctorDashboard() {
             </div>
           </div>
         )}
+
+        {/* AI-Predicted Follow-ups Section */}
+        <section className="mt-10">
+          <AIFollowUp />
+        </section>
       </main>
 
       {/* FOOTER: Exact same as Patient Panel */}
