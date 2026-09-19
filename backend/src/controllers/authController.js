@@ -52,8 +52,8 @@ const login = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error('Invalid credentials');
   }
-  user.lastLogin = new Date();
-  await user.save({ validateBeforeSave: false });
+  // Update lastLogin without full save
+  await User.updateOne({ _id: user._id }, { lastLogin: new Date() });
 
   res.json({
     success: true,
