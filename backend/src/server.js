@@ -17,6 +17,7 @@ const chatbotRoutes = require('./routes/chatbotRoutes');
 const referralRoutes = require('./routes/referralRoutes');
 const treatmentRoutes = require('./routes/treatmentRoutes');
 const cacheMiddleware = require('./middleware/cacheMiddleware');
+const { keepAlive } = require('./controllers/keepAliveController');
 
 connectDB();
 
