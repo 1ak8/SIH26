@@ -56,4 +56,25 @@ app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`SehatSaarthi Server running on port ${PORT} in ${process.env.NODE_ENV} mode`));
+
+// Warm up: pre-cache all users on startup for instant login
+const User = require('./models/User');
+const warmup = async () => {
+  try {
+    const users = await User.find({}).select('+password');
+    const cache = require('./controllers/authController').userCache || new Map();
+    users.forEach(u => {
+      cache.set(u.email.toLowerCase(), {
+        _id: u._id, name: u.name, email: u.email,
+        phone: u.phone, role: u.role, abhaId: u.abhaId,
+        profileImage: u.profileImage, password: u.password,
+      });
+    });
+    console.log(`User cache warmed: ${users.length} users loaded`);
+  } catch (e) { /* ignore */ }
+};
+
+server.listen(PORT, () => {
+  console.log(`SehatSaarthi Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
+  warmup();
+});

@@ -5,7 +5,9 @@ const PatientProfile = require('../models/PatientProfile');
 
 const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE || '7d' });
 
-// POST /api/auth/register
+// In-memory user cache — skip MongoDB on repeat logins
+const userCache = new Map();
+
 const register = asyncHandler(async (req, res) => {
   const { name, email, password, phone, role, gender, abhaId } = req.body;
   if (!name || !email || !password || !phone) {
@@ -23,37 +25,66 @@ const register = asyncHandler(async (req, res) => {
     await PatientProfile.create({ user: user._id, abhaId: user.abhaId });
   }
 
+  const token = generateToken(user._id);
+  userCache.set(user.email.toLowerCase(), {
+    _id: user._id, name: user.name, email: user.email,
+    phone: user.phone, role: user.role, abhaId: user.abhaId,
+    profileImage: user.profileImage, password: user.password,
+  });
+
   res.status(201).json({
     success: true,
     data: {
       _id: user._id, name: user.name, email: user.email,
       phone: user.phone, role: user.role, abhaId: user.abhaId,
-      token: generateToken(user._id),
+      token,
     },
   });
 });
 
-// POST /api/auth/login
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400);
     throw new Error('Please provide email and password');
   }
-  const clean = String(email).trim();
-  const user = await User.findOne({
-    $or: [
-      { email: clean.toLowerCase() },
-      { phone: clean },
-    ],
-  }).select('+password');
+  const clean = String(email).trim().toLowerCase();
+  const bcrypt = require('bcryptjs');
 
-  if (!user || !(await user.matchPassword(String(password).trim()))) {
+  // Check in-memory cache first
+  let cached = userCache.get(clean);
+  let user;
+  let passwordHash;
+
+  if (cached) {
+    passwordHash = cached.password;
+    user = cached;
+  } else {
+    user = await User.findOne({
+      $or: [
+        { email: clean },
+        { phone: String(email).trim() },
+      ],
+    }).select('+password');
+    if (user) {
+      passwordHash = user.password;
+      userCache.set(clean, {
+        _id: user._id, name: user.name, email: user.email,
+        phone: user.phone, role: user.role, abhaId: user.abhaId,
+        profileImage: user.profileImage, password: user.password,
+      });
+    }
+  }
+
+  if (!user || !passwordHash || !(await bcrypt.compare(String(password).trim(), passwordHash))) {
     res.status(401);
     throw new Error('Invalid credentials');
   }
-  // Update lastLogin without full save
-  await User.updateOne({ _id: user._id }, { lastLogin: new Date() });
+
+  // Fire-and-forget lastLogin update
+  User.updateOne({ _id: user._id }, { lastLogin: new Date() }).catch(() => {});
+
+  const token = generateToken(user._id);
 
   res.json({
     success: true,
@@ -61,18 +92,16 @@ const login = asyncHandler(async (req, res) => {
       _id: user._id, name: user.name, email: user.email,
       phone: user.phone, role: user.role, abhaId: user.abhaId,
       profileImage: user.profileImage,
-      token: generateToken(user._id),
+      token,
     },
   });
 });
 
-// GET /api/auth/me
 const getMe = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
   res.json({ success: true, data: user });
 });
 
-// POST /api/auth/forgot-password
 const forgotPassword = asyncHandler(async (req, res) => {
   const { identity } = req.body;
   if (!identity) {
@@ -94,11 +123,14 @@ const forgotPassword = asyncHandler(async (req, res) => {
     throw new Error('No account found with this email or mobile number');
   }
 
-  // Generate 6-digit OTP
   const otp = String(Math.floor(100000 + Math.random() * 900000));
   user.resetPasswordOtp = otp;
-  user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+  user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
   await user.save({ validateBeforeSave: false });
+
+  // Update cache
+  const cached = userCache.get(clean.toLowerCase());
+  if (cached) userCache.delete(clean.toLowerCase());
 
   const phone = user.phone || '';
   const maskedPhone = phone.length >= 10
@@ -108,14 +140,13 @@ const forgotPassword = asyncHandler(async (req, res) => {
   res.json({
     success: true,
     message: `Verification code sent to registered mobile (${maskedPhone})!`,
-    otp, // Returned for ease of demo & testing
+    otp,
     maskedPhone,
     maskedEmail: user.email ? user.email.replace(/(.{2})(.*)(?=@)/, (_, a, b) => a + '*'.repeat(b.length)) : '',
     expiresIn: '15 minutes',
   });
 });
 
-// POST /api/auth/reset-password
 const resetPassword = asyncHandler(async (req, res) => {
   const { identity, otp, newPassword } = req.body;
   if (!identity || !otp || !newPassword) {
@@ -161,6 +192,9 @@ const resetPassword = asyncHandler(async (req, res) => {
   user.resetPasswordExpires = undefined;
   await user.save();
 
+  // Invalidate cache
+  userCache.delete(clean.toLowerCase());
+
   res.json({
     success: true,
     message: 'Password reset successfully! You can now log in with your new password.',
@@ -175,4 +209,4 @@ const resetPassword = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { register, login, getMe, forgotPassword, resetPassword };
+module.exports = { register, login, getMe, forgotPassword, resetPassword, userCache };
