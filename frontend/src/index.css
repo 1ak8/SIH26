@@ -28,6 +28,8 @@ body { margin: 0; background: #f9f9ff; color: #111c2d; -webkit-font-smoothing: a
 .form-height-guard { min-height: 280px; }
 .form-card-register { width: 100%; max-width: 520px !important; transition: max-width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.5s ease; }
 .form-card-login { width: 100%; max-width: 420px; transition: max-width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.5s ease; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* Google Translate Frame clean-up: completely eliminate top bar & banner */
 .goog-te-banner-frame,

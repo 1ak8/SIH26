@@ -704,8 +704,18 @@ export default function PatientDashboard() {
                   </span>
                   <span>{t('activeCitizenHealthRecord')}</span>
                 </div>
+                </div>
               </div>
-            </div>
+
+              {/* AI Treatment Quick Button */}
+              <button 
+                onClick={() => navigate('/patient/treatment')}
+                className="mt-4 mb-2 inline-flex items-center gap-2.5 bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-700 hover:to-sky-800 text-white px-5 py-3 rounded-2xl font-extrabold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[20px]">psychology</span>
+                <span>AI Treatment Advisor</span>
+                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
 
             {/* Primary Care Services */}
             <section className="mb-10">
@@ -723,13 +733,12 @@ export default function PatientDashboard() {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {[
                   { icon: 'calendar_month', title: t('bookTeleConsult'), desc: t('consultChc'), badge: t('freeGovService'), action: () => navigate('/patient/doctors'), color: 'amber', bg: 'from-amber-500/10 to-amber-50/50' },
                   { icon: 'airport_shuttle', title: 'Check Ambulance Availability', desc: 'Real-time GPS tracking, nearest ALS/BLS units & 108 emergency dispatch', badge: '108 Fleet • Live', action: () => navigate('/patient/ambulance'), color: 'rose', bg: 'from-rose-500/10 to-rose-50/50' },
                   { icon: 'near_me', title: t('findNearestPhc'), desc: t('dispensariesSubCentres'), badge: 'Sitapur Ward 4', action: () => setActiveModal('find-phc'), color: 'violet', bg: 'from-violet-500/10 to-violet-50/50' },
                   { icon: 'forward', title: 'My Referrals', desc: 'Track referrals to specialists, hospitals & labs with real-time status', badge: 'Live Tracking', action: () => navigate('/patient/referrals'), color: 'emerald', bg: 'from-emerald-500/10 to-emerald-50/50' },
-                  { icon: 'psychology', title: 'AI Treatment', desc: 'Enter vitals & symptoms, get instant AI-powered treatment advice', badge: 'AI Powered', action: () => navigate('/patient/treatment'), color: 'sky', bg: 'from-sky-500/10 to-sky-50/50' },
                 ].map(card => (
                   <button 
                     key={card.title} 

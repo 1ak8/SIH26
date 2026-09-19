@@ -856,7 +856,7 @@ export default function HealthWorkerDashboard() {
 
       {/* HEADER: Health Worker Supervisor Console */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs w-full">
-        <div className="w-full px-4 lg:px-8 xl:px-12 flex items-center justify-between gap-4 h-[72px] overflow-hidden">
+        <div className="w-full px-4 lg:px-8 xl:px-12 flex items-center gap-3 h-[72px]">
           {/* Logo with Govt Health Worker Console Badge */}
           <Link to="/health-worker" className="flex items-center gap-2.5 shrink-0 group">
             <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-10 h-10 rounded-xl object-cover shrink-0 notranslate" translate="no" />
@@ -869,7 +869,7 @@ export default function HealthWorkerDashboard() {
           </Link>
 
           {/* Navigation Items */}
-          <nav className="hidden lg:flex items-center gap-2 xl:gap-3 shrink overflow-x-auto min-w-0">
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-3 flex-1 min-w-0 overflow-x-auto scrollbar-hide">
             <button 
               onClick={() => setActiveTab('tasks')} 
               className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
