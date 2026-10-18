@@ -117,33 +117,39 @@ export default function DoctorList() {
           </Link>
         </div>
 
-        {/* Sovereign Clinical Hero Banner */}
-        <div className="w-full mb-8 bg-gradient-to-r from-teal-50 via-teal-100/40 to-sky-50 border border-teal-200/90 rounded-3xl p-6 sm:p-7 shadow-xs relative overflow-hidden before:absolute before:left-0 before:top-4 before:bottom-4 before:w-1.5 before:bg-gradient-to-b before:from-teal-600 before:to-emerald-500 before:rounded-r-full">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pl-2">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="w-2 h-2 rounded-full bg-teal-600"></span>
-                <span className="text-[11px] font-black uppercase tracking-wider text-teal-800">
-                  National Health Mission • E-Sanjeevani Tele-OPD
-                </span>
+        {/* Jewel Royal Teal & Luminous Frosted Glass Hero Banner */}
+        <div className="w-full mb-8 bg-gradient-to-r from-teal-800 via-teal-700 to-emerald-800 text-white p-6 sm:p-8 rounded-3xl shadow-xl shadow-teal-950/15 border border-teal-600/40 relative overflow-hidden">
+          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-teal-100 text-xs font-black mb-3 shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>National Health Mission • E-Sanjeevani Tele-OPD</span>
               </div>
-              <h1 className="font-heading text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-snug">
+              <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
                 Government Tele-Consultation Doctors
               </h1>
-              <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed max-w-2xl mt-1">
+              <p className="text-xs sm:text-sm lg:text-base text-teal-100/90 font-medium mt-2 leading-relaxed">
                 Consult district hospital specialists and medical college physicians from your village PHC or mobile phone at zero cost.
               </p>
             </div>
 
-            <div className="bg-white/90 backdrop-blur-xs border border-teal-200/90 p-4 sm:p-5 rounded-2xl shadow-2xs shrink-0 self-start lg:self-auto min-w-[220px]">
-              <div className="flex items-center justify-between gap-2 mb-1.5">
-                <span className="text-[10px] uppercase font-black tracking-wider text-slate-400">Consultation Fee</span>
-                <span className="text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.5 rounded-full">
-                  100% Free
+            <div className="bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-4 sm:p-5 text-white flex flex-col justify-between shadow-lg shrink-0 self-start lg:self-auto min-w-[240px]">
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <span className="text-[11px] font-black uppercase tracking-wider text-teal-200">Consultation Fee</span>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-400 text-slate-950 text-[10px] font-black">
+                  100% FREE
                 </span>
               </div>
-              <div className="text-2xl font-black font-mono text-teal-900">₹0 <span className="text-xs font-sans text-slate-500 font-bold">/ Token</span></div>
-              <div className="text-[11px] text-teal-800 font-bold mt-1">Ayushman Bharat Initiative</div>
+              <div className="text-3xl font-black font-mono tracking-tight text-white">
+                ₹0 <span className="text-xs font-sans text-teal-200 font-bold">/ Session</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-teal-100 font-semibold mt-2 pt-2 border-t border-white/15">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>42 Specialists Active Online</span>
+              </div>
             </div>
           </div>
         </div>
