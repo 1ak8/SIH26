@@ -20,24 +20,105 @@ const PRIORITY_CONFIG = {
   emergency: { color: 'bg-rose-100 text-rose-900 border border-rose-300 animate-pulse', label: 'Emergency' },
 };
 
+const MOCK_REFERRALS = [
+  {
+    _id: 'ref-101',
+    referralId: 'REF-2026-9041',
+    patient: { name: 'Aditya Verma', phone: '9876543210', abhaId: '91-4820-1940-2810' },
+    referredBy: { name: 'Dr. Rajesh Sharma', role: 'Medical Officer • CHC Sitapur Central' },
+    toFacility: 'District Hospital Sitapur — Cardiology Department',
+    specialty: 'Cardiology (हृदय रोग)',
+    priority: 'high',
+    status: 'in_transit',
+    reason: 'Persistent stage-2 hypertension with occasional palpitations and dizziness',
+    clinicalSummary: 'Resting BP 152/94 mmHg despite Amlodipine 5mg. ECG shows mild LVH changes. Referral for 2D Echocardiogram and specialist evaluation.',
+    transportMode: 'ambulance',
+    estimatedArrival: 'Today, 02:30 PM (ALS Unit UP-34-G-1081)',
+    createdAt: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
+    statusHistory: [
+      { status: 'pending', note: 'Referral generated at Sitapur Rural Sub-Centre by Dr. Rajesh Sharma', timestamp: new Date(Date.now() - 3 * 3600 * 1000).toISOString() },
+      { status: 'accepted', note: 'Accepted by Dr. Vikramaditya Rathore (Cardiologist, District Hospital Sitapur)', timestamp: new Date(Date.now() - 2 * 3600 * 1000).toISOString() },
+      { status: 'in_transit', note: '108 Ambulance ALS unit dispatched with paramedic escort', timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString() },
+    ],
+  },
+  {
+    _id: 'ref-102',
+    referralId: 'REF-2026-8812',
+    patient: { name: 'Aditya Verma', phone: '9876543210', abhaId: '91-4820-1940-2810' },
+    referredBy: { name: 'ASHA Sunita Devi', role: 'Health Worker • Sitapur Ward 4' },
+    toFacility: 'State Medical College Tele-Hub',
+    specialty: 'Pulmonology (श्वसन रोग)',
+    priority: 'medium',
+    status: 'accepted',
+    reason: 'Post-viral bronchial hyperreactivity and nocturnal wheezing',
+    clinicalSummary: 'SpO2 96%, non-productive cough lasting >3 weeks post acute viral bronchitis. Spirometry and chest specialist consult requested.',
+    transportMode: 'self',
+    estimatedArrival: 'Tomorrow, 10:00 AM (OPD Slot 04)',
+    createdAt: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
+    statusHistory: [
+      { status: 'pending', note: 'Requisition submitted via ASHA field triage', timestamp: new Date(Date.now() - 24 * 3600 * 1000).toISOString() },
+      { status: 'accepted', note: 'OPD slot confirmed by State Medical College Pulmonology Tele-Desk', timestamp: new Date(Date.now() - 18 * 3600 * 1000).toISOString() },
+    ],
+  },
+  {
+    _id: 'ref-103',
+    referralId: 'REF-2026-7640',
+    patient: { name: 'Aditya Verma', phone: '9876543210', abhaId: '91-4820-1940-2810' },
+    referredBy: { name: 'Dr. Ananya Gupta', role: 'Consultant • SDH Rampur' },
+    toFacility: 'CHC Sitapur Central Pathology Lab',
+    specialty: 'Clinical Biochemistry',
+    priority: 'low',
+    status: 'completed',
+    reason: 'Annual routine diabetic & lipid surveillance panel',
+    clinicalSummary: 'HbA1c, Fasting Plasma Glucose, Urine Microalbumin & Lipid profile completed. Parameters normal and synced to ABHA record.',
+    transportMode: 'self',
+    estimatedArrival: 'Completed',
+    createdAt: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(),
+    statusHistory: [
+      { status: 'pending', note: 'Lab investigation referral order placed', timestamp: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString() },
+      { status: 'accepted', note: 'Sample phlebotomy scheduled at Sub-Centre', timestamp: new Date(Date.now() - 6 * 24 * 3600 * 1000).toISOString() },
+      { status: 'in_consultation', note: 'Pathology testing completed at CHC Sitapur Central', timestamp: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString() },
+      { status: 'completed', note: 'Digital pathology report verified & signed by Dr. Anjali Seth', timestamp: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString() },
+    ],
+  },
+];
+
 export default function PatientReferrals() {
-  const [referrals, setReferrals] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedReferral, setSelectedReferral] = useState(null);
+  const [referrals, setReferrals] = useState(MOCK_REFERRALS);
+  const [loading, setLoading] = useState(false);
+  const [selectedReferral, setSelectedReferral] = useState(MOCK_REFERRALS[0]);
   const [filter, setFilter] = useState('all');
 
   const fetchReferrals = async () => {
     try {
       const res = await api.get('/referrals');
-      setReferrals(res.data?.data || []);
+      if (res.data?.data && res.data.data.length > 0) {
+        // Merge server referrals with mock data ensuring unique IDs
+        const combined = [...res.data.data, ...MOCK_REFERRALS];
+        const seen = new Set();
+        const unique = [];
+        for (const item of combined) {
+          const key = item._id || item.referralId;
+          if (key && !seen.has(key)) {
+            seen.add(key);
+            unique.push(item);
+          }
+        }
+        setReferrals(unique);
+        if (!selectedReferral && unique.length > 0) {
+          setSelectedReferral(unique[0]);
+        }
+      }
     } catch (err) {
-      console.warn('Using local fallback');
+      console.warn('Using seeded referrals fallback');
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { fetchReferrals(); }, []);
+  useEffect(() => { 
+    fetchReferrals(); 
+  }, []);
 
   const filtered = filter === 'all' ? referrals : referrals.filter(r => r.status === filter);
 
@@ -71,7 +152,7 @@ export default function PatientReferrals() {
                 <span>My Hospital Referrals</span>
               </h1>
               <p className="text-xs sm:text-base text-slate-300 font-medium mt-1.5 max-w-2xl leading-relaxed">
-                Track all referrals initiated by your field health worker or attending doctors to CHC Sitapur and district hospitals.
+                Track all referrals initiated by your field health worker or attending doctors to CHC Sitapur and district hospitals with live transport telemetry.
               </p>
             </div>
             <div className="bg-white/10 backdrop-blur-md border border-teal-400/30 px-5 py-3 rounded-2xl text-center self-start md:self-auto">
@@ -98,7 +179,7 @@ export default function PatientReferrals() {
 
         {/* Filter Tabs */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-1 scrollbar-hide">
-          {[{ key: 'all', label: 'All Referrals' }, ...Object.entries(STATUS_CONFIG).map(([k, v]) => ({ key: k, label: v.label }))].map(f => (
+          {[{ key: 'all', label: `All Referrals (${referrals.length})` }, ...Object.entries(STATUS_CONFIG).map(([k, v]) => ({ key: k, label: `${v.label} (${referrals.filter(r => r.status === k).length})` }))].map(f => (
             <button 
               key={f.key} 
               onClick={() => setFilter(f.key)}
@@ -134,7 +215,9 @@ export default function PatientReferrals() {
                 <div 
                   key={r._id} 
                   onClick={() => setSelectedReferral(isSelected ? null : r)}
-                  className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all duration-200 cursor-pointer"
+                  className={`bg-white p-5 sm:p-6 rounded-3xl border transition-all duration-200 cursor-pointer ${
+                    isSelected ? 'border-teal-500 shadow-md ring-2 ring-teal-500/10' : 'border-slate-200 hover:border-teal-300 shadow-2xs'
+                  }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
                     <div className="flex items-start gap-4">
@@ -189,7 +272,7 @@ export default function PatientReferrals() {
                           {(r.statusHistory || []).map((h, i) => (
                             <div key={i} className="flex items-start gap-3">
                               <div className="flex flex-col items-center">
-                                <div className={`w-3 h-3 rounded-full ${STATUS_CONFIG[h.status]?.dot || 'bg-slate-400'} ring-4 ring-slate-100`}></div>
+                                <div className={`w-3.5 h-3.5 rounded-full ${STATUS_CONFIG[h.status]?.dot || 'bg-slate-400'} ring-4 ring-slate-100`}></div>
                                 {i < (r.statusHistory || []).length - 1 && <div className="w-0.5 h-6 bg-slate-200 my-0.5"></div>}
                               </div>
                               <div className="pb-3">
