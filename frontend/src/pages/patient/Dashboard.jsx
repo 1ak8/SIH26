@@ -682,38 +682,58 @@ export default function PatientDashboard() {
       <main className="w-full bg-[#f8fafc] px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28">
         {activeTab === 'dashboard' && (
           <div className="flex flex-col w-full pb-8">
-            {/* Welcome Header */}
-            <div className="w-full mb-6 bg-gradient-to-r from-teal-950 via-teal-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-teal-500/30 shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
-              <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-              
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-teal-200 text-xs font-black mb-3 shadow-2xs">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            {/* Welcome Header - Modern Clinical Health Card */}
+            <div className="w-full mb-8 bg-gradient-to-br from-white via-slate-50 to-teal-50/40 p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-sm relative overflow-hidden">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div className="space-y-3">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-black shadow-2xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span>Ayushman Bharat Digital Health Grid • Sitapur Sub-Centre</span>
                   </div>
-                  <h1 className="font-heading text-3xl sm:text-4xl lg:text-[42px] font-black tracking-tight flex items-center gap-2.5 text-white">
-                    Hello, <span className="notranslate text-teal-300" translate="no">{user?.name?.split(' ')[0] || 'Patient'}</span> <span className="text-3xl sm:text-4xl">👋</span>
-                  </h1>
-                  <p className="text-sm sm:text-base text-slate-300 font-medium mt-1.5 max-w-xl">
-                    Your continuous care portal — connected directly to Sitapur CHC &amp; verified field doctors.
-                  </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                  <div className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-md border border-emerald-400/40 px-4 py-2.5 rounded-2xl text-emerald-300 text-xs font-black shadow-sm">
-                    <span className="relative flex h-2.5 w-2.5 shrink-0">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                    </span>
-                    <span>{t('activeCitizenHealthRecord')}</span>
+                  
+                  <div>
+                    <h1 className="font-heading text-3xl sm:text-4xl font-black tracking-tight text-slate-900 flex items-center gap-3">
+                      <span>Hello, <span className="notranslate text-teal-700" translate="no">{user?.name?.split(' ')[0] || 'Patient'}</span></span>
+                      <span className="text-3xl">👋</span>
+                    </h1>
+                    <p className="text-sm text-slate-600 font-medium mt-1 max-w-xl">
+                      Your personalized rural health gateway — linked with Sitapur CHC, verified tele-doctors &amp; Jan Aushadhi supplies.
+                    </p>
                   </div>
 
-                  {/* AI Treatment Quick Button */}
+                  {/* Vitals Telemetry Quick Strip */}
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs">
+                      <span className="material-symbols-outlined text-rose-500 text-[16px]">favorite</span>
+                      <span className="text-slate-500 font-bold">BP:</span>
+                      <strong className="text-slate-900 font-black">{vitalsForm.systolicBP}/{vitalsForm.diastolicBP} mmHg</strong>
+                    </div>
+                    <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs">
+                      <span className="material-symbols-outlined text-teal-600 text-[16px]">water_drop</span>
+                      <span className="text-slate-500 font-bold">Sugar:</span>
+                      <strong className="text-slate-900 font-black">{vitalsForm.bloodSugar} mg/dL</strong>
+                    </div>
+                    <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs">
+                      <span className="material-symbols-outlined text-sky-600 text-[16px]">air</span>
+                      <span className="text-slate-500 font-bold">SpO2:</span>
+                      <strong className="text-slate-900 font-black">{vitalsForm.spO2}%</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side Quick Actions & ABHA Chip */}
+                <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
+                  <div className="inline-flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-200 shadow-2xs text-xs">
+                    <span className="material-symbols-outlined text-emerald-600 text-[18px]">verified_user</span>
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-black uppercase block leading-tight">ABHA Registry</span>
+                      <strong className="text-slate-800 font-mono font-bold leading-tight">{user?.abhaId || '91-4820-1940-2810'}</strong>
+                    </div>
+                  </div>
+
                   <button 
                     onClick={() => navigate('/patient/treatment')}
-                    className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-400 hover:from-teal-400 hover:to-emerald-300 text-slate-950 px-5 py-2.5 rounded-2xl font-black text-xs shadow-lg shadow-teal-500/20 hover:scale-102 transition-all duration-200 cursor-pointer active:scale-98"
+                    className="inline-flex items-center gap-2.5 bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 hover:from-teal-800 hover:to-emerald-700 text-white px-5 py-3 rounded-2xl font-black text-xs shadow-md shadow-teal-700/20 hover:shadow-lg transition-all cursor-pointer active:scale-98"
                   >
                     <span className="material-symbols-outlined text-[19px]">psychology</span>
                     <span>AI Treatment Advisor</span>
@@ -888,33 +908,58 @@ export default function PatientDashboard() {
             </section>
 
               {/* Bottom Grid: Camp & ASHA Companion */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                {/* Village Health Camp */}
-                <div className="bg-white p-6 rounded-3xl border border-slate-200 hover:border-teal-400 shadow-sm transition-all duration-200 flex flex-col">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0">
-                      <span className="material-symbols-outlined text-[26px]">vaccines</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <span className="text-xs uppercase tracking-wider text-slate-400 font-black">Village Health Camp</span>
-                        <span className="inline-flex items-center gap-1.5 bg-teal-50 text-teal-900 border border-teal-200 text-[10px] font-black px-2.5 py-0.5 rounded-full">
-                          <span className="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
-                          This Thursday
-                        </span>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
+                {/* Village Health Camp - Rich Schedule Card */}
+                <div className="bg-white p-6 rounded-3xl border border-slate-200 hover:border-teal-400 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0 shadow-2xs">
+                        <span className="material-symbols-outlined text-[26px]">vaccines</span>
                       </div>
-                      <h3 className="text-lg font-black text-slate-900 leading-snug">Immunization &amp; Maternal Health Checkup</h3>
-                      <p className="text-xs text-slate-600 font-medium mt-0.5">Anganwadi Centre 3 • Walk-in free for all mothers and infants</p>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <span className="text-[10px] uppercase tracking-wider text-slate-400 font-black">Community Health Camp</span>
+                          <span className="inline-flex items-center gap-1.5 bg-teal-50 text-teal-900 border border-teal-200 text-[10px] font-black px-2.5 py-0.5 rounded-full">
+                            <span className="w-1.5 h-1.5 rounded-full bg-teal-600 animate-pulse"></span>
+                            This Thursday • इस गुरुवार
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-black text-slate-900 leading-snug">Immunization &amp; Maternal Health Camp</h3>
+                        <p className="text-xs text-slate-500 font-medium mt-0.5">Anganwadi Centre 3 • Walk-in free for all village mothers and infants</p>
+                      </div>
+                    </div>
+
+                    {/* Camp Agenda / Schedule Timeline */}
+                    <div className="space-y-2 mb-4 bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/80 text-xs">
+                      <span className="text-[10px] uppercase font-black tracking-wider text-slate-400 block mb-1">Day's Camp Agenda:</span>
+                      <div className="flex items-center gap-2.5 text-slate-700">
+                        <span className="font-mono font-bold text-teal-800 text-[11px] w-16 shrink-0">10:00 AM</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
+                        <span className="font-semibold">Pediatric Vaccines (Polio, BCG, MR-1, DPT)</span>
+                      </div>
+                      <div className="flex items-center gap-2.5 text-slate-700">
+                        <span className="font-mono font-bold text-teal-800 text-[11px] w-16 shrink-0">11:30 AM</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
+                        <span className="font-semibold">Antenatal Care (BP, Sugar, Hemoglobin &amp; Vitals)</span>
+                      </div>
+                      <div className="flex items-center gap-2.5 text-slate-700">
+                        <span className="font-mono font-bold text-teal-800 text-[11px] w-16 shrink-0">01:00 PM</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
+                        <span className="font-semibold">Free Jan Aushadhi Iron &amp; Calcium Supplements</span>
+                      </div>
+                    </div>
+
+                    {/* Attending Doctors */}
+                    <div className="flex items-center justify-between text-xs text-slate-500 mb-4 px-1">
+                      <span className="font-semibold">Attending: <strong className="text-slate-800">Dr. Priya Verma (OBG) &amp; ASHA Sunita</strong></span>
+                      <span className="text-emerald-700 font-bold flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        100% Free Service
+                      </span>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">✓ Free Vaccination (Polio/BCG/TT)</span>
-                    <span className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">✓ BP, Sugar &amp; Weight Check</span>
-                    <span className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">✓ Nutrition Supplements Refill</span>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
+                  <div className="flex items-center justify-between pt-3.5 border-t border-slate-100 mt-2">
                     <div className="flex items-center gap-1.5 text-xs text-slate-600 font-semibold">
                       <span className="material-symbols-outlined text-[16px] text-teal-600">location_on</span>
                       <span>Anganwadi Centre 3 (Ward 4)</span>
@@ -925,46 +970,50 @@ export default function PatientDashboard() {
                       className="h-9 px-4 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer active:scale-98"
                     >
                       <span className="material-symbols-outlined text-[16px]">vaccines</span>
-                      <span>View Records</span>
+                      <span>View Vaccine Records</span>
                     </button>
                   </div>
                 </div>
 
                 {/* ASHA Companion Card */}
-                <div className="bg-white p-6 rounded-3xl border border-slate-200 hover:border-teal-400 shadow-sm transition-all duration-200 flex flex-col">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="relative shrink-0">
-                      <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-12 h-12 rounded-2xl object-cover border border-teal-200 notranslate bg-white" translate="no" />
-                      <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" title="Active in Village"></span>
+                <div className="bg-white p-6 rounded-3xl border border-slate-200 hover:border-teal-400 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="relative shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 p-1 flex items-center justify-center">
+                          <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-full h-full rounded-xl object-cover notranslate bg-white" translate="no" />
+                        </div>
+                        <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" title="Active on Duty"></span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <span className="text-[10px] uppercase tracking-wider text-slate-400 font-black">Dedicated ASHA Companion</span>
+                          <span className="inline-flex items-center gap-1 text-emerald-900 text-[10px] font-black bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Active in Village
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-lg font-black text-slate-900 leading-tight notranslate" translate="no">Sunita Devi</h3>
+                          <span className="material-symbols-outlined text-teal-600 text-[18px]" title="Govt Certified Field Worker">verified</span>
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium mt-0.5">National Health Mission Certified • Sitapur Ward 4 Field Worker</p>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <span className="text-xs uppercase tracking-wider text-slate-400 font-black">Village ASHA Companion</span>
-                        <span className="inline-flex items-center gap-1.5 text-emerald-900 text-[10px] font-black bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                          Active Today
-                        </span>
+
+                    <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-xs font-medium text-slate-700 leading-relaxed mb-4">
+                      Assigned to your household for home visits, child immunizations, Jan Aushadhi refills &amp; emergency hospital escort.
+                      <div className="mt-2 text-xs font-black text-teal-900 flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[15px] text-teal-700">schedule</span>
+                        <span>Working Hours: 8:00 AM – 6:00 PM (Monday – Saturday)</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-black text-slate-900 leading-tight notranslate" translate="no">Sunita Devi</h3>
-                        <span className="material-symbols-outlined text-teal-600 text-[18px]" title="Govt Certified ASHA">verified</span>
-                      </div>
-                      <p className="text-xs text-slate-600 font-semibold mt-0.5">Govt Certified Field Health Worker • Sitapur Ward 4</p>
                     </div>
                   </div>
 
-                  <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-xs font-medium text-slate-700 leading-relaxed mb-4">
-                    Assigned for home visits, child immunizations, Jan Aushadhi refills &amp; emergency PHC escort.
-                    <div className="mt-2 text-xs font-black text-teal-900 flex items-center gap-1.5">
-                      <span className="material-symbols-outlined text-[15px] text-teal-700">schedule</span>
-                      <span>Working Hours: 8:00 AM – 6:00 PM</span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 mt-auto">
+                  <div className="grid grid-cols-2 gap-3 pt-3.5 border-t border-slate-100">
                     <a 
                       href="tel:9876543210" 
-                      className="h-9 px-4 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-2xs transition-all active:scale-98"
+                      className="h-10 px-4 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-2xs transition-all active:scale-98"
                     >
                       <span className="material-symbols-outlined text-[16px]">call</span>
                       <span>Call Sunita Devi</span>
@@ -972,67 +1021,99 @@ export default function PatientDashboard() {
                     <button 
                       type="button" 
                       onClick={() => setActiveModal('request-visit')}
-                      className="h-9 px-4 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                      className="h-10 px-4 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs"
                     >
                       <span className="material-symbols-outlined text-[16px] text-teal-600">home_health</span>
-                      <span>Request Visit</span>
+                      <span>Request Home Visit</span>
                     </button>
                   </div>
-
-                  {/* Visit Request Success Toast */}
-                  {visitAlert && (
-                    <div className="p-3 bg-emerald-50 border border-emerald-300 rounded-2xl flex items-start justify-between gap-2 text-xs text-emerald-900 font-bold animate-fadeIn">
-                      <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-emerald-600 text-[18px]">check_circle</span>
-                        <span>{visitAlert}</span>
-                      </div>
-                      <button onClick={() => setVisitAlert(null)} className="text-emerald-700 hover:text-emerald-950">✕</button>
-                    </div>
-                  )}
-
-                  {/* Active / Recent Visit Requests from Citizen */}
-                  {visitRequests.length > 0 && (
-                    <div className="pt-4 border-t border-slate-100 flex flex-col gap-2.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] uppercase font-black tracking-wider text-slate-500">Your Home Visit Requests ({visitRequests.length})</span>
-                        <span className="text-[10px] font-black uppercase text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md">Live ABDM Grid</span>
-                      </div>
-                      {visitRequests.slice(0, 3).map((vr) => (
-                        <div key={vr._id || vr.requestId} className="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex flex-col gap-1.5 text-xs">
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-1.5 font-bold text-slate-900">
-                              <span className="material-symbols-outlined text-[16px] text-amber-600">home_health</span>
-                              <span>{vr.reason}</span>
-                            </div>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black border uppercase tracking-wider ${
-                              vr.status === 'completed'
-                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                                : vr.status === 'scheduled' || vr.status === 'in_progress'
-                                ? 'bg-sky-50 text-sky-800 border-sky-300 animate-pulse'
-                                : 'bg-amber-50 text-amber-900 border-amber-300'
-                            }`}>
-                              {vr.status === 'pending' && 'Pending Sunita Devi Review'}
-                              {vr.status === 'scheduled' && (vr.scheduledTime ? `Scheduled: ${vr.scheduledTime}` : 'Visit Scheduled')}
-                              {vr.status === 'in_progress' && 'In Progress (On The Way)'}
-                              {vr.status === 'completed' && 'Completed ✓'}
-                              {vr.status === 'cancelled' && 'Cancelled'}
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
-                            <span>Preferred Slot: <strong className="text-slate-700">{vr.preferredSlot}</strong></span>
-                            <span className="font-mono text-amber-900 font-bold">{vr.requestId}</span>
-                          </div>
-                          {vr.actionNotes && (
-                            <p className="text-[11px] text-amber-900 bg-amber-100/70 p-2 rounded-xl border border-amber-200 font-semibold">
-                              <span className="font-black">Sunita Devi Update:</span> {vr.actionNotes}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
+
+              {/* Toast for Visit Request */}
+              {visitAlert && (
+                <div className="mb-6 p-4 bg-emerald-50 border border-emerald-300 rounded-2xl flex items-center justify-between gap-3 text-xs text-emerald-950 font-black animate-fadeIn shadow-2xs">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-emerald-600 text-[20px]">check_circle</span>
+                    <span>{visitAlert}</span>
+                  </div>
+                  <button onClick={() => setVisitAlert(null)} className="text-emerald-700 hover:text-emerald-950 font-black cursor-pointer">✕</button>
+                </div>
+              )}
+
+              {/* DEDICATED SECTION: Your Home Visit Requests */}
+              {visitRequests.length > 0 && (
+                <section className="mb-10 bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined text-[20px]">home_health</span>
+                      </div>
+                      <div>
+                        <h3 className="font-heading text-xl font-black text-slate-900 tracking-tight">Your Home Visit Requests</h3>
+                        <p className="text-xs text-slate-500 font-medium">Real-time status of ASHA home visits and mobile nurse checkups</p>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-900 border border-teal-200 text-xs font-black self-start sm:self-auto">
+                      <span className="w-1.5 h-1.5 rounded-full bg-teal-600 animate-pulse"></span>
+                      <span>Live ABDM Field Telemetry</span>
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {visitRequests.slice(0, 4).map((vr) => {
+                      const isDone = vr.status === 'completed';
+                      const isScheduled = vr.status === 'scheduled' || vr.status === 'in_progress';
+                      return (
+                        <div key={vr._id || vr.requestId} className="bg-slate-50/70 hover:bg-slate-50 p-4 rounded-2xl border border-slate-200/90 flex flex-col justify-between gap-3 transition-all shadow-2xs">
+                          <div>
+                            <div className="flex items-start justify-between gap-2 mb-2">
+                              <div>
+                                <h4 className="text-sm font-black text-slate-900">{vr.reason}</h4>
+                                <span className="font-mono text-[10px] text-teal-800 font-bold">{vr.requestId}</span>
+                              </div>
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-black border uppercase tracking-wider shrink-0 ${
+                                isDone
+                                  ? 'bg-emerald-50 text-emerald-900 border-emerald-300'
+                                  : isScheduled
+                                  ? 'bg-sky-50 text-sky-900 border-sky-300 animate-pulse'
+                                  : 'bg-amber-50 text-amber-900 border-amber-300'
+                              }`}>
+                                {vr.status === 'pending' && 'Awaiting ASHA Review'}
+                                {vr.status === 'scheduled' && 'Visit Confirmed'}
+                                {vr.status === 'in_progress' && 'ASHA On The Way'}
+                                {vr.status === 'completed' && 'Completed ✓'}
+                                {vr.status === 'cancelled' && 'Cancelled'}
+                              </span>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 font-medium">
+                              <span>Slot: <strong className="text-slate-700">{vr.preferredSlot}</strong></span>
+                              <span>•</span>
+                              <span>Address: <strong className="text-slate-700">{vr.patientAddress}</strong></span>
+                            </div>
+
+                            {vr.actionNotes && (
+                              <div className="mt-2.5 p-2.5 rounded-xl bg-teal-50/80 border border-teal-200 text-xs text-teal-950 font-semibold">
+                                <span className="text-[10px] font-black uppercase text-teal-800 tracking-wider block">Sunita Devi Update:</span>
+                                {vr.actionNotes}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex items-center justify-between pt-2 border-t border-slate-200/60 text-xs">
+                            <span className="text-slate-400 font-medium">Assigned: Sunita Devi</span>
+                            <a href="tel:9876543210" className="text-teal-700 hover:text-teal-900 font-black flex items-center gap-1">
+                              <span className="material-symbols-outlined text-[14px]">call</span>
+                              <span>Call ASHA</span>
+                            </a>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
             </div>
         )}
 

@@ -544,38 +544,62 @@ export default function AdminDashboard() {
               </div>
             </section>
 
-            {/* Command Center Dock */}
-            <section className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border-b-2 border-teal-500 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-xl">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-teal-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-teal-600/30">
-                  <span className="material-symbols-outlined text-[32px]">admin_panel_settings</span>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-black text-white font-heading">District Tele-Medicine Command Console</h3>
-                  <p className="text-xs text-slate-300 font-medium mt-1">
-                    Manage doctor roster rotations, emergency van dispatch, and broadcast district health directives.
-                  </p>
-                </div>
-              </div>
+            {/* Command Center Mission Control HUD */}
+            <section className="bg-gradient-to-r from-slate-950 via-slate-900 to-teal-950 text-white rounded-3xl p-6 sm:p-8 border border-teal-500/30 shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-              <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                <button 
-                  onClick={() => setActiveModal('shiftRoster')} 
-                  className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-black border border-slate-700 shadow-sm transition-all cursor-pointer active:scale-98" 
-                  type="button"
-                >
-                  <span className="material-symbols-outlined text-[16px] inline mr-1 text-teal-400">group</span>
-                  <span>Doctor Shift Roster</span>
-                </button>
+              <div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+                {/* Left Identity */}
+                <div className="flex items-start gap-4">
+                  <div className="w-13 h-13 rounded-2xl bg-teal-600/30 border border-teal-400/40 text-teal-300 flex items-center justify-center shrink-0 shadow-lg shadow-teal-500/10">
+                    <span className="material-symbols-outlined text-[30px]">admin_panel_settings</span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-teal-300">Live Mission Control • Sitapur Node</span>
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-black text-white font-heading tracking-tight">District Tele-Medicine Command Console</h3>
+                    <p className="text-xs text-slate-300 font-medium mt-0.5 max-w-xl">
+                      Direct supervisory control for specialist shift rotations, casualty ward telemetry, and state emergency advisories.
+                    </p>
+                  </div>
+                </div>
 
-                <button 
-                  onClick={() => setActiveModal('issueDirective')} 
-                  className="px-5 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black shadow-md shadow-teal-700/20 transition-all cursor-pointer active:scale-98" 
-                  type="button"
-                >
-                  <span className="material-symbols-outlined text-[16px] inline mr-1">campaign</span>
-                  <span>Issue State Directive</span>
-                </button>
+                {/* Center Live Telemetry Strip */}
+                <div className="flex flex-wrap items-center gap-2.5 py-1">
+                  <div className="bg-white/10 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/15 flex items-center gap-2 text-xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span className="text-slate-300 font-semibold">Specialists:</span>
+                    <strong className="text-white font-black font-mono">42/45 Active</strong>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/15 flex items-center gap-2 text-xs">
+                    <span className="material-symbols-outlined text-teal-300 text-[16px]">domain</span>
+                    <span className="text-slate-300 font-semibold">Nodes:</span>
+                    <strong className="text-white font-black font-mono">14 Centres</strong>
+                  </div>
+                </div>
+
+                {/* Right Action CTAs */}
+                <div className="flex flex-wrap items-center gap-3 shrink-0">
+                  <button 
+                    onClick={() => setActiveModal('shiftRoster')} 
+                    className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-black border border-white/20 shadow-sm transition-all cursor-pointer flex items-center gap-2 active:scale-98" 
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-[17px] text-teal-300">calendar_month</span>
+                    <span>Doctor Shift Roster</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setActiveModal('issueDirective')} 
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 text-xs font-black shadow-lg shadow-teal-500/25 transition-all cursor-pointer flex items-center gap-2 active:scale-98" 
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">campaign</span>
+                    <span>Broadcast State Directive</span>
+                  </button>
+                </div>
               </div>
             </section>
           </div>

@@ -1617,8 +1617,8 @@ export default function HealthWorkerDashboard() {
               ))}
             </div>
 
-            {/* Vaccine Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Vaccine Cards - Clinical U-WIN Style */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {filteredVaccines.map(vac => {
                 const isCompleted = vac.status === 'completed';
                 const isDue = vac.status === 'due';
@@ -1626,55 +1626,80 @@ export default function HealthWorkerDashboard() {
                 return (
                   <div 
                     key={vac.id} 
-                    className={`bg-white p-6 sm:p-7 border rounded-3xl shadow-2xs border-l-8 transition-all ${
-                      isCompleted ? 'border-slate-200 border-l-emerald-600 bg-emerald-50/10' :
-                      isDue ? 'border-slate-200 border-l-rose-500' : 'border-slate-200 border-l-teal-600'
+                    className={`bg-white p-6 rounded-3xl border transition-all duration-200 shadow-2xs hover:shadow-lg flex flex-col justify-between gap-4 ${
+                      isCompleted 
+                        ? 'border-emerald-200 bg-emerald-50/15' 
+                        : isDue 
+                        ? 'border-rose-200 hover:border-rose-400' 
+                        : 'border-slate-200 hover:border-teal-400'
                     }`}
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-xl font-black text-slate-900">{vac.childName}</h3>
-                          <span className="text-xs text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded">{vac.age}</span>
+                    <div>
+                      {/* Top Row: Patient Info & Status */}
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="flex items-start gap-3.5">
+                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-base shrink-0 border ${
+                            isCompleted 
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
+                              : isDue 
+                              ? 'bg-rose-50 text-rose-800 border-rose-200' 
+                              : 'bg-teal-50 text-teal-800 border-teal-200'
+                          }`}>
+                            {vac.childName.charAt(0)}
+                          </div>
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                              <h3 className="text-lg font-black text-slate-900 leading-snug">{vac.childName}</h3>
+                              <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-lg font-mono">{vac.age}</span>
+                            </div>
+                            <p className="text-xs text-slate-500 font-semibold">{vac.motherName} • {vac.village}</p>
+                            <span className="text-[11px] text-teal-800 font-bold block mt-1">Mobilizer: {vac.assignedAsha}</span>
+                          </div>
                         </div>
-                        <p className="text-xs text-slate-500 font-semibold mt-0.5">{vac.motherName} • {vac.village}</p>
-                        <span className="text-[11px] text-teal-900 font-bold block mt-0.5">Mobilizer: {vac.assignedAsha}</span>
+
+                        <span className={`px-3 py-1 rounded-full text-xs font-black border uppercase tracking-wider shrink-0 shadow-2xs ${
+                          isCompleted ? 'bg-emerald-50 text-emerald-900 border-emerald-300' :
+                          isDue ? 'bg-rose-50 text-rose-900 border-rose-300' : 'bg-teal-50 text-teal-900 border-teal-200'
+                        }`}>
+                          {isCompleted ? 'Completed' : vac.dueDate}
+                        </span>
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-black border uppercase tracking-wider ${
-                        isCompleted ? 'bg-emerald-50 text-emerald-900 border-emerald-300' :
-                        isDue ? 'bg-rose-50 text-rose-900 border-rose-300' : 'bg-teal-50 text-teal-900 border-teal-200'
-                      }`}>
-                        {isCompleted ? 'Completed' : vac.dueDate}
-                      </span>
+
+                      {/* Prescribed Vaccine Box */}
+                      <div className="bg-slate-50/80 p-4 rounded-2xl border border-slate-200 text-xs">
+                        <span className="text-[10px] text-slate-400 uppercase font-black tracking-wider block mb-1">Prescribed Vaccination:</span>
+                        <div className="flex items-center gap-2">
+                          <span className="material-symbols-outlined text-teal-600 text-[18px]">vaccines</span>
+                          <span className="text-sm font-black text-slate-900">{vac.vaccineName}</span>
+                        </div>
+                        <span className="text-xs text-slate-500 font-medium mt-1 block pl-6.5">{vac.doseNumber} • {vac.facility}</span>
+                      </div>
                     </div>
 
-                    <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 my-3.5">
-                      <span className="text-[10px] text-slate-400 uppercase block font-black">Prescribed Vaccination:</span>
-                      <span className="text-sm font-black text-slate-900 block mt-0.5">{vac.vaccineName}</span>
-                      <span className="text-xs text-slate-500 font-semibold">{vac.doseNumber} • {vac.facility}</span>
-                    </div>
-
-                    {isCompleted ? (
-                      <div className="p-3 bg-emerald-50 border border-emerald-300 rounded-xl flex items-center justify-between text-xs text-emerald-950 font-bold">
-                        <div className="flex items-center gap-2">
-                          <span className="material-symbols-outlined text-emerald-600 text-[20px]">verified</span>
-                          <span>Administered &amp; Logged on U-WIN Grid</span>
+                    {/* Bottom Action Area */}
+                    <div className="pt-2 border-t border-slate-100">
+                      {isCompleted ? (
+                        <div className="p-3 bg-emerald-50/80 border border-emerald-200 rounded-2xl flex items-center justify-between text-xs text-emerald-950 font-bold">
+                          <div className="flex items-center gap-2">
+                            <span className="material-symbols-outlined text-emerald-600 text-[20px]">verified</span>
+                            <span>Administered &amp; Logged on U-WIN Grid</span>
+                          </div>
+                          <span className="font-mono text-[11px] text-emerald-800 font-black">{vac.batchNo || 'BATCH-OK'}</span>
                         </div>
-                        <span className="font-mono text-[11px] text-slate-500">{vac.batchNo || 'BATCH-OK'}</span>
-                      </div>
-                    ) : (
-                      <button 
-                        type="button"
-                        onClick={() => {
-                          setSelectedVaccine(vac);
-                          setActiveModal('log-vaccine');
-                        }}
-                        className="w-full py-3 rounded-xl bg-teal-700 hover:bg-teal-800 active:bg-teal-900 text-white font-extrabold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
-                      >
-                        <span className="material-symbols-outlined text-[18px]">vaccines</span>
-                        <span>Log Vaccination Dose (खुराक दर्ज करें)</span>
-                      </button>
-                    )}
+                      ) : (
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            setSelectedVaccine(vac);
+                            setActiveModal('log-vaccine');
+                          }}
+                          className="w-full h-11 rounded-2xl bg-teal-700 hover:bg-teal-800 active:bg-teal-900 text-white font-black text-xs shadow-md shadow-teal-700/20 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">vaccines</span>
+                          <span>Log Vaccination Dose (खुराक दर्ज करें)</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })}
