@@ -1001,38 +1001,35 @@ export default function HealthWorkerDashboard() {
 
       {/* MAIN CONTENT AREA */}
       <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
-        {/* Top Health Worker Hero Banner */}
-        <div className="bg-gradient-to-r from-teal-950 via-teal-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-teal-500/30 shadow-xl mb-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+        {/* Sovereign Clinical Hero Banner */}
+        <div className="w-full mb-8 bg-gradient-to-r from-teal-50 via-teal-100/40 to-sky-50 border border-teal-200/90 rounded-3xl p-6 sm:p-7 shadow-xs relative overflow-hidden before:absolute before:left-0 before:top-4 before:bottom-4 before:w-1.5 before:bg-gradient-to-b before:from-teal-600 before:to-emerald-500 before:rounded-r-full">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pl-2">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-teal-200 text-xs font-black mb-3 shadow-2xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>National Health Mission • Primary Healthcare Supervision</span>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-teal-600"></span>
+                <span className="text-[11px] font-black uppercase tracking-wider text-teal-800">
+                  National Health Mission • Primary Healthcare Supervision
+                </span>
               </div>
-              <h1 className="font-heading text-2xl sm:text-4xl font-black text-white tracking-tight">
+              <h1 className="font-heading text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-snug">
                 Community Health Worker (ANM / CHO) Console
               </h1>
-              <p className="text-xs sm:text-base text-slate-300 font-medium mt-1.5 leading-relaxed">
-                Health Supervisor: <span className="text-teal-300 font-black">{user?.name || 'Rekha Rani (Senior ANM / CHO)'}</span> • Supervising 8 Grassroot ASHA Workers across 1,200 Households
+              <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed max-w-2xl mt-1">
+                Health Supervisor: <strong className="text-slate-900">{user?.name || 'Rekha Rani (Senior ANM / CHO)'}</strong> • Supervising 8 Grassroot ASHA Workers across 1,200 Rural Households
               </p>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-md border border-teal-400/30 p-5 rounded-3xl shadow-lg flex items-center gap-4 self-start md:self-auto shrink-0">
-              <div className="w-13 h-13 rounded-2xl bg-teal-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-teal-600/30">
-                <span className="material-symbols-outlined text-[30px]">health_and_safety</span>
+            <div className="bg-white/90 border border-teal-200/90 p-4 sm:p-5 rounded-2xl shadow-2xs flex items-center gap-4 shrink-0 self-start lg:self-auto min-w-[260px]">
+              <div className="w-12 h-12 rounded-xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[26px]">health_and_safety</span>
               </div>
               <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-black mb-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>SUPERVISORY DUTY ACTIVE</span>
-                </div>
-                <div className="flex items-center gap-2 text-white font-black text-sm my-1">
-                  <span className="material-symbols-outlined text-[17px] text-teal-300">supervisor_account</span>
-                  <span>8 ASHA Workers Under Supervision</span>
-                </div>
-                <span className="text-xs text-slate-300 font-bold block mt-0.5">Sitapur Rural Block Sector</span>
+                <span className="text-[10px] uppercase font-black tracking-wider text-slate-400 block">Workforce Status</span>
+                <span className="text-sm font-black text-slate-900 block font-heading leading-tight">8 ASHAs Under Supervision</span>
+                <span className="text-[11px] text-teal-800 font-bold flex items-center gap-1 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Active in Sitapur Sector
+                </span>
               </div>
             </div>
           </div>

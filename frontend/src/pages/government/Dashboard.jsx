@@ -415,26 +415,40 @@ export default function AdminDashboard() {
         {/* TAB 1: OVERVIEW */}
         {activeView === 'overview' && (
           <div className="animate-fadeIn">
-            {/* Live Node Callout */}
-            <div className="w-full p-6 sm:p-7 bg-gradient-to-r from-teal-950 via-teal-900 to-slate-900 text-white border border-teal-500/30 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl mb-8 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
-              
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-teal-300 shrink-0 shadow-sm">
-                  <span className="material-symbols-outlined text-[30px] animate-pulse">hub</span>
+            {/* Sovereign Clinical Live Node Banner */}
+            <div className="w-full mb-8 bg-gradient-to-r from-teal-50 via-teal-100/40 to-sky-50 border border-teal-200/90 rounded-3xl p-6 sm:p-7 shadow-xs relative overflow-hidden before:absolute before:left-0 before:top-4 before:bottom-4 before:w-1.5 before:bg-gradient-to-b before:from-teal-600 before:to-emerald-500 before:rounded-r-full">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pl-2">
+                <div className="flex items-start gap-4">
+                  <div className="w-13 h-13 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0 shadow-2xs">
+                    <span className="material-symbols-outlined text-[30px] animate-pulse">hub</span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-teal-800">
+                        National Health Network • E-Sanjeevani Backbone
+                      </span>
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-heading">
+                      {t('State Central Tele-Health Node Synchronized', 'राज्य केंद्रीय नोड सिंक्रनाइज़')}
+                    </h3>
+                    <p className="text-xs sm:text-sm font-medium text-slate-600 mt-1 max-w-2xl leading-relaxed">
+                      142 Primary Health Centres &amp; Sub-Centres connected across Sitapur Hub. Low-bandwidth satellite telemetry uplink latency: 28ms. Zero packet loss.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight font-heading">
-                    {t('State Central Tele-Health Node Synchronized', 'राज्य केंद्रीय नोड सिंक्रनाइज़')}
-                  </h3>
-                  <p className="text-xs sm:text-sm font-medium text-slate-300 mt-0.5">
-                    142 Primary Health Centres &amp; Sub-Centres connected. Satellite uplink latency: 28ms. Zero packet loss.
-                  </p>
+
+                <div className="bg-white/90 border border-teal-200/90 p-4 sm:p-5 rounded-2xl shadow-2xs shrink-0 self-start lg:self-auto min-w-[220px]">
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <span className="text-[10px] uppercase font-black tracking-wider text-slate-400">Node Uptime</span>
+                    <span className="text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.5 rounded-full">
+                      Live
+                    </span>
+                  </div>
+                  <div className="text-2xl font-black font-mono text-teal-900">99.98% <span className="text-xs font-sans text-slate-500 font-bold">Uptime</span></div>
+                  <div className="text-[11px] text-teal-800 font-bold mt-1">Satellite Latency: 28ms</div>
                 </div>
               </div>
-              <span className="relative z-10 text-xs font-black px-4 py-2 bg-white/10 backdrop-blur-md text-teal-200 rounded-xl border border-white/20 shadow-2xs whitespace-nowrap">
-                NODE UPTIME: 99.98%
-              </span>
             </div>
 
             {/* 4 KPI Metrics Cards */}

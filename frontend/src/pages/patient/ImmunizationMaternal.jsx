@@ -117,31 +117,35 @@ export default function ImmunizationMaternal() {
       <PatientNavbar />
 
       <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
-        {/* Header HUD */}
-        <div className="w-full mb-8 bg-gradient-to-r from-teal-950 via-teal-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-teal-500/30 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
-          
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+        {/* Sovereign Clinical Hero Banner */}
+        <div className="w-full mb-8 bg-gradient-to-r from-teal-50 via-teal-100/40 to-sky-50 border border-teal-200/90 rounded-3xl p-6 sm:p-7 shadow-xs relative overflow-hidden before:absolute before:left-0 before:top-4 before:bottom-4 before:w-1.5 before:bg-gradient-to-b before:from-teal-600 before:to-emerald-500 before:rounded-r-full">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pl-2">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-teal-200 text-xs font-black mb-3 shadow-2xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Mission Indradhanush • Universal Immunization Programme</span>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-teal-600"></span>
+                <span className="text-[11px] font-black uppercase tracking-wider text-teal-800">
+                  Mission Indradhanush • Universal Immunization Programme (UIP)
+                </span>
               </div>
-              <h1 className="font-heading text-2xl sm:text-4xl font-black text-white tracking-tight flex items-center gap-3">
-                <span className="material-symbols-outlined text-teal-400 text-[36px]">vaccines</span>
+              <h1 className="font-heading text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-snug flex items-center gap-3">
+                <span className="material-symbols-outlined text-teal-700 text-[32px]">vaccines</span>
                 <span>Immunization &amp; Maternal Health</span>
               </h1>
-              <p className="text-xs sm:text-base text-slate-300 font-medium mt-1.5 max-w-2xl leading-relaxed">
-                ABDM verified digital immunization certificates, pediatric vaccine schedules &amp; antenatal care records.
+              <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed max-w-2xl mt-1">
+                ABDM verified digital immunization certificates, pediatric vaccine schedules &amp; antenatal care (ANC) clinical records.
               </p>
             </div>
-            <button 
-              onClick={() => navigate('/patient')} 
-              className="h-10 px-4 rounded-xl border border-white/20 bg-white/10 hover:bg-white/20 text-white text-xs font-black flex items-center gap-2 transition-all self-start cursor-pointer active:scale-98"
-            >
-              <span className="material-symbols-outlined text-[17px]">arrow_back</span>
-              <span>Back to Dashboard</span>
-            </button>
+
+            <div className="bg-white/90 backdrop-blur-xs border border-teal-200/90 p-4 sm:p-5 rounded-2xl shadow-2xs shrink-0 self-start lg:self-auto min-w-[220px]">
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <span className="text-[10px] uppercase font-black tracking-wider text-slate-400">Vaccine Registry</span>
+                <span className="text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.5 rounded-full">
+                  U-WIN Active
+                </span>
+              </div>
+              <div className="text-2xl font-black font-mono text-teal-900">{stats.total} <span className="text-xs font-sans text-slate-500 font-bold">Doses Tracked</span></div>
+              <div className="text-[11px] text-teal-800 font-bold mt-1">Next Village Camp: This Thursday</div>
+            </div>
           </div>
         </div>
 

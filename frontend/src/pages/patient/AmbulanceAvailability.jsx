@@ -199,39 +199,36 @@ export default function AmbulanceAvailability() {
           <span className="text-slate-800 font-bold">108 Emergency Ambulance Grid</span>
         </div>
 
-        {/* HERO BANNER: 108 Emergency Grid */}
-        <div className="bg-gradient-to-r from-slate-950 via-rose-950 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-rose-500/30 shadow-xl mb-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
-          
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-rose-300 text-xs font-black mb-3 shadow-2xs">
-                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-                <span>National Emergency Medical Service (EMS 108) • GPS Grid</span>
+        {/* Sovereign Clinical Hero Banner */}
+        <div className="w-full mb-8 bg-gradient-to-r from-rose-50/80 via-teal-50/40 to-sky-50 border border-rose-200/90 rounded-3xl p-6 sm:p-7 shadow-xs relative overflow-hidden before:absolute before:left-0 before:top-4 before:bottom-4 before:w-1.5 before:bg-gradient-to-b before:from-rose-600 before:to-amber-500 before:rounded-r-full">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pl-2">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse"></span>
+                <span className="text-[11px] font-black uppercase tracking-wider text-rose-800">
+                  National 108 Emergency Medical Service (EMS) • GPS Fleet Telemetry
+                </span>
               </div>
-              <h1 className="font-heading text-3xl sm:text-4xl lg:text-[40px] font-black text-white tracking-tight leading-tight">
-                Live Ambulance Telemetry &amp; Dispatch
+              <h1 className="font-heading text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-snug">
+                108 Emergency Ambulance Telemetry &amp; Dispatch
               </h1>
-              <p className="text-sm sm:text-base text-slate-300 font-medium mt-2 leading-relaxed">
-                Real-time tracking for Advanced Life Support (ALS ICU) and Basic Life Support (BLS) units in <span className="text-rose-300 font-bold underline decoration-rose-400 decoration-2">Sitapur Rural Sector</span>. Guaranteed Golden-Hour protocol.
+              <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed max-w-2xl mt-1">
+                Real-time GPS telemetry for ALS ICU &amp; BLS Emergency ambulances in <span className="text-rose-800 font-bold underline decoration-rose-300">Sitapur Rural Sector</span>. Guaranteed Golden-Hour emergency response protocol.
               </p>
             </div>
 
-            {/* Emergency Direct Call Box */}
-            <div className="bg-white/10 backdrop-blur-md border border-rose-400/40 p-5 sm:p-6 rounded-3xl shadow-lg flex flex-col sm:flex-row items-center gap-5 self-start lg:self-auto shrink-0">
-              <div className="w-14 h-14 rounded-2xl bg-rose-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-rose-600/30">
-                <span className="material-symbols-outlined text-[30px] animate-pulse">call</span>
+            {/* Direct SOS Box */}
+            <div className="bg-white/95 border border-rose-200 p-4 sm:p-5 rounded-2xl shadow-2xs flex items-center gap-4 shrink-0 self-start lg:self-auto min-w-[240px]">
+              <div className="w-12 h-12 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[26px] animate-pulse">call</span>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-black tracking-widest text-rose-300 block">Immediate SOS Dispatch</span>
-                <a 
-                  href="tel:108" 
-                  className="text-2xl sm:text-3xl font-black text-white hover:text-rose-300 tracking-tight flex items-center gap-2 leading-tight mt-0.5"
-                >
-                  <span>Dial 108 Toll-Free</span>
-                  <span className="material-symbols-outlined text-[22px]">north_east</span>
+                <span className="text-[10px] uppercase font-black tracking-wider text-rose-600 block">Critical Helpline</span>
+                <a href="tel:108" className="text-xl sm:text-2xl font-black text-rose-700 hover:text-rose-800 tracking-tight flex items-center gap-1 font-mono">
+                  <span>108 Toll-Free</span>
+                  <span className="material-symbols-outlined text-[18px]">north_east</span>
                 </a>
-                <span className="text-[11px] text-slate-300 font-medium block mt-1">24x7 Government GPS Ambulance Fleet</span>
+                <span className="text-[11px] text-slate-500 font-semibold block mt-0.5">24x7 GPS Dispatch Hub</span>
               </div>
             </div>
           </div>

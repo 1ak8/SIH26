@@ -53,28 +53,34 @@ export default function TreatmentAdvisor() {
       <PatientNavbar />
       
       <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-[96px] pb-16 max-w-7xl mx-auto">
-        {/* Header HUD */}
-        <div className="mb-6 p-6 rounded-3xl bg-gradient-to-r from-teal-950 via-teal-900 to-slate-900 text-white border border-teal-500/30 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
-          
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Sovereign Clinical Hero Banner */}
+        <div className="w-full mb-8 bg-gradient-to-r from-teal-50 via-teal-100/40 to-sky-50 border border-teal-200/90 rounded-3xl p-6 sm:p-7 shadow-xs relative overflow-hidden before:absolute before:left-0 before:top-4 before:bottom-4 before:w-1.5 before:bg-gradient-to-b before:from-teal-600 before:to-emerald-500 before:rounded-r-full">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pl-2">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-teal-200 text-xs font-black mb-2 shadow-2xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Clinical Decision Support Engine • Ayushman Bharat</span>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-teal-600"></span>
+                <span className="text-[11px] font-black uppercase tracking-wider text-teal-800">
+                  Clinical Decision Support Engine • Ayushman Bharat Digital Mission
+                </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black tracking-tight font-heading flex items-center gap-2.5 text-white">
-                AI Treatment &amp; Triage Advisor
+              <h1 className="font-heading text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-snug flex items-center gap-3">
+                <span className="material-symbols-outlined text-teal-700 text-[32px]">psychology</span>
+                <span>AI Treatment &amp; Triage Advisor</span>
               </h1>
-              <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1 max-w-2xl">
+              <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed max-w-2xl mt-1">
                 Enter your physiological telemetry &amp; chief complaints. Our AI evaluates risk severity, provides verified home therapies, and flags critical clinical escalations.
               </p>
             </div>
-            <div className="hidden sm:flex flex-col items-end shrink-0">
-              <span className="text-[10px] font-black uppercase tracking-widest text-teal-300">LLM Triage Model</span>
-              <span className="text-xs font-mono font-bold text-white bg-white/10 px-3 py-1 rounded-xl border border-white/20 mt-1">
-                Gemini 3.6 Flash Active
-              </span>
+
+            <div className="bg-white/90 backdrop-blur-xs border border-teal-200/90 p-4 sm:p-5 rounded-2xl shadow-2xs shrink-0 self-start lg:self-auto min-w-[220px]">
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <span className="text-[10px] uppercase font-black tracking-wider text-slate-400">LLM Engine</span>
+                <span className="text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.5 rounded-full">
+                  Verified
+                </span>
+              </div>
+              <div className="text-lg font-black font-mono text-teal-900">Gemini 3.6 Flash <span className="text-xs font-sans text-slate-500 font-bold">Active</span></div>
+              <div className="text-[11px] text-teal-800 font-bold mt-1">NEML &amp; ICMR Protocols</div>
             </div>
           </div>
         </div>
