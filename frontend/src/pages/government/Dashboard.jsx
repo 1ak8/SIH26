@@ -415,41 +415,62 @@ export default function AdminDashboard() {
         {/* TAB 1: OVERVIEW */}
         {activeView === 'overview' && (
           <div className="animate-fadeIn">
-            {/* Vibrant Luminous Clinical Live Node Banner */}
-            <div className="w-full mb-8 rounded-3xl bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white p-6 sm:p-8 shadow-xl shadow-teal-700/20 relative overflow-hidden">
-              <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-              <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none"></div>
-              
-              <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                    <span className="material-symbols-outlined text-[30px] animate-pulse">hub</span>
+            {/* Greyish Clinical Health Card Header */}
+            <div className="w-full mb-8 bg-slate-100/85 p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs relative overflow-hidden">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div className="space-y-2.5">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-teal-800 text-xs font-black shadow-2xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>National Health Network • E-Sanjeevani Telemetry Backbone</span>
                   </div>
-
+                  
                   <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-black mb-2 shadow-2xs">
-                      <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
-                      <span>National Health Network • E-Sanjeevani Telemetry Backbone</span>
-                    </div>
-
-                    <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-                      {t('State Central Tele-Health Node Synchronized', 'राज्य केंद्रीय नोड सिंक्रनाइज़')}
+                    <h1 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-slate-900 flex items-center gap-2.5">
+                      <span>{t('State Central Tele-Health Node Synchronized', 'राज्य केंद्रीय नोड सिंक्रनाइज़')}</span>
                     </h1>
-                    <p className="text-xs sm:text-sm lg:text-base text-teal-50 font-medium mt-1.5 max-w-2xl leading-relaxed opacity-95">
+                    <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1 max-w-xl">
                       142 Primary Health Centres &amp; Sub-Centres connected across Sitapur Hub. Low-bandwidth satellite telemetry uplink latency: 28ms. Zero packet loss.
                     </p>
                   </div>
+
+                  {/* Status Chips */}
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                      <span className="material-symbols-outlined text-teal-600 text-[16px]">hub</span>
+                      <span className="text-slate-500">Nodes:</span>
+                      <strong className="text-slate-900 font-black">142 PHCs Active</strong>
+                    </div>
+                    <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                      <span className="material-symbols-outlined text-emerald-600 text-[16px]">sensors</span>
+                      <span className="text-slate-500">Uptime:</span>
+                      <strong className="text-emerald-700 font-black font-mono">99.98%</strong>
+                    </div>
+                    <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                      <span className="material-symbols-outlined text-sky-600 text-[16px]">satellite_alt</span>
+                      <span className="text-slate-500">Latency:</span>
+                      <strong className="text-slate-900 font-black font-mono">28ms Uplink</strong>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0 self-start lg:self-auto">
-                  <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[125px] shadow-sm">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-teal-100 block">Node Uptime</span>
-                    <span className="text-lg font-black text-white font-mono mt-0.5 block">99.98%</span>
+                {/* Right Side State Registry Chip & Audit Link */}
+                <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
+                  <div className="inline-flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-200 shadow-2xs text-xs">
+                    <span className="material-symbols-outlined text-emerald-600 text-[18px]">verified_user</span>
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-black uppercase block leading-tight">MoHFW Telemetry</span>
+                      <strong className="text-slate-800 font-mono font-bold leading-tight">NODE-UP-0041</strong>
+                    </div>
                   </div>
-                  <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[125px] shadow-sm">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-teal-100 block">Satellite Link</span>
-                    <span className="text-lg font-black text-emerald-300 font-mono mt-0.5 block">28ms Latency</span>
-                  </div>
+
+                  <button 
+                    onClick={() => setActiveView('analytics')}
+                    className="inline-flex items-center gap-2 bg-teal-700 hover:bg-teal-800 text-white px-5 py-2.5 rounded-2xl font-black text-xs shadow-md shadow-teal-700/20 transition-all cursor-pointer active:scale-98"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">analytics</span>
+                    <span>View District Telemetry</span>
+                    <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+                  </button>
                 </div>
               </div>
             </div>

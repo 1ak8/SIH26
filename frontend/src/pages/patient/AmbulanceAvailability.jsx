@@ -203,44 +203,62 @@ export default function AmbulanceAvailability() {
           </Link>
         </div>
 
-        {/* Vibrant Luminous Emergency Hero Banner */}
-        <div className="w-full mb-8 rounded-3xl bg-gradient-to-r from-rose-700 via-rose-600 to-amber-600 text-white p-6 sm:p-8 shadow-xl shadow-rose-700/20 relative overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-400/20 rounded-full blur-2xl pointer-events-none"></div>
-
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="flex items-start gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                <span className="material-symbols-outlined text-[30px] animate-pulse">airport_shuttle</span>
+        {/* Greyish Clinical Health Card Header */}
+        <div className="w-full mb-8 bg-slate-100/85 p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="space-y-2.5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-rose-800 text-xs font-black shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                <span>National Emergency Medical Service (EMS 108) • Live GPS Telemetry</span>
+              </div>
+              
+              <div>
+                <h1 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-slate-900 flex items-center gap-2.5">
+                  <span>108 Emergency Ambulance Telemetry &amp; Dispatch</span>
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1 max-w-xl">
+                  Real-time GPS telemetry for ALS ICU &amp; BLS Emergency ambulances in <span className="text-rose-700 font-bold underline decoration-rose-300">Sitapur Rural Sector</span>. Guaranteed Golden-Hour protocol.
+                </p>
               </div>
 
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-black mb-2 shadow-2xs">
-                  <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse"></span>
-                  <span>National Emergency Medical Service (EMS 108) • Live Sector Telemetry</span>
+              {/* Status Chips */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <span className="material-symbols-outlined text-rose-600 text-[16px]">airport_shuttle</span>
+                  <span className="text-slate-500">Fleet:</span>
+                  <strong className="text-slate-900 font-black">6 Units Ready</strong>
                 </div>
-
-                <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-                  108 Emergency Ambulance Telemetry &amp; Dispatch
-                </h1>
-                <p className="text-xs sm:text-sm lg:text-base text-rose-50 font-medium mt-1.5 max-w-2xl leading-relaxed opacity-95">
-                  Real-time GPS telemetry for ALS ICU &amp; BLS Emergency ambulances in Sitapur Rural Sector. Guaranteed Golden-Hour protocol.
-                </p>
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <span className="material-symbols-outlined text-emerald-600 text-[16px]">timer</span>
+                  <span className="text-slate-500">Avg ETA:</span>
+                  <strong className="text-emerald-700 font-black">6-9 Mins</strong>
+                </div>
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <span className="material-symbols-outlined text-sky-600 text-[16px]">local_hospital</span>
+                  <span className="text-slate-500">Casualty:</span>
+                  <strong className="text-slate-900 font-black">CHC Sitapur Bay 1</strong>
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0 self-start lg:self-auto">
-              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-5 py-3 rounded-2xl text-center min-w-[130px] shadow-sm">
-                <span className="text-[10px] font-black uppercase tracking-wider text-rose-100 block">Direct SOS</span>
-                <a href="tel:108" className="text-2xl font-black text-white hover:text-amber-200 font-mono mt-0.5 flex items-center justify-center gap-1">
-                  <span>108</span>
-                  <span className="material-symbols-outlined text-[18px]">call</span>
-                </a>
+            {/* Right Side SOS Helpline & Call CTA */}
+            <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
+              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-200 shadow-2xs text-xs">
+                <span className="material-symbols-outlined text-rose-600 text-[18px]">emergency</span>
+                <div>
+                  <span className="text-[10px] text-slate-400 font-black uppercase block leading-tight">Direct Helpline</span>
+                  <strong className="text-rose-700 font-mono font-black leading-tight">TOLL-FREE 108</strong>
+                </div>
               </div>
-              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[120px] shadow-sm">
-                <span className="text-[10px] font-black uppercase tracking-wider text-rose-100 block">Sector Fleet</span>
-                <span className="text-lg font-black text-amber-300 font-mono mt-0.5 block">6 Units Ready</span>
-              </div>
+
+              <a 
+                href="tel:108"
+                className="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-2xl font-black text-xs shadow-md shadow-rose-600/20 transition-all cursor-pointer active:scale-98"
+              >
+                <span className="material-symbols-outlined text-[18px]">call</span>
+                <span>Dial 108 Emergency</span>
+                <span className="material-symbols-outlined text-[15px]">north_east</span>
+              </a>
             </div>
           </div>
         </div>

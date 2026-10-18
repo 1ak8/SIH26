@@ -184,41 +184,62 @@ export default function DoctorDashboard() {
       )}
 
       <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
-        {/* Vibrant Luminous Clinical Hero Banner */}
-        <div className="w-full mb-8 rounded-3xl bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white p-6 sm:p-8 shadow-xl shadow-teal-700/20 relative overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none"></div>
-
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="flex items-start gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                <span className="material-symbols-outlined text-[30px]">stethoscope</span>
+        {/* Greyish Clinical Health Card Header */}
+        <div className="w-full mb-8 bg-slate-100/85 p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="space-y-2.5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-teal-800 text-xs font-black shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>National Tele-Consultation Mission • E-Sanjeevani Grid</span>
+              </div>
+              
+              <div>
+                <h1 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-slate-900 flex items-center gap-2.5">
+                  <span>Tele-OPD Doctor Console</span>
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1 max-w-xl">
+                  Attending Specialist: <strong className="text-slate-900 notranslate" translate="no">{user?.name || 'Dr. Rajesh Sharma, MD'}</strong> • CHC Sitapur Central • Active Tele-OPD Bay 04
+                </p>
               </div>
 
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-black mb-2 shadow-2xs">
-                  <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
-                  <span>National Tele-Consultation Mission • E-Sanjeevani Grid</span>
+              {/* Status Chips */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <span className="material-symbols-outlined text-teal-600 text-[16px]">stethoscope</span>
+                  <span className="text-slate-500">Bay:</span>
+                  <strong className="text-slate-900 font-black">OPD Bay 04</strong>
                 </div>
-
-                <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-                  Tele-OPD Doctor Console
-                </h1>
-                <p className="text-xs sm:text-sm lg:text-base text-teal-50 font-medium mt-1.5 max-w-2xl leading-relaxed opacity-95">
-                  Attending Specialist: <strong className="text-white notranslate" translate="no">{user?.name || 'Dr. Rajesh Sharma, MD'}</strong> • CHC Sitapur Central • Active Tele-OPD Bay 04
-                </p>
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <span className="material-symbols-outlined text-emerald-600 text-[16px]">timer</span>
+                  <span className="text-slate-500">Live Session:</span>
+                  <strong className="text-emerald-700 font-black font-mono">{formatTime(sessionSeconds)}</strong>
+                </div>
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <span className="material-symbols-outlined text-sky-600 text-[16px]">how_to_reg</span>
+                  <span className="text-slate-500">Treated Today:</span>
+                  <strong className="text-slate-900 font-black font-mono">{data?.completedToday || 19} Citizens</strong>
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0 self-start lg:self-auto">
-              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[125px] shadow-sm">
-                <span className="text-[10px] font-black uppercase tracking-wider text-teal-100 block">Live OPD Time</span>
-                <span className="text-lg font-black text-white font-mono mt-0.5 block">{formatTime(sessionSeconds)}</span>
+            {/* Right Side Doctor ABHA & Queue Link */}
+            <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
+              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-200 shadow-2xs text-xs">
+                <span className="material-symbols-outlined text-emerald-600 text-[18px]">verified_user</span>
+                <div>
+                  <span className="text-[10px] text-slate-400 font-black uppercase block leading-tight">NMC Medical Reg</span>
+                  <strong className="text-slate-800 font-mono font-bold leading-tight">MCI-92841-DL</strong>
+                </div>
               </div>
-              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[125px] shadow-sm">
-                <span className="text-[10px] font-black uppercase tracking-wider text-teal-100 block">Treated Today</span>
-                <span className="text-lg font-black text-emerald-300 font-mono mt-0.5 block">{data?.completedToday || 19} Citizens</span>
-              </div>
+
+              <Link 
+                to="/doctor/queue"
+                className="inline-flex items-center gap-2 bg-teal-700 hover:bg-teal-800 text-white px-5 py-2.5 rounded-2xl font-black text-xs shadow-md shadow-teal-700/20 transition-all cursor-pointer active:scale-98"
+              >
+                <span className="material-symbols-outlined text-[18px]">person_play</span>
+                <span>Open Patient Queue</span>
+                <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+              </Link>
             </div>
           </div>
         </div>

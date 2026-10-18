@@ -682,21 +682,21 @@ export default function PatientDashboard() {
       <main className="w-full bg-[#f8fafc] px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28">
         {activeTab === 'dashboard' && (
           <div className="flex flex-col w-full pb-8">
-            {/* Welcome Header - Modern Clinical Health Card */}
-            <div className="w-full mb-8 bg-gradient-to-br from-white via-slate-50 to-teal-50/40 p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-sm relative overflow-hidden">
+            {/* Welcome Header - Greyish Clinical Health Card */}
+            <div className="w-full mb-8 bg-slate-100/85 p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs relative overflow-hidden">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                <div className="space-y-3">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-black shadow-2xs">
+                <div className="space-y-2.5">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-teal-800 text-xs font-black shadow-2xs">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span>Ayushman Bharat Digital Health Grid • Sitapur Sub-Centre</span>
                   </div>
                   
                   <div>
-                    <h1 className="font-heading text-3xl sm:text-4xl font-black tracking-tight text-slate-900 flex items-center gap-3">
+                    <h1 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-slate-900 flex items-center gap-2.5">
                       <span>Hello, <span className="notranslate text-teal-700" translate="no">{user?.name?.split(' ')[0] || 'Patient'}</span></span>
-                      <span className="text-3xl">👋</span>
+                      <span className="text-2xl sm:text-3xl">👋</span>
                     </h1>
-                    <p className="text-sm text-slate-600 font-medium mt-1 max-w-xl">
+                    <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1 max-w-xl">
                       Your personalized rural health gateway — linked with Sitapur CHC, verified tele-doctors &amp; Jan Aushadhi supplies.
                     </p>
                   </div>
@@ -733,11 +733,11 @@ export default function PatientDashboard() {
 
                   <button 
                     onClick={() => navigate('/patient/treatment')}
-                    className="inline-flex items-center gap-2.5 bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 hover:from-teal-800 hover:to-emerald-700 text-white px-5 py-3 rounded-2xl font-black text-xs shadow-md shadow-teal-700/20 hover:shadow-lg transition-all cursor-pointer active:scale-98"
+                    className="inline-flex items-center gap-2 bg-teal-700 hover:bg-teal-800 text-white px-5 py-2.5 rounded-2xl font-black text-xs shadow-md shadow-teal-700/20 transition-all cursor-pointer active:scale-98"
                   >
-                    <span className="material-symbols-outlined text-[19px]">psychology</span>
+                    <span className="material-symbols-outlined text-[18px]">psychology</span>
                     <span>AI Treatment Advisor</span>
-                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
                   </button>
                 </div>
               </div>
