@@ -138,9 +138,9 @@ export default function ConsultationHistory() {
     const medRows = (rec.medicines || []).map((m, i) => `
       <tr style="border-bottom: 1px solid #e2e8f0;">
         <td style="padding: 10px 12px; font-weight: bold; color: #0f172a;">${i + 1}. ${m.name}</td>
-        <td style="padding: 10px 12px; font-weight: 800; color: #78350f;">${m.dosage || '1 tab OD'}</td>
+        <td style="padding: 10px 12px; font-weight: 800; color: #0f766e;">${m.dosage || '1 tab OD'}</td>
         <td style="padding: 10px 12px; color: #475569;">${m.duration || '5 Days'}</td>
-        <td style="padding: 10px 12px; text-align: right;"><span style="background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px;">Jan Aushadhi Generic</span></td>
+        <td style="padding: 10px 12px; text-align: right;"><span style="background: #ccfbf1; color: #0f766e; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px;">Jan Aushadhi Generic</span></td>
       </tr>
     `).join('');
 
@@ -151,9 +151,9 @@ export default function ConsultationHistory() {
           <title>Consultation Summary - ${rec.id}</title>
           <style>
             @page { size: A4; margin: 15mm; }
-            body { font-family: system-ui, -apple-system, sans-serif; color: #0f172a; margin: 0; padding: 24px; font-size: 13px; line-height: 1.5; }
-            .header { border-bottom: 3px solid #d97706; padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-            .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #fef3c7; padding: 12px 16px; border-radius: 8px; margin-bottom: 18px; }
+            body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #0f172a; margin: 0; padding: 24px; font-size: 13px; line-height: 1.5; }
+            .header { border-bottom: 3px solid #0d9488; padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+            .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #f0fdfa; padding: 12px 16px; border-radius: 8px; margin-bottom: 18px; border: 1px solid #ccfbf1; }
             table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
             th { background: #f1f5f9; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; color: #475569; }
             .box { background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px 16px; border-radius: 6px; margin-bottom: 18px; }
@@ -163,12 +163,12 @@ export default function ConsultationHistory() {
         <body>
           <div class="header">
             <div>
-              <div style="font-size: 10px; font-weight: bold; color: #d97706; letter-spacing: 1px; text-transform: uppercase;">Ministry of Health &amp; Family Welfare</div>
+              <div style="font-size: 10px; font-weight: bold; color: #0f766e; letter-spacing: 1px; text-transform: uppercase;">Ministry of Health &amp; Family Welfare</div>
               <h1 style="margin: 3px 0; font-size: 20px; color: #0f172a;">National Tele-Consultation Record</h1>
               <div style="font-size: 11px; color: #64748b;">E-Sanjeevani • ABDM Verified Clinical Summary</div>
             </div>
             <div style="text-align: right;">
-              <div style="font-size: 18px; font-weight: 900; font-family: monospace; color: #92400e;">${rec.id}</div>
+              <div style="font-size: 18px; font-weight: 900; font-family: monospace; color: #0f766e;">${rec.id}</div>
               <div style="font-size: 10px; color: #64748b;">DIGITALLY PRESERVED</div>
             </div>
           </div>
@@ -245,29 +245,34 @@ export default function ConsultationHistory() {
   });
   
   return (
-    <div className="bg-[#fbfaf7] text-slate-900 font-sans min-h-screen">
+    <div className="bg-slate-50 text-slate-900 font-sans min-h-screen selection:bg-teal-100 selection:text-teal-900">
       <DoctorNavbar />
 
-      <main className="w-full px-6 lg:px-12 xl:px-16 pt-28 pb-16">
+      <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
         {/* Navigation Breadcrumb */}
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-5 flex items-center justify-between">
           <Link 
             to="/doctor" 
-            className="inline-flex items-center gap-2 text-slate-700 hover:text-amber-600 bg-white px-4 py-2 rounded-xl border border-slate-200 text-sm font-bold shadow-xs hover:border-amber-300 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 text-slate-600 hover:text-teal-800 bg-white px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold shadow-2xs hover:border-teal-300 transition-all cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-            Back to Console
+            <span className="material-symbols-outlined text-[17px]">arrow_back</span>
+            <span>Back to Console</span>
           </Link>
 
-          <span className="text-xs font-black bg-amber-100 text-amber-900 border border-amber-300 px-3.5 py-1.5 rounded-full shadow-2xs">
+          <span className="text-xs font-black bg-teal-50 text-teal-900 border border-teal-200 px-3.5 py-1.5 rounded-full shadow-2xs">
             ABDM Clinical Audit Log • Permanent Record
           </span>
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight font-heading">Clinical Consultation History</h1>
-            <p className="text-sm text-slate-600 font-medium">Historical OPD tele-consultations, e-prescriptions, and clinical audit log under National Health Mission.</p>
+            <div className="flex items-center gap-2.5 mb-1">
+              <div className="w-10 h-10 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center">
+                <span className="material-symbols-outlined text-[22px]">history</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Clinical Consultation History</h1>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-600 font-medium">Historical OPD tele-consultations, e-prescriptions, and clinical audit log under National Health Mission.</p>
           </div>
           
           <div className="flex flex-wrap items-center gap-3">
@@ -278,18 +283,18 @@ export default function ConsultationHistory() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search patient, ID, or diagnosis..."
-                className="h-11 pl-10 pr-4 bg-white border-2 border-slate-200 focus:border-amber-500 rounded-xl text-xs font-bold outline-none transition-all w-full sm:w-72 shadow-2xs text-slate-900"
+                className="h-10 pl-10 pr-4 bg-white border border-slate-200 focus:border-teal-600 rounded-xl text-xs font-bold outline-none transition-all w-full sm:w-72 shadow-2xs text-slate-900"
               />
             </div>
 
-            <div className="flex bg-white rounded-2xl p-1 border-2 border-slate-200 shadow-xs">
+            <div className="flex bg-white rounded-2xl p-1 border border-slate-200 shadow-2xs">
               {['All', 'Tele-Consult', 'In-Person'].map(m => (
                 <button
                   key={m}
                   type="button"
                   onClick={() => setModeFilter(m)}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                    modeFilter === m ? 'bg-amber-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                    modeFilter === m ? 'bg-teal-700 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   {m}
@@ -299,57 +304,57 @@ export default function ConsultationHistory() {
           </div>
         </div>
 
-        <div className="bg-white border-2 border-slate-200/90 rounded-3xl overflow-hidden shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-slate-50 border-b-2 border-slate-100">
-                  <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Consult ID</th>
-                  <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Citizen Details</th>
-                  <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Session Time</th>
-                  <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Clinical Diagnosis</th>
-                  <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Consult Mode</th>
-                  <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider text-right">Action</th>
+                <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500">
+                  <th className="px-6 py-4 font-black uppercase tracking-wider text-[11px]">Consult ID</th>
+                  <th className="px-6 py-4 font-black uppercase tracking-wider text-[11px]">Citizen Details</th>
+                  <th className="px-6 py-4 font-black uppercase tracking-wider text-[11px]">Session Time</th>
+                  <th className="px-6 py-4 font-black uppercase tracking-wider text-[11px]">Clinical Diagnosis</th>
+                  <th className="px-6 py-4 font-black uppercase tracking-wider text-[11px]">Consult Mode</th>
+                  <th className="px-6 py-4 font-black uppercase tracking-wider text-[11px] text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {filteredHistory.map(record => (
                   <tr key={record._id || record.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="px-6 py-5">
-                      <span className="font-mono text-xs font-black text-amber-950 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-300 shadow-2xs">
+                    <td className="px-6 py-4">
+                      <span className="font-mono text-xs font-black text-teal-950 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200 shadow-2xs">
                         {record.id}
                       </span>
                     </td>
-                    <td className="px-6 py-5">
-                      <span className="text-sm font-extrabold text-slate-900 block">{record.patient}</span>
-                      <span className="text-xs text-slate-500 font-semibold">{record.facility} • <span className="font-mono text-amber-900">{record.abha}</span></span>
+                    <td className="px-6 py-4">
+                      <span className="text-sm font-black text-slate-900 block leading-snug">{record.patient}</span>
+                      <span className="text-xs text-slate-500 font-semibold">{record.facility} • <span className="font-mono text-teal-800 font-bold">{record.abha}</span></span>
                     </td>
-                    <td className="px-6 py-5">
-                      <span className="text-sm font-extrabold text-slate-800 block">{record.date}</span>
-                      <span className="text-xs text-slate-500 font-semibold">{record.time}</span>
+                    <td className="px-6 py-4">
+                      <span className="text-xs font-bold text-slate-800 block">{record.date}</span>
+                      <span className="text-[11px] text-slate-400 font-mono">{record.time}</span>
                     </td>
-                    <td className="px-6 py-5">
+                    <td className="px-6 py-4">
                       <span className="text-xs font-bold text-slate-900 max-w-xs block leading-snug">{record.diagnosis}</span>
                     </td>
-                    <td className="px-6 py-5">
+                    <td className="px-6 py-4">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black border ${
                         record.type === 'Tele-Consult' 
-                          ? 'bg-amber-100 text-amber-950 border-amber-300' 
-                          : 'bg-sky-100 text-sky-900 border-sky-300'
+                          ? 'bg-teal-50 text-teal-950 border-teal-200' 
+                          : 'bg-sky-50 text-sky-900 border-sky-200'
                       }`}>
-                        <span className="material-symbols-outlined text-[16px]">
+                        <span className="material-symbols-outlined text-[15px]">
                           {record.type === 'Tele-Consult' ? 'videocam' : 'local_hospital'}
                         </span>
-                        {record.type}
+                        <span>{record.type}</span>
                       </span>
                     </td>
-                    <td className="px-6 py-5 text-right">
+                    <td className="px-6 py-4 text-right">
                       <button 
                         type="button"
                         onClick={() => setSelectedRecord(record)}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 border-2 border-slate-300 hover:border-amber-400 bg-white hover:bg-amber-50 text-slate-800 hover:text-amber-900 rounded-xl font-extrabold text-xs transition-all shadow-xs cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-slate-200 hover:border-teal-300 bg-white hover:bg-slate-50 text-slate-800 hover:text-teal-900 rounded-xl font-bold text-xs transition-all shadow-2xs cursor-pointer"
                       >
-                        <span className="material-symbols-outlined text-[16px] text-amber-600">visibility</span>
+                        <span className="material-symbols-outlined text-[15px] text-teal-600">visibility</span>
                         <span>Summary</span>
                       </button>
                     </td>
@@ -363,16 +368,16 @@ export default function ConsultationHistory() {
 
       {/* MODAL: VIEW CONSULTATION DOSSIER & RX */}
       {selectedRecord && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-white w-full max-w-2xl rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-white w-full max-w-2xl rounded-3xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 bg-gradient-to-r from-slate-900 to-teal-950 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[24px]">description</span>
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase font-black tracking-wider text-amber-300 block">National Tele-Consultation Mission</span>
-                  <h3 className="text-lg font-black text-white font-heading">Consultation Dossier — {selectedRecord.id}</h3>
+                  <span className="text-[10px] uppercase font-black tracking-wider text-teal-300 block">National Tele-Consultation Mission</span>
+                  <h3 className="text-base font-black text-white font-heading">Consultation Dossier — {selectedRecord.id}</h3>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -382,40 +387,40 @@ export default function ConsultationHistory() {
                   className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[16px]">print</span>
-                  Print
+                  <span>Print</span>
                 </button>
                 <button 
                   onClick={() => setSelectedRecord(null)} 
-                  className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 transition-colors cursor-pointer shadow-sm"
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
                   title="Close"
                 >
-                  <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+                  <span className="material-symbols-outlined text-[18px]">close</span>
                 </button>
               </div>
             </div>
 
             <div className="p-6 overflow-y-auto space-y-4 text-xs">
-              <div className="bg-amber-50/80 p-4 rounded-2xl border border-amber-300 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">Citizen Name</span>
-                  <strong className="text-slate-900 font-black">{selectedRecord.patientName || selectedRecord.patient}</strong>
+                  <span className="text-[10px] text-slate-400 font-black uppercase block">Citizen Name</span>
+                  <strong className="text-slate-900 font-black text-sm">{selectedRecord.patientName || selectedRecord.patient}</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">ABHA Number</span>
-                  <strong className="font-mono text-amber-950 font-black">{selectedRecord.abha}</strong>
+                  <span className="text-[10px] text-slate-400 font-black uppercase block">ABHA Number</span>
+                  <strong className="font-mono text-teal-900 font-bold">{selectedRecord.abha}</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">Facility Mode</span>
-                  <strong className="text-slate-900 font-black">{selectedRecord.facility} ({selectedRecord.type})</strong>
+                  <span className="text-[10px] text-slate-400 font-black uppercase block">Facility Mode</span>
+                  <strong className="text-slate-900 font-bold">{selectedRecord.facility} ({selectedRecord.type})</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">Consult Date</span>
-                  <strong className="text-slate-900 font-black">{selectedRecord.date} • {selectedRecord.time}</strong>
+                  <span className="text-[10px] text-slate-400 font-black uppercase block">Consult Date</span>
+                  <strong className="text-slate-900 font-bold">{selectedRecord.date} • {selectedRecord.time}</strong>
                 </div>
               </div>
 
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                <span className="text-[10px] uppercase font-black text-slate-500 block mb-1">Clinical Diagnosis &amp; Symptoms</span>
+              <div className="p-4 bg-slate-50/80 rounded-2xl border border-slate-200">
+                <span className="text-[10px] uppercase font-black text-slate-400 block mb-1">Clinical Diagnosis &amp; Symptoms</span>
                 <p className="text-xs font-black text-slate-900">{selectedRecord.diagnosis}</p>
               </div>
 
@@ -427,20 +432,20 @@ export default function ConsultationHistory() {
                     <table className="w-full text-left border-collapse text-xs">
                       <thead>
                         <tr className="bg-slate-100 text-slate-700 border-b border-slate-200">
-                          <th className="px-3.5 py-2 font-black">Medicine Formulation</th>
-                          <th className="px-3.5 py-2 font-black">Dosage</th>
-                          <th className="px-3.5 py-2 font-black">Duration</th>
-                          <th className="px-3.5 py-2 font-black text-right">Generic Type</th>
+                          <th className="px-3.5 py-2 font-black text-[11px]">Medicine Formulation</th>
+                          <th className="px-3.5 py-2 font-black text-[11px]">Dosage</th>
+                          <th className="px-3.5 py-2 font-black text-[11px]">Duration</th>
+                          <th className="px-3.5 py-2 font-black text-[11px] text-right">Generic Type</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
                         {selectedRecord.medicines.map((m, i) => (
                           <tr key={i} className="hover:bg-slate-50">
-                            <td className="px-3.5 py-2 font-extrabold text-slate-900">{m.name}</td>
-                            <td className="px-3.5 py-2 font-bold text-amber-950">{m.dosage || '1 tab OD'}</td>
+                            <td className="px-3.5 py-2 font-black text-slate-900">{m.name}</td>
+                            <td className="px-3.5 py-2 font-bold text-teal-900">{m.dosage || '1 tab OD'}</td>
                             <td className="px-3.5 py-2 text-slate-600">{m.duration || '5 Days'}</td>
                             <td className="px-3.5 py-2 text-right">
-                              <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-black px-2 py-0.5 rounded">
+                              <span className="bg-emerald-50 text-emerald-900 border border-emerald-300 text-[10px] font-black px-2 py-0.5 rounded">
                                 Jan Aushadhi
                               </span>
                             </td>
@@ -455,13 +460,13 @@ export default function ConsultationHistory() {
               </div>
 
               {selectedRecord.clinicalNotes && (
-                <div className="p-4 bg-amber-50/60 rounded-2xl border border-amber-200">
-                  <span className="text-[10px] uppercase font-black text-amber-900 block mb-1">Doctor Advice &amp; Diet Plan</span>
+                <div className="p-4 bg-teal-50/60 rounded-2xl border border-teal-200">
+                  <span className="text-[10px] uppercase font-black text-teal-900 block mb-1">Doctor Advice &amp; Diet Plan</span>
                   <p className="text-xs text-slate-800 font-medium">{selectedRecord.clinicalNotes}</p>
                 </div>
               )}
 
-              <div className="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <div className="flex items-center justify-between p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-emerald-600 text-[22px]">verified</span>
                   <div>
@@ -469,7 +474,7 @@ export default function ConsultationHistory() {
                     <span className="text-slate-500 text-[11px]">{user?.name || 'Dr. Rajesh Sharma, MD (Reg: MCI-84920)'}</span>
                   </div>
                 </div>
-                <span className="font-mono text-[10px] text-slate-400 font-black">E-SANJEEVANI-VALID</span>
+                <span className="font-mono text-[10px] text-teal-700 font-black">E-SANJEEVANI-VALID</span>
               </div>
             </div>
 
@@ -477,7 +482,7 @@ export default function ConsultationHistory() {
               <button
                 type="button"
                 onClick={() => setSelectedRecord(null)}
-                className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black transition-colors cursor-pointer"
+                className="px-6 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black transition-colors cursor-pointer"
               >
                 Close Summary
               </button>
@@ -485,32 +490,6 @@ export default function ConsultationHistory() {
           </div>
         </div>
       )}
-
-      {/* FOOTER */}
-      <footer className="w-full bg-white border-t border-slate-200 mt-12">
-        <div className="w-full px-6 lg:px-12 xl:px-16 py-8">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="md:col-span-2 flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-amber-600 text-[28px]">verified</span>
-                <span className="text-lg text-slate-900 font-extrabold">Ministry of Health &amp; Family Welfare</span>
-              </div>
-              <p className="text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
-                <span className="notranslate" translate="no">SehatSaarthi</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
-              </p>
-            </div>
-            <div className="flex flex-col gap-1.5 justify-center md:items-end">
-              <span className="text-xs text-slate-500 uppercase font-extrabold tracking-wider">National Emergency Helplines</span>
-              <span className="text-xl font-black text-rose-700">Toll-Free 1075 / 108</span>
-              <span className="text-xs text-slate-500 font-semibold">24x7 Tele-Consult &amp; Ambulance Dispatch</span>
-            </div>
-          </div>
-          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-medium">
-            <p>© 2026 Government Public Healthcare Infrastructure. All citizen rights reserved.</p>
-            <p className="text-amber-900 font-bold">Radical Clarity &amp; Rural Accessibility Compliant</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

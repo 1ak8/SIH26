@@ -102,12 +102,10 @@ export default function LanguageSelector() {
     const hostname = window.location.hostname;
 
     if (code === 'en') {
-      // Clear cookies for English
       document.cookie = `googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
       document.cookie = `googtrans=; path=/; domain=${hostname}; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
       document.cookie = `googtrans=; path=/; domain=.${hostname}; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
     } else {
-      // Set cookies
       const cookieVal = `/en/${googleCode}`;
       document.cookie = `googtrans=${cookieVal}; path=/;`;
       document.cookie = `googtrans=${cookieVal}; path=/; domain=${hostname};`;
@@ -116,7 +114,6 @@ export default function LanguageSelector() {
       document.cookie = `googtrans=/auto/${googleCode}; path=/; domain=${hostname};`;
     }
 
-    // Trigger Google Translate Select Combo
     const applyToCombo = () => {
       const select = document.querySelector('.goog-te-combo');
       if (select) {
@@ -156,13 +153,13 @@ export default function LanguageSelector() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-9 sm:h-10 px-2.5 sm:px-3.5 flex items-center gap-1.5 sm:gap-2 bg-white border-2 border-slate-200 hover:border-amber-400 rounded-xl text-slate-800 text-xs font-extrabold hover:bg-slate-50 transition-all shadow-xs shrink-0 cursor-pointer whitespace-nowrap"
+        className="h-9 sm:h-10 px-2.5 sm:px-3.5 flex items-center gap-1.5 sm:gap-2 bg-white/90 border border-slate-200/90 hover:border-teal-500 rounded-xl text-slate-800 text-xs font-black hover:bg-teal-50/50 transition-all shadow-2xs shrink-0 cursor-pointer whitespace-nowrap active:scale-98"
         title="Select Language / भाषा चुनें (22 Indian Languages)"
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
-        <span className="material-symbols-outlined text-amber-600 text-[18px]">translate</span>
-        <span className="font-extrabold text-slate-900">{currentLang.native}</span>
+        <span className="material-symbols-outlined text-teal-600 text-[18px]">translate</span>
+        <span className="font-black text-slate-900">{currentLang.native}</span>
         <span className="material-symbols-outlined text-slate-400 text-[16px] transition-transform duration-200 shrink-0" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
           arrow_drop_down
         </span>
@@ -170,16 +167,16 @@ export default function LanguageSelector() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 max-w-[calc(100vw-24px)] bg-white border-2 border-amber-400 rounded-2xl sm:rounded-3xl shadow-2xl z-[9999] p-3 animate-fadeIn flex flex-col max-h-[420px] sm:max-h-[460px] overflow-hidden drop-shadow-2xl">
+        <div className="absolute right-0 top-full mt-2 w-72 sm:w-84 max-w-[calc(100vw-24px)] bg-white/95 backdrop-blur-xl border border-slate-200 rounded-3xl shadow-2xl z-[9999] p-3 animate-fadeIn flex flex-col max-h-[420px] sm:max-h-[460px] overflow-hidden">
           {/* Header */}
           <div className="pb-3 border-b border-slate-100 px-2 pt-1">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-amber-600 text-[18px]">language</span>
+                <span className="material-symbols-outlined text-teal-600 text-[18px]">language</span>
                 <span className="text-xs uppercase font-black text-slate-900 tracking-wider">Select Language</span>
               </div>
-              <span className="text-[10px] font-extrabold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full border border-amber-300">
-                22 Indian Languages
+              <span className="text-[10px] font-black bg-teal-50 text-teal-900 px-2.5 py-0.5 rounded-full border border-teal-200">
+                22 Languages
               </span>
             </div>
 
@@ -191,7 +188,7 @@ export default function LanguageSelector() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search language / भाषा खोजें..."
-                className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl text-xs font-semibold outline-none transition-colors"
+                className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 focus:bg-white focus:border-teal-600 rounded-xl text-xs font-bold outline-none transition-all shadow-2xs"
                 autoFocus
               />
             </div>
@@ -206,31 +203,31 @@ export default function LanguageSelector() {
                   key={l.code}
                   type="button"
                   onClick={() => handleSelectLanguage(l.code)}
-                  className={`w-full px-3 py-2.5 flex items-center justify-between text-left rounded-xl transition-all ${
+                  className={`w-full px-3 py-2.5 flex items-center justify-between text-left rounded-xl transition-all cursor-pointer ${
                     isSelected 
-                      ? 'bg-amber-100/80 text-amber-950 font-black' 
-                      : 'hover:bg-amber-50/60 text-slate-700'
+                      ? 'bg-teal-50 text-teal-950 font-black' 
+                      : 'hover:bg-slate-50 text-slate-700'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 border ${
-                      isSelected ? 'bg-amber-600 text-white border-amber-600 shadow-xs' : 'bg-slate-100 text-slate-600 border-slate-200'
+                      isSelected ? 'bg-teal-700 text-white border-teal-700 shadow-2xs' : 'bg-slate-100 text-slate-600 border-slate-200'
                     }`}>
                       {l.code.toUpperCase().slice(0, 2)}
                     </span>
                     <div>
-                      <span className="text-sm font-extrabold block leading-tight">{l.native}</span>
+                      <span className="text-sm font-black block leading-tight">{l.native}</span>
                       <span className="text-[11px] text-slate-500 block leading-tight">{l.name} • {l.region}</span>
                     </div>
                   </div>
                   {isSelected && (
-                    <span className="material-symbols-outlined text-amber-700 text-[18px]">check_circle</span>
+                    <span className="material-symbols-outlined text-teal-700 text-[18px]">check_circle</span>
                   )}
                 </button>
               );
             })}
             {filteredLanguages.length === 0 && (
-              <div className="py-6 text-center text-xs text-slate-500">
+              <div className="py-6 text-center text-xs text-slate-500 font-medium">
                 No language found matching "{search}".
               </div>
             )}

@@ -68,14 +68,14 @@ export default function MedicineHistory() {
 
   const handleDownloadPDF = (rx) => {
     const medicinesHTML = rx.medicines.map((m, i) => `
-      <tr style="border-bottom:1px solid #e5e7eb;">
-        <td style="padding:10px 8px;font-weight:700;color:#111c2d;">${i + 1}</td>
-        <td style="padding:10px 8px;font-weight:800;color:#111c2d;">${m.name}</td>
+      <tr style="border-bottom:1px solid #e2e8f0;">
+        <td style="padding:10px 8px;font-weight:700;color:#0f172a;">${i + 1}</td>
+        <td style="padding:10px 8px;font-weight:800;color:#0f172a;">${m.name}</td>
         <td style="padding:10px 8px;color:#475569;">${m.generic || m.name}</td>
         <td style="padding:10px 8px;color:#475569;">${m.dosage}</td>
         <td style="padding:10px 8px;color:#475569;">${m.frequency}</td>
         <td style="padding:10px 8px;color:#475569;">${m.duration}</td>
-        <td style="padding:10px 8px;font-weight:800;color:#92400e;">${m.janAushadhiCode || 'N/A'}</td>
+        <td style="padding:10px 8px;font-weight:800;color:#0f766e;">${m.janAushadhiCode || 'N/A'}</td>
       </tr>
     `).join('');
 
@@ -87,28 +87,28 @@ export default function MedicineHistory() {
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
           * { margin: 0; padding: 0; box-sizing: border-box; }
-          body { font-family: 'Plus Jakarta Sans', sans-serif; color: #111c2d; padding: 40px; background: #fff; }
-          .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #f59e0b; padding-bottom: 20px; margin-bottom: 24px; }
-          .brand h1 { font-size: 22px; font-weight: 800; color: #111c2d; }
+          body { font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; padding: 40px; background: #fff; }
+          .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0d9488; padding-bottom: 20px; margin-bottom: 24px; }
+          .brand h1 { font-size: 22px; font-weight: 800; color: #0f172a; }
           .brand p { font-size: 12px; color: #64748b; margin-top: 2px; }
           .logo { text-align: right; }
-          .logo .app-name { font-size: 18px; font-weight: 800; color: #d97706; }
+          .logo .app-name { font-size: 18px; font-weight: 800; color: #0d9488; }
           .logo .sub { font-size: 10px; color: #94a3b8; }
-          .rx-header { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-          .rx-header .rx-id { font-size: 14px; font-weight: 800; color: #92400e; }
-          .rx-header .rx-date { font-size: 12px; color: #78716c; }
-          .rx-header .rx-status { font-size: 11px; font-weight: 800; background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 20px; border: 1px solid #fde68a; }
+          .rx-header { background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+          .rx-header .rx-id { font-size: 14px; font-weight: 800; color: #0f766e; }
+          .rx-header .rx-date { font-size: 12px; color: #475569; }
+          .rx-header .rx-status { font-size: 11px; font-weight: 800; background: #ccfbf1; color: #0f766e; padding: 4px 12px; border-radius: 20px; border: 1px solid #99f6e4; }
           .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
           .info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 16px; }
           .info-box label { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.05em; display: block; margin-bottom: 4px; }
-          .info-box span { font-size: 13px; font-weight: 700; color: #111c2d; }
+          .info-box span { font-size: 13px; font-weight: 700; color: #0f172a; }
           table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-          th { background: #111c2d; color: #fbbf24; font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 10px 8px; text-align: left; letter-spacing: 0.05em; }
-          .notes { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
-          .notes h4 { font-size: 12px; font-weight: 800; color: #92400e; margin-bottom: 6px; }
-          .notes p { font-size: 12px; color: #78716c; line-height: 1.6; }
+          th { background: #0f172a; color: #5eead4; font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 10px 8px; text-align: left; letter-spacing: 0.05em; }
+          .notes { background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+          .notes h4 { font-size: 12px; font-weight: 800; color: #0f766e; margin-bottom: 6px; }
+          .notes p { font-size: 12px; color: #475569; line-height: 1.6; }
           .footer { border-top: 2px solid #e2e8f0; padding-top: 16px; display: flex; justify-content: space-between; align-items: center; }
-          .footer .signed { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #16a34a; }
+          .footer .signed { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #0d9488; }
           .footer .disclaimer { font-size: 9px; color: #94a3b8; max-width: 300px; text-align: right; line-height: 1.4; }
           @media print { body { padding: 20px; } }
         </style>
@@ -135,8 +135,8 @@ export default function MedicineHistory() {
 
         <div class="info-grid">
           <div class="info-box">
-            <label>Patient Name</label>
-            <span>${prescriptions.length > 0 ? 'Patient' : 'N/A'}</span>
+            <label>Citizen Record</label>
+            <span>Verified Citizen</span>
           </div>
           <div class="info-box">
             <label>Diagnosis</label>
@@ -202,55 +202,57 @@ export default function MedicineHistory() {
   };
 
   return (
-    <div className="bg-[#fbfaf7] text-slate-900 font-sans min-h-screen">
+    <div className="bg-slate-50 text-slate-900 font-sans min-h-screen selection:bg-teal-100 selection:text-teal-900">
       <PatientNavbar />
 
-      <main className="w-full px-6 lg:px-12 xl:px-16 pt-28 pb-16">
+      <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
         {/* Navigation Breadcrumb */}
-        <div className="mb-6">
+        <div className="mb-5">
           <Link 
             to="/patient" 
-            className="inline-flex items-center gap-2 text-slate-700 hover:text-amber-600 bg-white px-4 py-2 rounded-xl border border-slate-200 text-sm font-bold shadow-xs hover:border-amber-300 transition-all"
+            className="inline-flex items-center gap-2 text-slate-600 hover:text-teal-800 bg-white px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold shadow-2xs hover:border-teal-300 transition-all cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-            Back to Dashboard
+            <span className="material-symbols-outlined text-[17px]">arrow_back</span>
+            <span>Back to Patient Console</span>
           </Link>
         </div>
 
-        {/* Hero Header in Real Amber Theme */}
-        <div className="bg-gradient-to-r from-amber-500/15 via-amber-100/40 to-transparent p-6 sm:p-8 rounded-3xl border-2 border-amber-300 shadow-sm mb-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Hero Header */}
+        <div className="bg-gradient-to-r from-teal-950 via-teal-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-teal-500/30 shadow-xl mb-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-extrabold mb-3 shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-teal-200 text-xs font-black mb-3 shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span>Pradhan Mantri Bhartiya Janaushadhi Pariyojana</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight font-heading">
                 Jan Aushadhi Prescriptions &amp; Refills
               </h1>
-              <p className="text-base text-slate-600 font-medium mt-1 max-w-2xl">
+              <p className="text-xs sm:text-base text-slate-300 font-medium mt-1.5 max-w-2xl leading-relaxed">
                 Access your verified digital prescriptions. Order subsidized or free government generic medicines directly to your nearest village PHC or sub-centre.
               </p>
             </div>
-            <div className="bg-white border-2 border-amber-400 p-4 rounded-2xl shadow-sm text-center shrink-0 self-start md:self-auto">
-              <span className="text-xs uppercase font-extrabold text-amber-800 tracking-wider block">Generic Savings</span>
-              <span className="text-2xl font-black text-amber-950 leading-tight">Up to 80%</span>
-              <span className="text-[11px] text-slate-500 block font-semibold">Subsidized &amp; Certified</span>
+            <div className="bg-white/10 backdrop-blur-md border border-teal-400/30 p-4 rounded-2xl shadow-sm text-center shrink-0 self-start md:self-auto">
+              <span className="text-[10px] uppercase font-black text-teal-300 tracking-wider block">Generic Savings</span>
+              <span className="text-2xl font-black text-white leading-tight font-mono">Up to 80%</span>
+              <span className="text-[10px] text-teal-200 block font-bold">PMBJP Certified</span>
             </div>
           </div>
         </div>
 
         {/* Success Alert */}
         {reorderedId && (
-          <div className="mb-6 p-4 rounded-2xl bg-amber-50 border-2 border-amber-400 text-amber-950 font-extrabold flex items-center justify-between shadow-sm animate-fadeIn">
+          <div className="mb-6 p-4 rounded-2xl bg-teal-50 border border-teal-300 text-teal-950 font-black flex items-center justify-between shadow-xs animate-fadeIn">
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-amber-600 text-[26px]">check_circle</span>
+              <span className="material-symbols-outlined text-teal-700 text-[24px]">check_circle</span>
               <div>
-                <p className="text-sm">Refill request sent to Sitapur Jan Aushadhi Kendra (Sub-Centre Ward 4)!</p>
-                <p className="text-xs text-amber-800 font-medium">Your ASHA worker Sunita Devi will verify medicine availability.</p>
+                <p className="text-xs sm:text-sm">Refill request sent to Sitapur Jan Aushadhi Kendra (Sub-Centre Ward 4)!</p>
+                <p className="text-[11px] text-teal-800 font-medium">Your ASHA worker Sunita Devi will verify medicine availability.</p>
               </div>
             </div>
-            <span className="text-xs bg-amber-200/90 text-amber-900 font-black px-3 py-1 rounded-lg">Refill #ORD-2819</span>
+            <span className="text-xs bg-teal-200 text-teal-900 font-black px-3 py-1 rounded-xl">Refill #ORD-2819</span>
           </div>
         )}
 
@@ -259,67 +261,67 @@ export default function MedicineHistory() {
           {prescriptions.map((rx) => (
             <div 
               key={rx.id}
-              className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-slate-200 hover:border-amber-500 hover:shadow-xl transition-all duration-200"
+              className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 hover:border-teal-400 hover:shadow-lg transition-all duration-200"
             >
               {/* Header row */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100">
                 <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center shrink-0 shadow-xs">
-                    <span className="material-symbols-outlined text-[32px]">medication</span>
+                  <div className="w-13 h-13 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0 shadow-2xs">
+                    <span className="material-symbols-outlined text-[30px]">medication</span>
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <span className="text-xs font-black bg-slate-900 text-amber-400 px-3 py-0.5 rounded-full uppercase tracking-wider">{rx.id}</span>
+                      <span className="text-xs font-mono font-black bg-slate-900 text-teal-300 px-3 py-0.5 rounded-full uppercase tracking-wider">{rx.id}</span>
                       <span className="text-xs text-slate-500 font-bold">• {rx.date}</span>
-                      <span className={`text-xs font-extrabold px-3 py-0.5 rounded-full border ${
+                      <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border ${
                         rx.status === 'Active Treatment' 
-                          ? 'bg-amber-50 text-amber-900 border-amber-300' 
+                          ? 'bg-emerald-50 text-emerald-900 border-emerald-300' 
                           : 'bg-slate-100 text-slate-700 border-slate-200'
                       }`}>
                         {rx.status}
                       </span>
                     </div>
-                    <h2 className="text-2xl font-extrabold text-slate-900 leading-snug">{rx.diagnosis}</h2>
-                    <p className="text-sm text-slate-600 font-medium">{rx.doctor} • {rx.facility}</p>
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug">{rx.diagnosis}</h2>
+                    <p className="text-xs text-slate-600 font-medium">{rx.doctor} • {rx.facility}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 self-start sm:self-auto">
                   <button 
                     onClick={() => handleDownloadPDF(rx)}
-                    className="h-11 px-4 rounded-xl border-2 border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs"
+                    className="h-10 px-4 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer active:scale-98"
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-[18px] text-slate-600">download</span>
+                    <span className="material-symbols-outlined text-[17px] text-teal-700">download</span>
                     <span>Download PDF</span>
                   </button>
                   <button 
                     onClick={() => handleReorder(rx.id)}
-                    className="h-11 px-5 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-sm transition-all"
+                    className="h-10 px-5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black flex items-center gap-1.5 shadow-md shadow-teal-700/20 transition-all cursor-pointer active:scale-98"
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-[18px]">local_pharmacy</span>
-                    <span>Re-Order Jan Aushadhi Refill</span>
+                    <span className="material-symbols-outlined text-[17px]">local_pharmacy</span>
+                    <span>Re-Order Refill</span>
                   </button>
                 </div>
               </div>
 
               {/* Medicines Table / List */}
               <div className="py-5">
-                <h3 className="text-xs uppercase font-extrabold text-slate-500 tracking-wider mb-3">Prescribed Generic Medicines</h3>
+                <h3 className="text-[11px] uppercase font-black text-slate-400 tracking-wider mb-3">Prescribed Generic Formulations</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {rx.medicines.map((m, idx) => (
-                    <div key={idx} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col justify-between gap-2">
+                    <div key={idx} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col justify-between gap-2.5">
                       <div>
                         <div className="flex items-start justify-between gap-2 mb-1">
-                          <span className="text-base font-extrabold text-slate-900">{m.name}</span>
-                          <span className="bg-amber-100 text-amber-900 text-[10px] font-black px-2 py-0.5 rounded-full shrink-0 border border-amber-300/60">Generic</span>
+                          <span className="text-sm font-black text-slate-900">{m.name}</span>
+                          <span className="bg-teal-50 text-teal-900 text-[10px] font-black px-2 py-0.5 rounded-full shrink-0 border border-teal-200">Generic</span>
                         </div>
                         <p className="text-xs text-slate-600 font-bold">{m.dosage} • {m.frequency}</p>
                       </div>
                       <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-200">
-                        <span>Duration: <strong className="text-slate-700">{m.duration}</strong></span>
-                        <span className="font-mono text-amber-900 font-extrabold">{m.janAushadhiCode || 'JAS-Govt'}</span>
+                        <span>Duration: <strong className="text-slate-800">{m.duration}</strong></span>
+                        <span className="font-mono text-teal-800 font-black">{m.janAushadhiCode || 'JAS-Govt'}</span>
                       </div>
                     </div>
                   ))}
@@ -327,17 +329,17 @@ export default function MedicineHistory() {
               </div>
 
               {/* Notes & Verification */}
-              <div className="bg-amber-50/50 p-4 rounded-2xl border border-amber-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-700">
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-700">
                 <div className="flex items-start gap-2">
-                  <span className="material-symbols-outlined text-amber-600 text-[18px] shrink-0 mt-0.5">clinical_notes</span>
+                  <span className="material-symbols-outlined text-teal-600 text-[18px] shrink-0 mt-0.5">clinical_notes</span>
                   <div>
-                    <span className="font-extrabold text-slate-900">Doctor's Advice: </span>
+                    <span className="font-black text-slate-900">Doctor's Clinical Advice: </span>
                     <span>{rx.notes}</span>
                   </div>
                 </div>
-                <div className="inline-flex items-center gap-1.5 text-amber-900 font-extrabold shrink-0">
-                  <span className="material-symbols-outlined text-[18px] text-amber-600">verified</span>
-                  <span>Digitally Signed by Ayushman Bharat ID</span>
+                <div className="inline-flex items-center gap-1.5 text-teal-800 font-black shrink-0">
+                  <span className="material-symbols-outlined text-[18px] text-teal-600">verified</span>
+                  <span>Digitally Signed with ABHA Key</span>
                 </div>
               </div>
             </div>

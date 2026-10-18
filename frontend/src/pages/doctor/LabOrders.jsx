@@ -22,12 +22,11 @@ export default function LabOrders() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeModal, setActiveModal] = useState(null); // 'order-modal', 'view-report', 'update-status'
+  const [activeModal, setActiveModal] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
-  // Form State for Ordering Lab Test
   const [orderForm, setOrderForm] = useState({
     patientId: '',
     testName: 'Complete Blood Count (CBC)',
@@ -63,7 +62,6 @@ export default function LabOrders() {
       const res = await api.get('/doctor/patients-list');
       if (res.data?.success && res.data.data?.length > 0) {
         setPatients(res.data.data);
-        // Default to first patient or test patient
         const defaultPat = res.data.data.find(p => p.email === 'patient@test.com') || res.data.data[0];
         if (defaultPat) {
           setOrderForm(prev => ({ ...prev, patientId: defaultPat._id }));
@@ -99,7 +97,7 @@ export default function LabOrders() {
     try {
       const res = await api.post('/doctor/lab-orders', orderForm);
       if (res.data?.success) {
-        showToast(`Diagnostic order ${res.data.data.orderId} assigned & dispatched to Pathology!`);
+        showToast(`Diagnostic order ${res.data.data.orderId} dispatched to Pathology!`);
         setActiveModal(null);
         fetchOrders();
         setOrderForm(prev => ({
@@ -145,7 +143,7 @@ export default function LabOrders() {
     const rows = (report.results || []).map(r => `
       <tr style="border-bottom: 1px solid #e2e8f0;">
         <td style="padding: 10px 12px; font-weight: bold; color: #0f172a;">${r.parameter}</td>
-        <td style="padding: 10px 12px; font-weight: 800; color: #78350f;">${r.value} <span style="font-size: 11px; color: #64748b;">${r.unit || ''}</span></td>
+        <td style="padding: 10px 12px; font-weight: 800; color: #0f766e;">${r.value} <span style="font-size: 11px; color: #64748b;">${r.unit || ''}</span></td>
         <td style="padding: 10px 12px; color: #475569; font-family: monospace;">${r.normalRange || '—'}</td>
         <td style="padding: 10px 12px; text-align: right;">
           <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; ${
@@ -164,24 +162,24 @@ export default function LabOrders() {
           <title>Diagnostic Report - ${report.orderId}</title>
           <style>
             @page { size: A4; margin: 15mm; }
-            body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a; margin: 0; padding: 24px; font-size: 13px; line-height: 1.5; }
-            .header { border-bottom: 3px solid #d97706; padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-            .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #fef3c7; padding: 12px 16px; border-radius: 8px; margin-bottom: 18px; }
+            body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #0f172a; margin: 0; padding: 24px; font-size: 13px; line-height: 1.5; }
+            .header { border-bottom: 3px solid #0d9488; padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+            .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #f0fdfa; padding: 12px 16px; border-radius: 8px; margin-bottom: 18px; border: 1px solid #ccfbf1; }
             table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
             th { background: #f1f5f9; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; color: #475569; letter-spacing: 0.5px; }
-            .summary-box { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; }
+            .summary-box { background: #f0fdf4; border-left: 4px solid #10b981; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; }
             .footer { margin-top: 30px; padding-top: 15px; border-top: 1px solid #cbd5e1; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #64748b; }
           </style>
         </head>
         <body>
           <div class="header">
             <div>
-              <div style="font-size: 10px; font-weight: bold; color: #d97706; letter-spacing: 1px; text-transform: uppercase;">Ministry of Health &amp; Family Welfare</div>
+              <div style="font-size: 10px; font-weight: bold; color: #0f766e; letter-spacing: 1px; text-transform: uppercase;">Ministry of Health &amp; Family Welfare</div>
               <h1 style="margin: 3px 0; font-size: 20px; color: #0f172a;">${report.facility || 'CHC Sitapur Central Pathology Lab'}</h1>
               <div style="font-size: 11px; color: #64748b;">NABL Accredited ISO 15189 • National Digital Health Network</div>
             </div>
             <div style="text-align: right;">
-              <div style="font-size: 18px; font-weight: 900; font-family: monospace; color: #92400e;">${report.orderId}</div>
+              <div style="font-size: 18px; font-weight: 900; font-family: monospace; color: #0f766e;">${report.orderId}</div>
               <div style="font-size: 10px; color: #64748b;">BARCODE VERIFIED</div>
             </div>
           </div>
@@ -258,29 +256,29 @@ export default function LabOrders() {
   const completedCount = orders.filter(o => o.status === 'completed').length;
 
   return (
-    <div className="bg-[#fbfaf7] text-slate-900 font-sans min-h-screen">
+    <div className="bg-slate-50 text-slate-900 font-sans min-h-screen selection:bg-teal-100 selection:text-teal-900">
       <DoctorNavbar />
 
       {/* Toast Banner */}
       {toastMessage && (
-        <div className="fixed top-24 right-6 z-50 bg-slate-900 text-amber-300 px-5 py-3 rounded-2xl shadow-xl border border-amber-400/50 flex items-center gap-3 text-sm font-bold animate-bounce">
-          <span className="material-symbols-outlined text-amber-400">check_circle</span>
+        <div className="fixed top-24 right-6 z-50 bg-slate-900 text-teal-300 px-5 py-3 rounded-2xl shadow-xl border border-teal-500/40 flex items-center gap-3 text-xs font-black animate-fadeIn">
+          <span className="material-symbols-outlined text-teal-400 text-[18px]">check_circle</span>
           <span>{toastMessage}</span>
         </div>
       )}
 
-      <main className="w-full px-6 lg:px-12 xl:px-16 pt-28 pb-16">
+      <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
         {/* Navigation Breadcrumb */}
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-5 flex items-center justify-between">
           <Link 
             to="/doctor" 
-            className="inline-flex items-center gap-2 text-slate-700 hover:text-amber-600 bg-white px-4 py-2 rounded-xl border border-slate-200 text-sm font-bold shadow-xs hover:border-amber-300 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 text-slate-600 hover:text-teal-800 bg-white px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold shadow-2xs hover:border-teal-300 transition-all cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-            Back to Console
+            <span className="material-symbols-outlined text-[17px]">arrow_back</span>
+            <span>Back to Console</span>
           </Link>
 
-          <div className="flex items-center gap-2 text-xs font-black bg-emerald-50 text-emerald-900 border border-emerald-300 px-3.5 py-1.5 rounded-full shadow-2xs">
+          <div className="flex items-center gap-2 text-xs font-black bg-emerald-50 text-emerald-900 border border-emerald-200 px-3.5 py-1.5 rounded-full shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>NABL Pathology Sync • Live</span>
           </div>
@@ -289,13 +287,13 @@ export default function LabOrders() {
         {/* Page Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
-            <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-3xl font-black text-slate-900 tracking-tight font-heading">Diagnostic Lab Orders &amp; Pathology</h1>
-              <span className="bg-amber-100 text-amber-900 text-xs font-black px-2.5 py-0.5 rounded-full border border-amber-300">
-                ICMR Requisitions
-              </span>
+            <div className="flex items-center gap-2.5 mb-1">
+              <div className="w-10 h-10 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center">
+                <span className="material-symbols-outlined text-[22px]">biotech</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Diagnostic Lab Orders &amp; Pathology</h1>
             </div>
-            <p className="text-sm text-slate-600 font-medium">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium">
               Digital lab requisitions for rural citizens processed via accredited district pathology centres and telemedicine kiosks.
             </p>
           </div>
@@ -303,10 +301,10 @@ export default function LabOrders() {
           <div className="flex flex-wrap items-center gap-3">
             <button 
               onClick={() => setActiveModal('order-modal')}
-              className="h-11 px-5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white rounded-xl font-black text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+              className="h-10 px-5 bg-teal-700 hover:bg-teal-800 text-white rounded-xl font-black text-xs flex items-center gap-2 shadow-md shadow-teal-700/20 transition-all cursor-pointer active:scale-98"
             >
-              <span className="material-symbols-outlined text-[18px]">add_circle</span>
-              Order New Lab Test
+              <span className="material-symbols-outlined text-[17px]">add_circle</span>
+              <span>Order New Lab Test</span>
             </button>
           </div>
         </div>
@@ -314,17 +312,17 @@ export default function LabOrders() {
         {/* Search & Filter Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6">
           <div className="relative w-full sm:w-80">
-            <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+            <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[19px]">search</span>
             <input
               type="text"
               placeholder="Search by patient, test name, order ID..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white rounded-2xl border-2 border-slate-200 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-amber-500 shadow-2xs"
+              className="w-full pl-10 pr-4 py-2 bg-white rounded-2xl border border-slate-200 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-teal-600 shadow-2xs"
             />
           </div>
 
-          <div className="flex bg-white rounded-2xl p-1 border-2 border-slate-200 shadow-xs self-stretch sm:self-auto">
+          <div className="flex bg-white rounded-2xl p-1 border border-slate-200 shadow-2xs self-stretch sm:self-auto">
             {[
               { key: 'All', label: `All (${orders.length})` },
               { key: 'Pending', label: `Pending (${pendingCount})` },
@@ -333,9 +331,9 @@ export default function LabOrders() {
               <button
                 key={f.key}
                 onClick={() => setFilter(f.key)}
-                className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                className={`px-4 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                   filter === f.key 
-                    ? 'bg-amber-600 text-white shadow-sm' 
+                    ? 'bg-teal-700 text-white shadow-2xs' 
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
@@ -346,28 +344,28 @@ export default function LabOrders() {
         </div>
 
         {/* Orders Table */}
-        <div className="bg-white border-2 border-slate-200/90 rounded-3xl overflow-hidden shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
           {loading ? (
-            <div className="p-12 text-center text-slate-500 font-bold">
-              <span className="material-symbols-outlined text-4xl text-amber-500 animate-spin block mx-auto mb-2">sync</span>
+            <div className="p-16 text-center text-slate-500 font-bold">
+              <span className="material-symbols-outlined text-4xl text-teal-600 animate-spin block mx-auto mb-2">sync</span>
               Loading diagnostic lab orders from database...
             </div>
           ) : filteredOrders.length === 0 ? (
-            <div className="p-12 text-center text-slate-500">
+            <div className="p-16 text-center text-slate-500">
               <span className="material-symbols-outlined text-4xl text-slate-300 block mx-auto mb-2">biotech</span>
               <p className="font-extrabold text-slate-700">No lab orders found matching criteria</p>
               <p className="text-xs text-slate-400 mt-1">Click "Order New Lab Test" to assign a test to any patient.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-slate-50 border-b-2 border-slate-100">
-                    <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Order ID</th>
-                    <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Citizen Details</th>
-                    <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Requested Test</th>
-                    <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Lab Status</th>
-                    <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider text-right">Action</th>
+                  <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500">
+                    <th className="px-6 py-4 font-black uppercase tracking-wider text-[11px]">Order ID</th>
+                    <th className="px-6 py-4 font-black uppercase tracking-wider text-[11px]">Citizen Details</th>
+                    <th className="px-6 py-4 font-black uppercase tracking-wider text-[11px]">Requested Test</th>
+                    <th className="px-6 py-4 font-black uppercase tracking-wider text-[11px]">Lab Status</th>
+                    <th className="px-6 py-4 font-black uppercase tracking-wider text-[11px] text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -377,9 +375,9 @@ export default function LabOrders() {
                     const dateFormatted = order.dateOrdered ? new Date(order.dateOrdered).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Today';
 
                     return (
-                      <tr key={order._id} className="hover:bg-amber-50/20 transition-colors">
-                        <td className="px-6 py-5">
-                          <span className="font-mono text-xs font-black text-amber-950 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-300 shadow-2xs">
+                      <tr key={order._id} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="px-6 py-4">
+                          <span className="font-mono text-xs font-black text-teal-950 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200 shadow-2xs">
                             {order.orderId || 'LAB-1000'}
                           </span>
                           <span className={`block mt-1 text-[9px] font-black uppercase tracking-wider ${
@@ -390,20 +388,20 @@ export default function LabOrders() {
                           </span>
                         </td>
 
-                        <td className="px-6 py-5">
-                          <span className="text-sm font-black text-slate-900 block">{order.patientName}</span>
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-black text-slate-900 block leading-snug">{order.patientName}</span>
                           <span className="text-xs text-slate-500 font-semibold">{order.facility}</span>
                           {order.patientDetails && (
                             <span className="text-[11px] text-slate-400 block mt-0.5">{order.patientDetails}</span>
                           )}
                         </td>
 
-                        <td className="px-6 py-5">
-                          <span className="text-sm font-extrabold text-slate-800 block">{order.testName}</span>
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-black text-slate-800 block">{order.testName}</span>
                           <div className="flex items-center gap-2 mt-0.5">
                             <span className="text-xs text-slate-500">Ordered: {dateFormatted}</span>
                             {order.fastingRequired && (
-                              <span className="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black px-1.5 py-0.2 rounded">
+                              <span className="bg-amber-50 text-amber-900 border border-amber-200 text-[10px] font-black px-2 py-0.2 rounded">
                                 Fasting Required
                               </span>
                             )}
@@ -413,26 +411,26 @@ export default function LabOrders() {
                           )}
                         </td>
 
-                        <td className="px-6 py-5">
+                        <td className="px-6 py-4">
                           {isCompleted ? (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-black shadow-2xs">
-                              <span className="material-symbols-outlined text-[16px] text-emerald-700">check_circle</span>
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-900 border border-emerald-300 text-xs font-black shadow-2xs">
+                              <span className="material-symbols-outlined text-[15px] text-emerald-700">check_circle</span>
                               Report Available
                             </span>
                           ) : isProcessing ? (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-900 border border-sky-300 text-xs font-black shadow-2xs">
-                              <span className="material-symbols-outlined text-[16px] text-sky-600 animate-spin">sync</span>
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 text-sky-900 border border-sky-300 text-xs font-black shadow-2xs">
+                              <span className="material-symbols-outlined text-[15px] text-sky-600 animate-spin">sync</span>
                               {order.status === 'sample_collected' ? 'Sample Collected' : 'Lab Processing'}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-xs font-black shadow-2xs">
-                              <span className="material-symbols-outlined text-[16px] text-amber-700">schedule</span>
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-300 text-xs font-black shadow-2xs">
+                              <span className="material-symbols-outlined text-[15px] text-amber-700">schedule</span>
                               Pending Sample
                             </span>
                           )}
                         </td>
 
-                        <td className="px-6 py-5 text-right">
+                        <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             {isCompleted ? (
                               <button 
@@ -440,10 +438,10 @@ export default function LabOrders() {
                                   setSelectedOrder(order);
                                   setActiveModal('view-report');
                                 }}
-                                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-black rounded-xl text-xs shadow-xs transition-all cursor-pointer"
+                                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-teal-700 hover:bg-teal-800 text-white font-black rounded-xl text-xs shadow-2xs transition-all cursor-pointer active:scale-98"
                               >
-                                <span className="material-symbols-outlined text-[16px]">description</span>
-                                View Report
+                                <span className="material-symbols-outlined text-[15px]">description</span>
+                                <span>View Report</span>
                               </button>
                             ) : (
                               <>
@@ -452,18 +450,18 @@ export default function LabOrders() {
                                     setSelectedOrder(order);
                                     setActiveModal('update-status');
                                   }}
-                                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-white hover:bg-amber-50 text-amber-900 font-extrabold rounded-xl text-xs border border-amber-300 transition-all cursor-pointer shadow-2xs"
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-800 font-bold rounded-xl text-xs border border-slate-200 transition-all cursor-pointer shadow-2xs"
                                 >
-                                  <span className="material-symbols-outlined text-[15px]">edit_note</span>
-                                  Update Status
+                                  <span className="material-symbols-outlined text-[15px] text-teal-700">edit_note</span>
+                                  <span>Update</span>
                                 </button>
                                 <button 
                                   onClick={() => handleUpdateStatus(order._id, 'completed')}
-                                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-xs transition-all cursor-pointer shadow-2xs"
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-xs transition-all cursor-pointer shadow-2xs active:scale-98"
                                   title="Complete & Auto-Fill Normal Parameters"
                                 >
                                   <span className="material-symbols-outlined text-[15px]">verified</span>
-                                  Complete
+                                  <span>Complete</span>
                                 </button>
                               </>
                             )}
@@ -481,31 +479,28 @@ export default function LabOrders() {
 
       {/* MODAL 1: ORDER NEW LAB TEST */}
       {activeModal === 'order-modal' && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl border-2 border-amber-300 w-full max-w-2xl overflow-hidden shadow-2xl my-8 animate-in fade-in zoom-in-95 duration-150">
-            {/* Modal Header */}
-            <div className="p-6 bg-slate-900 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl border border-slate-200 w-full max-w-2xl overflow-hidden shadow-2xl my-8 animate-fadeIn">
+            <div className="p-6 bg-gradient-to-r from-slate-900 to-teal-950 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center">
                   <span className="material-symbols-outlined text-[22px]">biotech</span>
                 </div>
                 <div>
                   <h3 className="font-heading text-lg font-black text-white">Order Diagnostic Lab Investigation</h3>
-                  <p className="text-xs text-amber-300/80 font-medium">Assign pathology tests directly to citizen profile</p>
+                  <p className="text-xs text-teal-300 font-medium">Assign pathology tests directly to citizen profile</p>
                 </div>
               </div>
               <button 
                 onClick={() => setActiveModal(null)}
-                className="w-9 h-9 rounded-full bg-white hover:bg-slate-100 active:bg-slate-200 text-slate-900 shadow-sm border border-slate-200 flex items-center justify-center transition-all cursor-pointer"
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer"
                 title="Close"
               >
-                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+                <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
             </div>
 
-            {/* Modal Form */}
-            <form onSubmit={handleCreateOrder} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
-              {/* Select Patient */}
+            <form onSubmit={handleCreateOrder} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-xs">
               <div>
                 <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">
                   Select Patient Citizen <span className="text-rose-500">*</span>
@@ -513,7 +508,7 @@ export default function LabOrders() {
                 <select
                   value={orderForm.patientId}
                   onChange={(e) => setOrderForm(prev => ({ ...prev, patientId: e.target.value }))}
-                  className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-teal-600"
                   required
                 >
                   <option value="">-- Choose Patient --</option>
@@ -525,7 +520,6 @@ export default function LabOrders() {
                 </select>
               </div>
 
-              {/* Quick Preset Buttons */}
               <div>
                 <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">
                   Quick Select Investigation Preset:
@@ -538,7 +532,7 @@ export default function LabOrders() {
                       onClick={() => handleTestSelect(t)}
                       className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                         orderForm.testName === t.name 
-                          ? 'bg-amber-100 border-amber-400 text-amber-950 font-black shadow-2xs' 
+                          ? 'bg-teal-50 border-teal-400 text-teal-950 font-black shadow-2xs' 
                           : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold'
                       }`}
                     >
@@ -549,7 +543,6 @@ export default function LabOrders() {
                 </div>
               </div>
 
-              {/* Custom Test Name & Category */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">
@@ -559,7 +552,7 @@ export default function LabOrders() {
                     type="text"
                     value={orderForm.testName}
                     onChange={(e) => setOrderForm(prev => ({ ...prev, testName: e.target.value }))}
-                    className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-teal-600"
                     placeholder="e.g. Complete Blood Count (CBC)"
                     required
                   />
@@ -572,7 +565,7 @@ export default function LabOrders() {
                   <select
                     value={orderForm.category}
                     onChange={(e) => setOrderForm(prev => ({ ...prev, category: e.target.value }))}
-                    className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-teal-600"
                   >
                     <option value="Hematology">Hematology</option>
                     <option value="Biochemistry">Biochemistry</option>
@@ -584,7 +577,6 @@ export default function LabOrders() {
                 </div>
               </div>
 
-              {/* Urgency & Facility */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">
@@ -593,7 +585,7 @@ export default function LabOrders() {
                   <select
                     value={orderForm.urgency}
                     onChange={(e) => setOrderForm(prev => ({ ...prev, urgency: e.target.value }))}
-                    className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-teal-600"
                   >
                     <option value="routine">Routine (Next 24-48 Hours)</option>
                     <option value="urgent">Urgent (Same Day Dispatch)</option>
@@ -608,7 +600,7 @@ export default function LabOrders() {
                   <select
                     value={orderForm.facility}
                     onChange={(e) => setOrderForm(prev => ({ ...prev, facility: e.target.value }))}
-                    className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-teal-600"
                   >
                     <option value="CHC Sitapur Central Pathology Lab">CHC Sitapur Central Pathology Lab</option>
                     <option value="District Hospital Pathology Wing">District Hospital Pathology Wing</option>
@@ -618,16 +610,15 @@ export default function LabOrders() {
                 </div>
               </div>
 
-              {/* Fasting Toggle & Status */}
-              <div className="flex flex-wrap items-center justify-between p-3 bg-amber-50/60 rounded-xl border border-amber-200 gap-2">
+              <div className="flex flex-wrap items-center justify-between p-3 bg-teal-50/60 rounded-xl border border-teal-200 gap-2">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={orderForm.fastingRequired}
                     onChange={(e) => setOrderForm(prev => ({ ...prev, fastingRequired: e.target.checked }))}
-                    className="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500"
+                    className="w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500 accent-teal-600"
                   />
-                  <span className="text-xs font-extrabold text-slate-800">
+                  <span className="text-xs font-bold text-slate-800">
                     Overnight Fasting Required (8-12 hours prior to sample collection)
                   </span>
                 </label>
@@ -637,7 +628,7 @@ export default function LabOrders() {
                   <select
                     value={orderForm.status}
                     onChange={(e) => setOrderForm(prev => ({ ...prev, status: e.target.value }))}
-                    className="text-xs font-bold bg-white border border-amber-300 rounded-lg px-2 py-1"
+                    className="text-xs font-bold bg-white border border-teal-300 rounded-lg px-2 py-1"
                   >
                     <option value="pending">Pending Sample</option>
                     <option value="completed">Completed (With Verified Results)</option>
@@ -645,7 +636,6 @@ export default function LabOrders() {
                 </div>
               </div>
 
-              {/* Clinical Notes */}
               <div>
                 <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">
                   Clinical Indication / Notes for Pathology Team
@@ -655,28 +645,27 @@ export default function LabOrders() {
                   value={orderForm.clinicalNotes}
                   onChange={(e) => setOrderForm(prev => ({ ...prev, clinicalNotes: e.target.value }))}
                   placeholder="e.g. Check for microcytic hypochromic picture and platelet response post fever..."
-                  className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-900 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-900 focus:outline-none focus:border-teal-600 resize-none"
                 ></textarea>
               </div>
 
-              {/* Submit Buttons */}
               <div className="pt-2 flex items-center justify-end gap-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setActiveModal(null)}
-                  className="px-4 py-2.5 rounded-xl border-2 border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-50 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-black shadow-sm transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black shadow-md shadow-teal-700/20 transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50 active:scale-98"
                 >
                   {submitting ? (
                     <>
                       <span className="material-symbols-outlined text-[16px] animate-spin">sync</span>
-                      <span>Assigning to Database...</span>
+                      <span>Assigning Order...</span>
                     </>
                   ) : (
                     <>
@@ -693,17 +682,16 @@ export default function LabOrders() {
 
       {/* MODAL 2: OFFICIAL PATHOLOGY REPORT VIEW */}
       {activeModal === 'view-report' && selectedOrder && (
-        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl border-2 border-amber-300 w-full max-w-3xl overflow-hidden shadow-2xl my-8 animate-in fade-in zoom-in-95 duration-150">
-            {/* Header with Govt / NABL Branding */}
-            <div className="p-6 bg-slate-900 text-white border-b-4 border-amber-500">
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl border border-slate-200 w-full max-w-3xl overflow-hidden shadow-2xl my-8 animate-fadeIn">
+            <div className="p-6 bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 text-white border-b-2 border-teal-500">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/20">
-                    <span className="material-symbols-outlined text-amber-400 text-[28px]">biotech</span>
+                  <div className="w-12 h-12 rounded-2xl bg-teal-600 text-white flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[28px]">biotech</span>
                   </div>
                   <div>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 block">Ministry of Health &amp; Family Welfare</span>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-teal-300 block">Ministry of Health &amp; Family Welfare</span>
                     <h2 className="text-xl font-black tracking-tight font-heading text-white">Central Clinical Pathology Laboratory</h2>
                     <span className="text-xs text-slate-300 font-medium">{selectedOrder.facility} • NABL Accredited ISO 15189</span>
                   </div>
@@ -721,43 +709,41 @@ export default function LabOrders() {
                   <button
                     type="button"
                     onClick={() => setActiveModal(null)}
-                    className="w-9 h-9 rounded-full bg-white hover:bg-slate-100 active:bg-slate-200 text-slate-900 shadow-sm border border-slate-200 flex items-center justify-center transition-all cursor-pointer"
+                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer"
                     title="Close"
                   >
-                    <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+                    <span className="material-symbols-outlined text-[18px]">close</span>
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Patient Meta Strip */}
-            <div className="bg-amber-50/70 px-6 py-4 border-b border-amber-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div>
-                <span className="text-slate-500 font-bold block text-[10px] uppercase">Patient Citizen</span>
+                <span className="text-slate-400 font-bold block text-[10px] uppercase">Patient Citizen</span>
                 <strong className="text-slate-900 text-sm font-black">{selectedOrder.patientName}</strong>
               </div>
               <div>
-                <span className="text-slate-500 font-bold block text-[10px] uppercase">Order / Barcode ID</span>
-                <strong className="font-mono text-amber-950 font-black">{selectedOrder.orderId}</strong>
+                <span className="text-slate-400 font-bold block text-[10px] uppercase">Order / Barcode ID</span>
+                <strong className="font-mono text-teal-900 font-black">{selectedOrder.orderId}</strong>
               </div>
               <div>
-                <span className="text-slate-500 font-bold block text-[10px] uppercase">Referring Doctor</span>
-                <strong className="text-slate-900 font-extrabold">{selectedOrder.doctorName}</strong>
+                <span className="text-slate-400 font-bold block text-[10px] uppercase">Referring Doctor</span>
+                <strong className="text-slate-900 font-bold">{selectedOrder.doctorName}</strong>
               </div>
               <div>
-                <span className="text-slate-500 font-bold block text-[10px] uppercase">Completed Date</span>
-                <strong className="text-slate-900 font-extrabold">
+                <span className="text-slate-400 font-bold block text-[10px] uppercase">Completed Date</span>
+                <strong className="text-slate-900 font-bold">
                   {selectedOrder.completedAt ? new Date(selectedOrder.completedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Verified Today'}
                 </strong>
               </div>
             </div>
 
-            {/* Report Content */}
             <div className="p-6 max-h-[60vh] overflow-y-auto">
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-heading text-lg font-black text-slate-900">{selectedOrder.testName}</h3>
-                  <span className="text-xs font-black text-amber-900 bg-amber-100 px-3 py-0.5 rounded-full border border-amber-300">
+                  <span className="text-xs font-black text-teal-900 bg-teal-50 px-3 py-0.5 rounded-full border border-teal-200">
                     {selectedOrder.category}
                   </span>
                 </div>
@@ -768,31 +754,30 @@ export default function LabOrders() {
                 )}
               </div>
 
-              {/* Results Table */}
               {selectedOrder.results && selectedOrder.results.length > 0 ? (
                 <div className="border border-slate-200 rounded-2xl overflow-hidden mb-5">
                   <table className="w-full text-left border-collapse text-xs">
                     <thead>
                       <tr className="bg-slate-100 text-slate-600 border-b border-slate-200">
-                        <th className="px-4 py-2.5 font-black uppercase">Investigation Parameter</th>
-                        <th className="px-4 py-2.5 font-black uppercase">Observed Value</th>
-                        <th className="px-4 py-2.5 font-black uppercase">Reference Range</th>
-                        <th className="px-4 py-2.5 font-black uppercase text-right">Interpretation</th>
+                        <th className="px-4 py-2.5 font-black uppercase text-[11px]">Investigation Parameter</th>
+                        <th className="px-4 py-2.5 font-black uppercase text-[11px]">Observed Value</th>
+                        <th className="px-4 py-2.5 font-black uppercase text-[11px]">Reference Range</th>
+                        <th className="px-4 py-2.5 font-black uppercase text-[11px] text-right">Interpretation</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {selectedOrder.results.map((res, i) => (
-                        <tr key={i} className="hover:bg-slate-50/60">
-                          <td className="px-4 py-2.5 font-extrabold text-slate-900">{res.parameter}</td>
-                          <td className="px-4 py-2.5 font-black text-amber-950">
+                        <tr key={i} className="hover:bg-slate-50">
+                          <td className="px-4 py-2.5 font-black text-slate-900">{res.parameter}</td>
+                          <td className="px-4 py-2.5 font-black text-teal-900">
                             {res.value} <span className="text-slate-500 font-semibold">{res.unit}</span>
                           </td>
-                          <td className="px-4 py-2.5 text-slate-600 font-mono">{res.normalRange}</td>
+                          <td className="px-4 py-2.5 text-slate-600 font-mono text-xs">{res.normalRange}</td>
                           <td className="px-4 py-2.5 text-right">
-                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-black ${
-                              res.flag === 'High' ? 'bg-rose-100 text-rose-900 border border-rose-300' :
-                              res.flag === 'Low' ? 'bg-amber-100 text-amber-900 border border-amber-300' :
-                              'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${
+                              res.flag === 'High' ? 'bg-rose-50 text-rose-900 border-rose-300' :
+                              res.flag === 'Low' ? 'bg-amber-50 text-amber-900 border-amber-300' :
+                              'bg-emerald-50 text-emerald-900 border-emerald-300'
                             }`}>
                               {res.flag || 'Normal'}
                             </span>
@@ -804,22 +789,20 @@ export default function LabOrders() {
                 </div>
               ) : (
                 <div className="p-6 text-center text-slate-500 bg-slate-50 rounded-2xl border border-slate-200 mb-5">
-                  <span className="material-symbols-outlined text-3xl text-amber-600 animate-spin mb-1">sync</span>
+                  <span className="material-symbols-outlined text-3xl text-teal-600 animate-spin mb-1">sync</span>
                   <p className="font-bold text-xs">Test sample currently undergoing centrifugation &amp; automated assay.</p>
                 </div>
               )}
 
-              {/* Summary / Pathologist Remarks */}
               {selectedOrder.summary && (
-                <div className="bg-emerald-50/60 border border-emerald-200 p-4 rounded-2xl mb-4">
+                <div className="bg-emerald-50/70 border border-emerald-200 p-4 rounded-2xl mb-4 text-xs">
                   <span className="text-[11px] font-black uppercase tracking-wider text-emerald-900 block mb-1">
                     Pathologist Clinical Impression &amp; Findings:
                   </span>
-                  <p className="text-xs text-slate-800 font-medium leading-relaxed">{selectedOrder.summary}</p>
+                  <p className="text-slate-800 font-medium leading-relaxed">{selectedOrder.summary}</p>
                 </div>
               )}
 
-              {/* Digital Signature & Verification Box */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200 text-xs">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-emerald-600 text-[24px]">verified</span>
@@ -851,10 +834,10 @@ export default function LabOrders() {
 
       {/* MODAL 3: UPDATE STATUS */}
       {activeModal === 'update-status' && selectedOrder && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border-2 border-amber-300 w-full max-w-md p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
-            <h3 className="text-lg font-black text-slate-900 mb-1">Update Diagnostic Status</h3>
-            <p className="text-xs text-slate-500 mb-4 font-medium">Order: <strong className="text-slate-900">{selectedOrder.orderId}</strong> — {selectedOrder.testName}</p>
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl border border-slate-200 w-full max-w-md p-6 shadow-2xl animate-fadeIn">
+            <h3 className="text-lg font-black text-slate-900 mb-1 font-heading">Update Diagnostic Status</h3>
+            <p className="text-xs text-slate-500 mb-4 font-medium">Order: <strong className="text-slate-900 font-mono">{selectedOrder.orderId}</strong> — {selectedOrder.testName}</p>
 
             <div className="space-y-2 mb-6">
               {[
@@ -869,16 +852,16 @@ export default function LabOrders() {
                   onClick={() => handleUpdateStatus(selectedOrder._id, s.key)}
                   className={`w-full p-3 rounded-2xl border text-left flex items-start justify-between gap-3 transition-all cursor-pointer ${
                     selectedOrder.status === s.key 
-                      ? 'bg-amber-100 border-amber-400 text-amber-950 font-black' 
+                      ? 'bg-teal-50 border-teal-400 text-teal-950 font-black' 
                       : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800 font-semibold'
                   }`}
                 >
                   <div>
-                    <span className="text-xs block font-extrabold">{s.label}</span>
+                    <span className="text-xs block font-bold">{s.label}</span>
                     <span className="text-[10px] text-slate-500 block">{s.desc}</span>
                   </div>
                   {selectedOrder.status === s.key && (
-                    <span className="material-symbols-outlined text-amber-700 text-[18px]">check_circle</span>
+                    <span className="material-symbols-outlined text-teal-700 text-[18px]">check_circle</span>
                   )}
                 </button>
               ))}
@@ -888,7 +871,7 @@ export default function LabOrders() {
               <button
                 type="button"
                 onClick={() => setActiveModal(null)}
-                className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900"
+                className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 cursor-pointer"
               >
                 Cancel
               </button>
@@ -896,28 +879,6 @@ export default function LabOrders() {
           </div>
         </div>
       )}
-
-      {/* FOOTER */}
-      <footer className="w-full bg-white border-t border-slate-200 mt-12">
-        <div className="w-full px-6 lg:px-12 xl:px-16 py-8">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="md:col-span-2 flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-amber-600 text-[28px]">verified</span>
-                <span className="text-lg text-slate-900 font-extrabold">Ministry of Health &amp; Family Welfare</span>
-              </div>
-              <p className="text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
-                <span className="notranslate" translate="no">SehatSaarthi</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
-              </p>
-            </div>
-            <div className="flex flex-col gap-1.5 justify-center md:items-end">
-              <span className="text-xs text-slate-500 uppercase font-extrabold tracking-wider">National Emergency Helplines</span>
-              <span className="text-xl font-black text-rose-700">Toll-Free 1075 / 108</span>
-              <span className="text-xs text-slate-500 font-semibold">24x7 Tele-Consult &amp; Ambulance Dispatch</span>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

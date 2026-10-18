@@ -1,52 +1,72 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import LanguageSelector from './LanguageSelector';
 
 export default function TopNav() {
   const { user, notifications } = useAuth();
   const [showNotif, setShowNotif] = useState(false);
 
   return (
-    <header className="fixed top-0 left-72 right-0 h-16 bg-white/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-30 flex items-center justify-between px-6">
+    <header className="fixed top-0 left-72 right-0 h-[72px] bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs z-30 flex items-center justify-between px-6">
       <div className="flex-1 max-w-xl">
-        <div className="relative flex items-center w-full">
-          <span className="material-symbols-outlined absolute left-3 text-outline pointer-events-none text-xl">search</span>
-          <input className="w-full pl-10 pr-4 py-2 rounded-xl bg-surface-container-low text-on-surface placeholder:text-outline text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-            placeholder="Search doctors, reports, health records..." type="text" />
+        <div className="relative flex items-center w-full group">
+          <span className="material-symbols-outlined absolute left-3.5 text-slate-400 group-focus-within:text-teal-600 pointer-events-none text-xl transition-colors">search</span>
+          <input 
+            className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 text-xs font-semibold focus:outline-none focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 transition-all"
+            placeholder="Search citizens, vitals, prescriptions, health centres..." 
+            type="text" 
+          />
         </div>
       </div>
-      <div className="flex items-center gap-4 relative">
-        <button onClick={() => setShowNotif(!showNotif)} className="relative p-2 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-colors">
-          <span className="material-symbols-outlined text-xl">notifications</span>
+
+      <div className="flex items-center gap-3 relative">
+        <LanguageSelector />
+
+        {/* Notifications */}
+        <button 
+          onClick={() => setShowNotif(!showNotif)} 
+          className="relative p-2.5 rounded-xl bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-600 transition-colors cursor-pointer border border-slate-200"
+          title="Notifications"
+        >
+          <span className="material-symbols-outlined text-[20px]">notifications</span>
           {notifications.length > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-error rounded-full ring-2 ring-white" />
+            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-white animate-pulse" />
           )}
         </button>
+
         {showNotif && (
-          <div className="absolute top-12 right-0 w-80 bg-white rounded-2xl shadow-2xl border border-outline-variant/20 z-50 animate-fadeIn">
-            <div className="p-4 border-b border-outline-variant/20 flex items-center justify-between">
-              <span className="font-bold text-sm text-on-surface">Notifications</span>
-              <span className="text-[11px] text-primary font-semibold cursor-pointer">{notifications.length} new</span>
+          <div className="absolute top-14 right-0 w-84 bg-white rounded-3xl shadow-2xl border border-slate-200 z-50 animate-fadeIn overflow-hidden">
+            <div className="p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-teal-600 text-[18px]">notifications</span>
+                <span className="font-black text-xs text-slate-900 uppercase tracking-wider">Alerts &amp; Updates</span>
+              </div>
+              <span className="text-[10px] bg-teal-100 text-teal-900 font-black px-2 py-0.5 rounded-full">{notifications.length} new</span>
             </div>
-            <div className="max-h-64 overflow-y-auto">
+            <div className="max-h-72 overflow-y-auto divide-y divide-slate-100">
               {notifications.length > 0 ? notifications.slice(0, 10).map(n => (
-                <div key={n.id} className="px-4 py-3 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
-                  <p className="text-[12px] font-medium text-on-surface">{n.text}</p>
-                  <p className="text-[10px] text-on-surface-variant mt-0.5">Just now</p>
+                <div key={n.id} className="p-3.5 hover:bg-slate-50 transition-colors">
+                  <p className="text-xs font-bold text-slate-800">{n.text}</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Just now • Primary Grid</p>
                 </div>
               )) : (
                 <div className="px-4 py-8 text-center">
-                  <span className="material-symbols-outlined text-3xl text-outline mb-1">notifications_none</span>
-                  <p className="text-[12px] text-on-surface-variant">No notifications yet</p>
+                  <span className="material-symbols-outlined text-3xl text-slate-300 mb-1">notifications_none</span>
+                  <p className="text-xs text-slate-500 font-medium">All caught up! No active alerts.</p>
                 </div>
               )}
             </div>
           </div>
         )}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-white text-sm font-bold">{user?.name?.[0] || 'U'}</div>
+
+        {/* User Pill */}
+        <div className="flex items-center gap-2.5 pl-2 border-l border-slate-200">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-700 to-teal-500 flex items-center justify-center text-white text-xs font-black shadow-xs">
+            {user?.name?.[0] || 'U'}
+          </div>
           <div className="hidden xl:flex flex-col text-left">
-            <span className="text-[12px] font-semibold text-on-surface leading-tight">{user?.name}</span>
-            <span className="text-[11px] text-tertiary font-medium">ABHA Verified</span>
+            <span className="text-xs font-black text-slate-900 leading-tight">{user?.name}</span>
+            <span className="text-[10px] text-teal-700 font-bold">ABDM Verified</span>
           </div>
         </div>
       </div>

@@ -848,93 +848,100 @@ export default function HealthWorkerDashboard() {
     <div className="bg-[#fbfaf7] text-slate-900 font-sans min-h-screen">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-24 right-6 z-[120] bg-slate-900 text-amber-300 px-5 py-3 rounded-2xl shadow-xl border border-amber-400/50 flex items-center gap-3 text-sm font-bold animate-bounce">
+        <div className="fixed top-24 right-6 z-[120] bg-slate-900 text-amber-300 px-5 py-3 rounded-2xl shadow-xl border border-teal-300/50 flex items-center gap-3 text-sm font-bold animate-bounce">
           <span className="material-symbols-outlined text-amber-400">check_circle</span>
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* HEADER: Health Worker Supervisor Console */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs w-full">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs w-full">
         <div className="w-full px-4 lg:px-8 xl:px-12 flex items-center gap-3 h-[72px]">
           {/* Logo with Govt Health Worker Console Badge */}
           <Link to="/health-worker" className="flex items-center gap-2.5 shrink-0 group">
-            <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-10 h-10 rounded-xl object-cover shrink-0 notranslate" translate="no" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-700 via-teal-600 to-emerald-500 p-0.5 shadow-md shadow-teal-700/20 flex items-center justify-center shrink-0">
+              <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-full h-full rounded-[10px] object-cover notranslate bg-white" translate="no" />
+            </div>
             <div className="flex flex-col">
-              <span className="font-brand font-black text-slate-900 tracking-tight text-[22px] leading-none group-hover:text-amber-700 transition-colors notranslate" translate="no">SehatSaarthi</span>
-              <span className="text-[9px] uppercase font-black tracking-wider px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 self-start mt-0.5">
-                Health Worker Console
-              </span>
+              <span className="font-brand font-black text-slate-900 tracking-tight text-[22px] leading-none group-hover:text-teal-700 transition-colors notranslate" translate="no">SehatSaarthi</span>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="text-[9px] uppercase font-black tracking-wider px-1.5 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200 self-start">
+                  ASHA / ANM Console
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span>
+              </div>
             </div>
           </Link>
 
           {/* Navigation Items */}
-          <nav className="hidden lg:flex items-center gap-2 xl:gap-3 flex-1 min-w-0 overflow-x-auto scrollbar-hide">
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-2.5 flex-1 min-w-0 overflow-x-auto scrollbar-hide px-2">
             <button 
               onClick={() => setActiveTab('tasks')} 
-              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-3.5 py-2 font-black text-[13px] rounded-xl transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 activeTab === 'tasks' 
-                  ? 'bg-amber-600 text-white shadow-sm' 
-                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+                  ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white shadow-sm shadow-teal-700/25' 
+                  : 'text-slate-600 hover:text-teal-950 hover:bg-teal-50/80'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">assignment_turned_in</span>
               <span>Tasks</span>
-              <span className="bg-amber-100 text-amber-900 text-[10px] font-black px-1.5 py-0.2 rounded-full border border-amber-300">
+              <span className={`text-[10px] font-black px-1.5 py-0.2 rounded-full border ${
+                activeTab === 'tasks' ? 'bg-white/20 text-white border-white/30' : 'bg-teal-50 text-teal-900 border-teal-200'
+              }`}>
                 {tasks.filter(t => t.status !== 'completed').length}
               </span>
             </button>
 
-            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+            <div className="h-5 w-[1.5px] bg-slate-200 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveTab('vitals-triage')} 
-              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-3.5 py-2 font-black text-[13px] rounded-xl transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 activeTab === 'vitals-triage' 
-                  ? 'bg-amber-600 text-white shadow-sm' 
-                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+                  ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white shadow-sm shadow-teal-700/25' 
+                  : 'text-slate-600 hover:text-teal-950 hover:bg-teal-50/80'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">favorite</span>
               <span>Vitals</span>
             </button>
 
-            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+            <div className="h-5 w-[1.5px] bg-slate-200 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveTab('registry')} 
-              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-3.5 py-2 font-black text-[13px] rounded-xl transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 activeTab === 'registry' 
-                  ? 'bg-amber-600 text-white shadow-sm' 
-                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+                  ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white shadow-sm shadow-teal-700/25' 
+                  : 'text-slate-600 hover:text-teal-950 hover:bg-teal-50/80'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">group</span>
               <span>Registry</span>
             </button>
 
-            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+            <div className="h-5 w-[1.5px] bg-slate-200 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveTab('immunization')} 
-              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-3.5 py-2 font-black text-[13px] rounded-xl transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 activeTab === 'immunization' 
-                  ? 'bg-amber-600 text-white shadow-sm' 
-                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+                  ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white shadow-sm shadow-teal-700/25' 
+                  : 'text-slate-600 hover:text-teal-950 hover:bg-teal-50/80'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">vaccines</span>
               <span>Immunization</span>
             </button>
             
-            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+            <div className="h-5 w-[1.5px] bg-slate-200 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveTab('requests')} 
-              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-3.5 py-2 font-black text-[13px] rounded-xl transition-all duration-200 inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 activeTab === 'requests' 
-                  ? 'bg-amber-600 text-white shadow-sm' 
-                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+                  ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white shadow-sm shadow-teal-700/25' 
+                  : 'text-slate-600 hover:text-teal-950 hover:bg-teal-50/80'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">home_health</span>
@@ -946,28 +953,28 @@ export default function HealthWorkerDashboard() {
               )}
             </button>
 
-            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+            <div className="h-5 w-[1.5px] bg-slate-200 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveTab('referrals')} 
-              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-3.5 py-2 font-black text-[13px] rounded-xl transition-all duration-200 inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 activeTab === 'referrals' 
-                  ? 'bg-amber-600 text-white shadow-sm' 
-                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+                  ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white shadow-sm shadow-teal-700/25' 
+                  : 'text-slate-600 hover:text-teal-950 hover:bg-teal-50/80'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">forward</span>
               <span>Referrals</span>
             </button>
 
-            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+            <div className="h-5 w-[1.5px] bg-slate-200 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveTab('medicine')} 
-              className={`px-3.5 py-2 font-extrabold text-[13px] rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-3.5 py-2 font-black text-[13px] rounded-xl transition-all duration-200 inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 activeTab === 'medicine' 
-                  ? 'bg-amber-600 text-white shadow-sm' 
-                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+                  ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white shadow-sm shadow-teal-700/25' 
+                  : 'text-slate-600 hover:text-teal-950 hover:bg-teal-50/80'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">vaccines</span>
@@ -976,14 +983,14 @@ export default function HealthWorkerDashboard() {
           </nav>
 
           {/* Right Action Controls: Clean Language + Logout */}
-          <div className="flex items-center gap-2.5 shrink-0 whitespace-nowrap">
-            <div className="h-7 w-[2px] bg-slate-300 rounded-full hidden lg:block mr-1"></div>
+          <div className="flex items-center gap-2.5 shrink-0 whitespace-nowrap ml-auto lg:ml-0">
+            <div className="h-6 w-[1.5px] bg-slate-200 rounded-full hidden lg:block mr-1"></div>
 
             <LanguageSelector />
 
             <button 
               onClick={() => { if (window.confirm('Are you sure you want to logout?')) logout(); }} 
-              className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 border border-slate-200 flex items-center justify-center transition-all shadow-xs cursor-pointer" 
+              className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 border border-slate-200 flex items-center justify-center transition-all shadow-2xs cursor-pointer active:scale-95" 
               title="Logout"
             >
               <span className="material-symbols-outlined text-[18px]">logout</span>
@@ -993,37 +1000,39 @@ export default function HealthWorkerDashboard() {
       </header>
 
       {/* MAIN CONTENT AREA */}
-      <main className="w-full px-6 lg:px-12 xl:px-16 pt-[92px] pb-16">
+      <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
         {/* Top Health Worker Hero Banner */}
-        <div className="bg-gradient-to-r from-amber-500/15 via-amber-100/40 to-transparent p-6 sm:p-8 rounded-3xl border-2 border-amber-300 shadow-sm mb-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div className="bg-gradient-to-r from-teal-950 via-teal-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-teal-500/30 shadow-xl mb-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-extrabold mb-3 shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-teal-200 text-xs font-black mb-3 shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span>National Health Mission • Primary Healthcare Supervision</span>
               </div>
-              <h1 className="font-heading text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              <h1 className="font-heading text-2xl sm:text-4xl font-black text-white tracking-tight">
                 Community Health Worker (ANM / CHO) Console
               </h1>
-              <p className="text-base text-slate-700 font-semibold mt-1">
-                Health Supervisor: <span className="text-amber-800 underline decoration-amber-400 decoration-2">{user?.name || 'Rekha Rani (Senior ANM / CHO)'}</span> • Supervising 8 Grassroot ASHA Workers across 1,200 Households
+              <p className="text-xs sm:text-base text-slate-300 font-medium mt-1.5 leading-relaxed">
+                Health Supervisor: <span className="text-teal-300 font-black">{user?.name || 'Rekha Rani (Senior ANM / CHO)'}</span> • Supervising 8 Grassroot ASHA Workers across 1,200 Households
               </p>
             </div>
 
-            <div className="bg-white border-2 border-amber-300 p-5 rounded-3xl shadow-md flex items-center gap-4 self-start md:self-auto shrink-0">
-              <div className="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-300 flex items-center justify-center text-amber-700 shrink-0 shadow-xs">
+            <div className="bg-white/10 backdrop-blur-md border border-teal-400/30 p-5 rounded-3xl shadow-lg flex items-center gap-4 self-start md:self-auto shrink-0">
+              <div className="w-13 h-13 rounded-2xl bg-teal-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-teal-600/30">
                 <span className="material-symbols-outlined text-[30px]">health_and_safety</span>
               </div>
               <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-black mb-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-black mb-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                   <span>SUPERVISORY DUTY ACTIVE</span>
                 </div>
-                <div className="flex items-center gap-2 bg-amber-100 text-amber-950 border-2 border-amber-300 px-3 py-1 rounded-xl shadow-xs my-1">
-                  <span className="material-symbols-outlined text-[16px] text-amber-700">supervisor_account</span>
-                  <span className="text-sm font-black tracking-tight">8 ASHA Workers Under Supervision</span>
+                <div className="flex items-center gap-2 text-white font-black text-sm my-1">
+                  <span className="material-symbols-outlined text-[17px] text-teal-300">supervisor_account</span>
+                  <span>8 ASHA Workers Under Supervision</span>
                 </div>
-                <span className="text-xs text-slate-600 font-bold block mt-0.5">Sitapur Rural Block Sector</span>
+                <span className="text-xs text-slate-300 font-bold block mt-0.5">Sitapur Rural Block Sector</span>
               </div>
             </div>
           </div>
@@ -1031,17 +1040,17 @@ export default function HealthWorkerDashboard() {
 
         {/* Supervisory Key Metrics Strip */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-xs">
-            <span className="text-xs font-extrabold text-slate-500 uppercase">ASHA Workforce</span>
-            <p className="text-3xl font-black text-slate-900 mt-1">8 ASHAs</p>
-            <span className="text-[11px] text-emerald-700 font-extrabold flex items-center gap-1 mt-0.5">
+          <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-2xs">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">ASHA Workforce</span>
+            <p className="text-2xl sm:text-3xl font-black text-slate-900 mt-1 font-mono">8 ASHAs</p>
+            <span className="text-[11px] text-emerald-700 font-bold flex items-center gap-1 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               All Active on Ground
             </span>
           </div>
 
-          <div className="bg-amber-50/70 p-5 rounded-2xl border-2 border-amber-300 shadow-xs">
-            <span className="text-xs font-extrabold text-amber-800 uppercase">Active Field Tasks</span>
+          <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-2xs">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Active Field Tasks</span>
             <p className="text-3xl font-black text-amber-950 mt-1">{tasks.filter(t => t.status !== 'completed').length}</p>
             <span className="text-[11px] text-amber-900 font-semibold mt-0.5 block">Delegated to ASHA workers</span>
           </div>
@@ -1068,7 +1077,7 @@ export default function HealthWorkerDashboard() {
                   <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">
                     Field Task Delegation to ASHA Workers
                   </h2>
-                  <span className="bg-amber-100 text-amber-900 text-xs font-black px-2.5 py-0.5 rounded-full border border-amber-300">
+                  <span className="bg-teal-50 text-teal-900 text-xs font-black px-2.5 py-0.5 rounded-full border border-teal-200">
                     Supervisor Hub
                   </span>
                 </div>
@@ -1081,7 +1090,7 @@ export default function HealthWorkerDashboard() {
                 <button
                   type="button"
                   onClick={() => setActiveModal('assign-task')}
-                  className="px-5 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-black text-xs shadow-sm flex items-center gap-2 transition-all cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+                  className="px-5 py-3 rounded-xl bg-teal-700 hover:bg-teal-800 active:bg-teal-900 text-white font-black text-xs shadow-sm flex items-center gap-2 transition-all cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <span className="material-symbols-outlined text-[18px]">add_task</span>
                   <span>Assign New Task to ASHA</span>
@@ -1103,7 +1112,7 @@ export default function HealthWorkerDashboard() {
                   onClick={() => setTaskFilter(f.key)}
                   className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
                     taskFilter === f.key 
-                      ? 'bg-amber-600 text-white shadow-sm' 
+                      ? 'bg-teal-700 text-white shadow-sm' 
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -1121,25 +1130,25 @@ export default function HealthWorkerDashboard() {
                 return (
                   <div 
                     key={t._id || t.taskId}
-                    className={`bg-white p-5 sm:p-6 rounded-3xl border-2 transition-all shadow-sm ${
+                    className={`bg-white p-5 sm:p-6 rounded-3xl border transition-all shadow-sm ${
                       isCompleted ? 'border-slate-200 bg-slate-50/40' :
-                      t.priority === 'urgent' ? 'border-rose-400 bg-rose-50/20' : 'border-amber-300'
+                      t.priority === 'urgent' ? 'border-rose-400 bg-rose-50/20' : 'border-slate-200 hover:border-teal-300'
                     }`}
                   >
                     <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                       <div>
                         {/* Header row: Task ID, Priority, ASHA Worker Name */}
                         <div className="flex flex-wrap items-center gap-2.5 mb-2">
-                          <span className="font-mono text-xs font-black text-amber-950 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-300">
+                          <span className="font-mono text-xs font-black text-teal-950 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200 shadow-2xs">
                             {t.taskId}
                           </span>
                           <span className="text-xs font-black text-slate-900 bg-slate-100 px-3 py-1 rounded-xl border border-slate-200 flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-amber-700">badge</span>
-                            <span>Assigned To: <strong className="text-amber-900">{t.ashaWorker?.name}</strong> ({t.ashaWorker?.ward})</span>
+                            <span className="material-symbols-outlined text-[16px] text-teal-700">badge</span>
+                            <span>Assigned To: <strong className="text-teal-900">{t.ashaWorker?.name}</strong> ({t.ashaWorker?.ward})</span>
                           </span>
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
                             t.priority === 'urgent' ? 'bg-rose-100 text-rose-900 border border-rose-300' :
-                            t.priority === 'high' ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-slate-100 text-slate-700'
+                            t.priority === 'high' ? 'bg-teal-50 text-teal-900 border border-teal-200' : 'bg-slate-100 text-slate-700'
                           }`}>
                             {t.priority}
                           </span>
@@ -1147,7 +1156,7 @@ export default function HealthWorkerDashboard() {
 
                         {/* Patient & Task Details */}
                         <h3 className="text-lg font-black text-slate-900 mb-0.5">
-                          {t.taskType} — <span className="text-amber-950">{t.patientName}</span>
+                          {t.taskType} — <span className="text-teal-950">{t.patientName}</span>
                         </h3>
                         <p className="text-xs text-slate-600 font-semibold flex flex-wrap items-center gap-2">
                           <span>📍 {t.patientAddress}</span>
@@ -1158,8 +1167,8 @@ export default function HealthWorkerDashboard() {
                         </p>
 
                         {/* Field Instructions */}
-                        <div className="mt-2.5 p-3 rounded-xl bg-amber-50/60 border border-amber-200 text-xs font-medium text-amber-950">
-                          <strong className="text-amber-900 font-black mr-1">Supervisor Instructions for ASHA:</strong>
+                        <div className="mt-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium text-slate-800">
+                          <strong className="text-teal-900 font-black mr-1">Supervisor Instructions for ASHA:</strong>
                           "{t.instructions}"
                         </div>
 
@@ -1175,8 +1184,8 @@ export default function HealthWorkerDashboard() {
                       {/* Status & Action Buttons */}
                       <div className="flex flex-wrap lg:flex-col items-end gap-2 shrink-0 self-start lg:self-auto">
                         <span className={`px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border shadow-2xs ${
-                          isCompleted ? 'bg-emerald-100 text-emerald-900 border-emerald-300' :
-                          isInProgress ? 'bg-sky-100 text-sky-900 border-sky-300' : 'bg-amber-100 text-amber-900 border-amber-300'
+                          isCompleted ? 'bg-emerald-50 text-emerald-900 border-emerald-200' :
+                          isInProgress ? 'bg-sky-50 text-sky-900 border-sky-200' : 'bg-amber-50 text-amber-900 border-amber-200'
                         }`}>
                           {isCompleted ? 'Completed' : isInProgress ? 'In Progress' : 'Pending Field Visit'}
                         </span>
@@ -1184,10 +1193,10 @@ export default function HealthWorkerDashboard() {
                         <div className="flex items-center gap-2 mt-1">
                           <a 
                             href={`tel:${t.ashaWorker?.phone}`} 
-                            className="px-3 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center gap-1"
+                            className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold flex items-center gap-1"
                             title="Call ASHA on phone"
                           >
-                            <span className="material-symbols-outlined text-[16px] text-amber-700">call</span>
+                            <span className="material-symbols-outlined text-[16px] text-teal-700">call</span>
                             <span>Call ASHA</span>
                           </a>
 
@@ -1198,7 +1207,7 @@ export default function HealthWorkerDashboard() {
                                 setSelectedTask(t);
                                 setActiveModal('update-task');
                               }}
-                              className="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-black shadow-xs cursor-pointer"
+                              className="px-3.5 py-1.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black shadow-xs cursor-pointer"
                             >
                               Log ASHA Report
                             </button>
@@ -1232,13 +1241,13 @@ export default function HealthWorkerDashboard() {
                 <div 
                   key={p._id || p.id}
                   className={`bg-white p-5 rounded-3xl border-2 transition-all shadow-sm ${
-                    p.riskColor ? 'border-rose-300 bg-rose-50/15' : 'border-slate-200 hover:border-amber-300'
+                    p.riskColor ? 'border-rose-300 bg-rose-50/15' : 'border-slate-200 hover:border-teal-300'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3">
                       <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold shrink-0 border ${
-                        p.riskColor ? 'bg-rose-100 text-rose-800 border-rose-300' : 'bg-amber-50 text-amber-800 border-amber-200'
+                        p.riskColor ? 'bg-rose-50 text-rose-800 border-rose-200' : 'bg-teal-50 text-teal-800 border-teal-200'
                       }`}>
                         <span className="material-symbols-outlined text-[26px]">{p.icon}</span>
                       </div>
@@ -1249,7 +1258,7 @@ export default function HealthWorkerDashboard() {
                     </div>
 
                     <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${
-                      p.riskColor ? 'bg-rose-100 text-rose-900 border-rose-300' : 'bg-amber-100 text-amber-900 border-amber-300'
+                      p.riskColor ? 'bg-rose-50 text-rose-900 border-rose-200' : 'bg-teal-50 text-teal-900 border-teal-200'
                     }`}>
                       {p.risk}
                     </span>
@@ -1302,7 +1311,7 @@ export default function HealthWorkerDashboard() {
                         });
                         setActiveModal('vitals');
                       }}
-                      className="px-4 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-black shadow-xs cursor-pointer flex items-center gap-1"
+                      className="px-4 py-1.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black shadow-xs cursor-pointer flex items-center gap-1"
                     >
                       <span className="material-symbols-outlined text-[15px]">edit_note</span>
                       <span>Update Vitals</span>
@@ -1324,7 +1333,7 @@ export default function HealthWorkerDashboard() {
                 onClick={() => setRegistrySubTab('citizens')}
                 className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 ${
                   registrySubTab === 'citizens'
-                    ? 'bg-amber-600 text-white shadow-sm'
+                    ? 'bg-teal-700 text-white shadow-sm'
                     : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/60'
                 }`}
               >
@@ -1337,7 +1346,7 @@ export default function HealthWorkerDashboard() {
                 onClick={() => setRegistrySubTab('asha')}
                 className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 ${
                   registrySubTab === 'asha'
-                    ? 'bg-amber-600 text-white shadow-sm'
+                    ? 'bg-teal-700 text-white shadow-sm'
                     : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/60'
                 }`}
               >
@@ -1353,7 +1362,7 @@ export default function HealthWorkerDashboard() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Citizen Health Registry</h1>
-                      <span className="bg-amber-100 text-amber-900 text-xs font-black px-2.5 py-0.5 rounded-full border border-amber-300">
+                      <span className="bg-teal-50 text-teal-900 text-xs font-black px-2.5 py-0.5 rounded-full border border-teal-200">
                         {patients.length} Registered Households
                       </span>
                     </div>
@@ -1361,7 +1370,7 @@ export default function HealthWorkerDashboard() {
                   </div>
                   <button 
                     onClick={() => setActiveModal('register-citizen')}
-                    className="bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white px-5 py-3 rounded-xl font-extrabold text-xs shadow-sm flex items-center gap-2 transition-all self-start sm:self-auto cursor-pointer"
+                    className="bg-teal-700 hover:bg-teal-800 active:bg-teal-900 text-white px-5 py-3 rounded-xl font-extrabold text-xs shadow-sm flex items-center gap-2 transition-all self-start sm:self-auto cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[18px]">person_add</span>
                     <span>Register New Citizen</span>
@@ -1379,13 +1388,13 @@ export default function HealthWorkerDashboard() {
                         value={registrySearch}
                         onChange={(e) => setRegistrySearch(e.target.value)}
                         placeholder="Search by Citizen Name, ABHA ID (e.g. 91-4820), or Phone..." 
-                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-500" 
+                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-teal-600" 
                       />
                     </div>
                     <select 
                       value={wardFilter}
                       onChange={(e) => setWardFilter(e.target.value)}
-                      className="bg-white px-4 py-2.5 border border-slate-300 rounded-xl text-xs font-extrabold text-slate-800 focus:outline-none focus:border-amber-500 cursor-pointer"
+                      className="bg-white px-4 py-2.5 border border-slate-300 rounded-xl text-xs font-extrabold text-slate-800 focus:outline-none focus:border-teal-600 cursor-pointer"
                     >
                       <option value="ALL">All Wards (Rampur &amp; Sitapur)</option>
                       <option value="Ward 1">Ward 1 (North Rampur)</option>
@@ -1399,14 +1408,14 @@ export default function HealthWorkerDashboard() {
                     {filteredPatients.map(c => (
                       <div key={c._id || c.id} className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-center font-bold text-xl">
+                          <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 text-teal-800 flex items-center justify-center font-bold text-xl">
                             {c.name[0]}
                           </div>
                           <div>
                             <div className="flex flex-wrap items-center gap-2">
                               <h4 className="text-base font-extrabold text-slate-900">{c.name}</h4>
                               <span className="text-xs text-slate-500 font-bold">• {c.age}</span>
-                              <span className="text-xs font-mono font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-300">{c.abha}</span>
+                              <span className="text-xs font-mono font-bold bg-teal-50 text-teal-900 px-2 py-0.5 rounded border border-teal-200">{c.abha}</span>
                               {c.email && (
                                 <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
                                   <span className="material-symbols-outlined text-[10px]">lock</span>
@@ -1432,9 +1441,9 @@ export default function HealthWorkerDashboard() {
                               setSelectedPatient(c);
                               setActiveModal('dossier');
                             }}
-                            className="h-10 px-4 rounded-xl border border-slate-300 bg-white hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 text-slate-800 text-xs font-extrabold transition-all cursor-pointer shadow-2xs flex items-center gap-1.5"
+                            className="h-10 px-4 rounded-xl border border-slate-300 bg-white hover:bg-teal-50 hover:text-teal-800 hover:border-teal-300 text-slate-800 text-xs font-extrabold transition-all cursor-pointer shadow-2xs flex items-center gap-1.5"
                           >
-                            <span className="material-symbols-outlined text-[16px] text-amber-700">description</span>
+                            <span className="material-symbols-outlined text-[16px] text-teal-700">description</span>
                             <span>View Dossier</span>
                           </button>
 
@@ -1443,7 +1452,7 @@ export default function HealthWorkerDashboard() {
                               setSelectedPatient(c); 
                               setActiveModal('vitals'); 
                             }}
-                            className="h-10 px-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-black shadow-xs transition-all cursor-pointer flex items-center gap-1"
+                            className="h-10 px-3.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black shadow-xs transition-all cursor-pointer flex items-center gap-1"
                           >
                             <span className="material-symbols-outlined text-[16px]">favorite</span>
                             <span>Vitals</span>
@@ -1463,7 +1472,7 @@ export default function HealthWorkerDashboard() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">ASHA Worker Workforce Registry</h1>
-                      <span className="bg-amber-100 text-amber-900 text-xs font-black px-2.5 py-0.5 rounded-full border border-amber-300">
+                      <span className="bg-teal-50 text-teal-900 text-xs font-black px-2.5 py-0.5 rounded-full border border-teal-200">
                         {ashaList.length} Field Workers
                       </span>
                     </div>
@@ -1474,7 +1483,7 @@ export default function HealthWorkerDashboard() {
 
                   <button 
                     onClick={() => setActiveModal('add-asha')}
-                    className="bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white px-5 py-3 rounded-xl font-extrabold text-xs shadow-sm flex items-center gap-2 transition-all self-start sm:self-auto cursor-pointer"
+                    className="bg-teal-700 hover:bg-teal-800 active:bg-teal-900 text-white px-5 py-3 rounded-xl font-extrabold text-xs shadow-sm flex items-center gap-2 transition-all self-start sm:self-auto cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[18px]">person_add</span>
                     <span>Onboard New ASHA</span>
@@ -1490,26 +1499,26 @@ export default function HealthWorkerDashboard() {
                     return (
                       <div 
                         key={a.id}
-                        className="bg-white p-5 rounded-3xl border-2 border-slate-200 hover:border-amber-400 transition-all shadow-sm flex flex-col justify-between"
+                        className="bg-white p-5 rounded-3xl border-2 border-slate-200 hover:border-teal-300 transition-all shadow-sm flex flex-col justify-between"
                       >
                         <div>
                           <div className="flex items-start justify-between gap-3 mb-3">
                             <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 rounded-2xl bg-amber-50 border-2 border-amber-300 flex items-center justify-center font-black text-amber-900 text-base shrink-0">
+                              <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 flex items-center justify-center font-black text-teal-900 text-base shrink-0">
                                 {a.name.replace('ASHA ', '').charAt(0)}
                               </div>
                               <div>
                                 <h3 className="text-base font-black text-slate-900 leading-tight">{a.name}</h3>
-                                <span className="text-[11px] font-mono font-bold text-amber-900 bg-amber-50 px-2 py-0.2 rounded border border-amber-200">
+                                <span className="text-[11px] font-mono font-bold text-teal-900 bg-teal-50 px-2 py-0.2 rounded border border-teal-200">
                                   {a.id}
                                 </span>
                               </div>
                             </div>
 
                             <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black border uppercase tracking-wider ${
-                              isDutyActive ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : 'bg-amber-100 text-amber-900 border-amber-300'
+                              isDutyActive ? 'bg-emerald-50 text-emerald-900 border-emerald-300' : 'bg-slate-100 text-slate-700 border-slate-200'
                             }`}>
-                              <span className={`w-1.5 h-1.5 rounded-full ${isDutyActive ? 'bg-emerald-600 animate-pulse' : 'bg-amber-600'}`}></span>
+                              <span className={`w-1.5 h-1.5 rounded-full ${isDutyActive ? 'bg-emerald-600 animate-pulse' : 'bg-slate-400'}`}></span>
                               {a.status}
                             </span>
                           </div>
@@ -1551,7 +1560,7 @@ export default function HealthWorkerDashboard() {
                               }));
                               setActiveModal('assign-task');
                             }}
-                            className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-black shadow-xs cursor-pointer flex items-center gap-1"
+                            className="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 active:bg-teal-900 text-white text-xs font-black shadow-xs cursor-pointer flex items-center gap-1"
                           >
                             <span className="material-symbols-outlined text-[16px]">add_task</span>
                             <span>Assign Task</span>
@@ -1578,9 +1587,9 @@ export default function HealthWorkerDashboard() {
               <button
                 type="button"
                 onClick={() => setActiveModal('schedule-chart')}
-                className="px-4 py-2.5 bg-white hover:bg-amber-50 text-amber-900 border-2 border-amber-300 font-black text-xs rounded-xl shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer self-start sm:self-auto"
+                className="px-4 py-2.5 bg-white hover:bg-teal-50 text-teal-900 border border-teal-200 font-black text-xs rounded-xl shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer self-start sm:self-auto"
               >
-                <span className="material-symbols-outlined text-[18px] text-amber-700">calendar_month</span>
+                <span className="material-symbols-outlined text-[18px] text-teal-700">calendar_month</span>
                 <span>National Vaccine Schedule Chart</span>
               </button>
             </div>
@@ -1599,7 +1608,7 @@ export default function HealthWorkerDashboard() {
                   onClick={() => setVaccineFilter(f.key)}
                   className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
                     vaccineFilter === f.key 
-                      ? 'bg-amber-600 text-white shadow-sm' 
+                      ? 'bg-teal-700 text-white shadow-sm' 
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -1617,30 +1626,30 @@ export default function HealthWorkerDashboard() {
                 return (
                   <div 
                     key={vac.id} 
-                    className={`bg-white p-6 sm:p-7 border-2 rounded-3xl shadow-sm border-l-8 transition-all ${
+                    className={`bg-white p-6 sm:p-7 border rounded-3xl shadow-2xs border-l-8 transition-all ${
                       isCompleted ? 'border-slate-200 border-l-emerald-600 bg-emerald-50/10' :
-                      isDue ? 'border-amber-300 border-l-rose-500' : 'border-slate-200 border-l-amber-500'
+                      isDue ? 'border-slate-200 border-l-rose-500' : 'border-slate-200 border-l-teal-600'
                     }`}
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-xl font-extrabold text-slate-900">{vac.childName}</h3>
+                          <h3 className="text-xl font-black text-slate-900">{vac.childName}</h3>
                           <span className="text-xs text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded">{vac.age}</span>
                         </div>
                         <p className="text-xs text-slate-500 font-semibold mt-0.5">{vac.motherName} • {vac.village}</p>
-                        <span className="text-[11px] text-amber-900 font-bold block mt-0.5">Mobilizer: {vac.assignedAsha}</span>
+                        <span className="text-[11px] text-teal-900 font-bold block mt-0.5">Mobilizer: {vac.assignedAsha}</span>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-xs font-black border uppercase tracking-wider ${
-                        isCompleted ? 'bg-emerald-100 text-emerald-900 border-emerald-300' :
-                        isDue ? 'bg-rose-100 text-rose-900 border-rose-300' : 'bg-amber-100 text-amber-900 border-amber-300'
+                        isCompleted ? 'bg-emerald-50 text-emerald-900 border-emerald-300' :
+                        isDue ? 'bg-rose-50 text-rose-900 border-rose-300' : 'bg-teal-50 text-teal-900 border-teal-200'
                       }`}>
                         {isCompleted ? 'Completed' : vac.dueDate}
                       </span>
                     </div>
 
-                    <div className="bg-amber-50/60 p-3.5 rounded-xl border border-amber-200 text-xs font-bold text-amber-950 my-3.5">
-                      <span className="text-[10px] text-amber-800 uppercase block font-black">Prescribed Vaccination:</span>
+                    <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 my-3.5">
+                      <span className="text-[10px] text-slate-400 uppercase block font-black">Prescribed Vaccination:</span>
                       <span className="text-sm font-black text-slate-900 block mt-0.5">{vac.vaccineName}</span>
                       <span className="text-xs text-slate-500 font-semibold">{vac.doseNumber} • {vac.facility}</span>
                     </div>
@@ -1660,7 +1669,7 @@ export default function HealthWorkerDashboard() {
                           setSelectedVaccine(vac);
                           setActiveModal('log-vaccine');
                         }}
-                        className="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-extrabold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                        className="w-full py-3 rounded-xl bg-teal-700 hover:bg-teal-800 active:bg-teal-900 text-white font-extrabold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <span className="material-symbols-outlined text-[18px]">vaccines</span>
                         <span>Log Vaccination Dose (खुराक दर्ज करें)</span>
@@ -1698,19 +1707,19 @@ export default function HealthWorkerDashboard() {
                 {citizenRequests.map(req => (
                   <div 
                     key={req._id || req.requestId} 
-                    className="bg-white p-5 sm:p-6 rounded-3xl border-2 border-slate-200 hover:border-amber-400 transition-all shadow-sm"
+                    className="bg-white p-5 sm:p-6 rounded-3xl border-2 border-slate-200 hover:border-teal-300 transition-all shadow-sm"
                   >
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                       <div>
                         <div className="flex flex-wrap items-center gap-2 mb-1">
                           <h3 className="text-lg font-black text-slate-900">{req.patientName}</h3>
-                          <span className="font-mono text-xs font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                          <span className="font-mono text-xs font-bold text-teal-900 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
                             {req.requestId || 'REQ-01'}
                           </span>
                           <span className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase ${
                             req.status === 'completed' ? 'bg-emerald-100 text-emerald-900' :
                             req.status === 'in_progress' ? 'bg-sky-100 text-sky-900' :
-                            req.status === 'scheduled' ? 'bg-amber-100 text-amber-900' : 'bg-rose-100 text-rose-900'
+                            req.status === 'scheduled' ? 'bg-teal-50 text-teal-900 border border-teal-200' : 'bg-rose-50 text-rose-900 border border-rose-200'
                           }`}>
                             {req.status}
                           </span>
@@ -1725,9 +1734,9 @@ export default function HealthWorkerDashboard() {
                       <div className="flex flex-wrap items-center gap-2 shrink-0">
                         <a 
                           href={`tel:${req.patientPhone}`}
-                          className="px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold flex items-center gap-1"
+                          className="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs font-extrabold flex items-center gap-1"
                         >
-                          <span className="material-symbols-outlined text-[16px] text-amber-700">call</span>
+                          <span className="material-symbols-outlined text-[16px] text-teal-700">call</span>
                           <span>Call Citizen</span>
                         </a>
 
@@ -1749,7 +1758,7 @@ export default function HealthWorkerDashboard() {
                               setActiveModal('assign-task');
                               handleUpdateVisitStatus(req._id, 'scheduled', 'Delegated to ASHA Sunita Devi');
                             }}
-                            className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-black shadow-xs cursor-pointer flex items-center gap-1"
+                            className="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black shadow-xs cursor-pointer flex items-center gap-1"
                           >
                             <span className="material-symbols-outlined text-[16px]">person_add</span>
                             <span>Assign to ASHA</span>
@@ -1779,9 +1788,9 @@ export default function HealthWorkerDashboard() {
                             });
                             setActiveModal('vitals');
                           }}
-                          className="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-black cursor-pointer flex items-center gap-1"
+                          className="px-3.5 py-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 text-xs font-black cursor-pointer flex items-center gap-1"
                         >
-                          <span className="material-symbols-outlined text-[16px] text-amber-700">favorite</span>
+                          <span className="material-symbols-outlined text-[16px] text-teal-700">favorite</span>
                           <span>Record Vitals</span>
                         </button>
                       </div>
@@ -1807,10 +1816,10 @@ export default function HealthWorkerDashboard() {
       {/* MODAL 1: ASSIGN TASK TO ASHA WORKER */}
       {activeModal === 'assign-task' && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-white w-full max-w-lg rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+          <div className="bg-white w-full max-w-lg rounded-3xl border-2 border-teal-300 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[22px]">add_task</span>
                 </div>
                 <div>
@@ -1836,7 +1845,7 @@ export default function HealthWorkerDashboard() {
                 <select
                   value={taskForm.ashaName}
                   onChange={e => setTaskForm({...taskForm, ashaName: e.target.value})}
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                 >
                   {ASHA_WORKFORCE.map(a => (
                     <option key={a.id} value={a.name}>
@@ -1855,7 +1864,7 @@ export default function HealthWorkerDashboard() {
                     value={taskForm.patientName}
                     onChange={e => setTaskForm({...taskForm, patientName: e.target.value})}
                     placeholder="e.g. Kamla Devi"
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                     required
                   />
                 </div>
@@ -1866,7 +1875,7 @@ export default function HealthWorkerDashboard() {
                     value={taskForm.patientPhone}
                     onChange={e => setTaskForm({...taskForm, patientPhone: e.target.value})}
                     placeholder="9876543251"
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                   />
                 </div>
               </div>
@@ -1879,7 +1888,7 @@ export default function HealthWorkerDashboard() {
                   value={taskForm.patientAddress}
                   onChange={e => setTaskForm({...taskForm, patientAddress: e.target.value})}
                   placeholder="e.g. Rampur Ward 2, House 14"
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                 />
               </div>
 
@@ -1890,7 +1899,7 @@ export default function HealthWorkerDashboard() {
                   <select
                     value={taskForm.taskType}
                     onChange={e => setTaskForm({...taskForm, taskType: e.target.value})}
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                   >
                     <option value="Home Visit & Vitals">Home Visit &amp; Vitals</option>
                     <option value="Antenatal Checkup (ANC)">Antenatal Checkup (ANC)</option>
@@ -1905,7 +1914,7 @@ export default function HealthWorkerDashboard() {
                   <select
                     value={taskForm.priority}
                     onChange={e => setTaskForm({...taskForm, priority: e.target.value})}
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                   >
                     <option value="routine">Routine</option>
                     <option value="high">High Priority</option>
@@ -1922,7 +1931,7 @@ export default function HealthWorkerDashboard() {
                   value={taskForm.instructions}
                   onChange={e => setTaskForm({...taskForm, instructions: e.target.value})}
                   placeholder="e.g. Check BP with digital cuff, supply IFA, advise hospital delivery..."
-                  className="w-full bg-slate-50 px-3.5 py-2 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-teal-600"
                 ></textarea>
               </div>
 
@@ -1936,7 +1945,7 @@ export default function HealthWorkerDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black shadow-xs"
+                  className="px-5 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-black shadow-xs"
                 >
                   Delegate Task to ASHA
                 </button>
@@ -1949,10 +1958,10 @@ export default function HealthWorkerDashboard() {
       {/* MODAL 2: UPDATE TASK / LOG ASHA REPORT */}
       {activeModal === 'update-task' && selectedTask && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-white w-full max-w-md rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+          <div className="bg-white w-full max-w-md rounded-3xl border-2 border-teal-300 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[20px]">fact_check</span>
                 </div>
                 <div>
@@ -1970,8 +1979,8 @@ export default function HealthWorkerDashboard() {
             </div>
 
             <div className="p-6 space-y-3.5 text-xs">
-              <div className="bg-amber-50 p-3.5 rounded-xl border border-amber-200">
-                <span className="text-[10px] text-amber-800 font-bold uppercase block">Field Worker</span>
+              <div className="bg-teal-50 p-3.5 rounded-xl border border-teal-200">
+                <span className="text-[10px] text-teal-800 font-bold uppercase block">Field Worker</span>
                 <strong className="text-slate-900 font-black text-sm">{selectedTask.ashaWorker?.name}</strong>
                 <p className="text-slate-600 mt-1"><strong>Task:</strong> {selectedTask.taskType}</p>
               </div>
@@ -2003,10 +2012,10 @@ export default function HealthWorkerDashboard() {
       {/* MODAL 3: RECORD VITALS & TRIAGE */}
       {activeModal === 'vitals' && selectedPatient && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-white w-full max-w-lg rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white border-b-4 border-amber-500">
+          <div className="bg-white w-full max-w-lg rounded-3xl border-2 border-teal-300 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold shadow-xs">
                   <span className="material-symbols-outlined text-[24px]">favorite</span>
                 </div>
                 <div>
@@ -2031,7 +2040,7 @@ export default function HealthWorkerDashboard() {
                     type="text" 
                     value={vitalsForm.bp} 
                     onChange={e => setVitalsForm({...vitalsForm, bp: e.target.value})} 
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-extrabold text-sm focus:outline-none focus:border-amber-500" 
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-extrabold text-sm focus:outline-none focus:border-teal-600" 
                     placeholder="120/80"
                     required
                   />
@@ -2042,7 +2051,7 @@ export default function HealthWorkerDashboard() {
                     type="number" 
                     value={vitalsForm.pulse} 
                     onChange={e => setVitalsForm({...vitalsForm, pulse: e.target.value})} 
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-extrabold text-sm focus:outline-none focus:border-amber-500" 
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-extrabold text-sm focus:outline-none focus:border-teal-600" 
                     required
                   />
                 </div>
@@ -2055,7 +2064,7 @@ export default function HealthWorkerDashboard() {
                     type="number" 
                     value={vitalsForm.spo2} 
                     onChange={e => setVitalsForm({...vitalsForm, spo2: e.target.value})} 
-                    className="w-full bg-slate-50 px-3 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-extrabold text-sm focus:outline-none focus:border-amber-500" 
+                    className="w-full bg-slate-50 px-3 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-extrabold text-sm focus:outline-none focus:border-teal-600" 
                     required
                   />
                 </div>
@@ -2065,7 +2074,7 @@ export default function HealthWorkerDashboard() {
                     type="text" 
                     value={vitalsForm.temp} 
                     onChange={e => setVitalsForm({...vitalsForm, temp: e.target.value})} 
-                    className="w-full bg-slate-50 px-3 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-extrabold text-sm focus:outline-none focus:border-amber-500" 
+                    className="w-full bg-slate-50 px-3 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-extrabold text-sm focus:outline-none focus:border-teal-600" 
                     required
                   />
                 </div>
@@ -2075,7 +2084,7 @@ export default function HealthWorkerDashboard() {
                     type="number" 
                     value={vitalsForm.sugar} 
                     onChange={e => setVitalsForm({...vitalsForm, sugar: e.target.value})} 
-                    className="w-full bg-slate-50 px-3 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-extrabold text-sm focus:outline-none focus:border-amber-500" 
+                    className="w-full bg-slate-50 px-3 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-extrabold text-sm focus:outline-none focus:border-teal-600" 
                   />
                 </div>
               </div>
@@ -2087,7 +2096,7 @@ export default function HealthWorkerDashboard() {
                   value={vitalsForm.notes} 
                   onChange={e => setVitalsForm({...vitalsForm, notes: e.target.value})} 
                   placeholder="e.g. Regular medication compliance, mild joint pain..." 
-                  className="w-full bg-slate-50 px-3.5 py-2 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-teal-600"
                 ></textarea>
               </div>
 
@@ -2107,7 +2116,7 @@ export default function HealthWorkerDashboard() {
               <button 
                 type="submit" 
                 disabled={submittingVitals}
-                className="w-full bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white py-3.5 rounded-xl font-extrabold text-sm shadow-sm mt-2 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+                className="w-full bg-teal-700 hover:bg-teal-800 active:bg-teal-900 text-white py-3.5 rounded-xl font-extrabold text-sm shadow-sm mt-2 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
               >
                 {submittingVitals ? (
                   <>
@@ -2129,10 +2138,10 @@ export default function HealthWorkerDashboard() {
       {/* MODAL 4: CLINICAL DOSSIER */}
       {activeModal === 'dossier' && selectedPatient && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-white w-full max-w-2xl rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+          <div className="bg-white w-full max-w-2xl rounded-3xl border-2 border-teal-300 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                <div className="w-11 h-11 rounded-2xl bg-teal-700 text-white flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[24px]">badge</span>
                 </div>
                 <div>
@@ -2150,33 +2159,33 @@ export default function HealthWorkerDashboard() {
             </div>
 
             <div className="p-6 overflow-y-auto space-y-4 text-xs">
-              <div className="bg-amber-50/80 p-4 rounded-2xl border border-amber-300 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="bg-teal-50/80 p-4 rounded-2xl border border-teal-200 grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">ABHA ID</span>
-                  <strong className="font-mono text-amber-950 font-black">{selectedPatient.abha}</strong>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase block">ABHA ID</span>
+                  <strong className="font-mono text-teal-950 font-black">{selectedPatient.abha}</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">Age / Gender</span>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase block">Age / Gender</span>
                   <strong className="text-slate-900 font-black">{selectedPatient.age} • {selectedPatient.gender || 'Female'}</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">Village Ward</span>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase block">Village Ward</span>
                   <strong className="text-slate-900 font-black">{selectedPatient.village}</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">Assigned ASHA</span>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase block">Assigned ASHA</span>
                   <strong className="text-slate-900 font-black">{selectedPatient.assignedAsha || 'ASHA Sunita Devi'}</strong>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                  <span className="text-[10px] uppercase font-black text-slate-500 block mb-1">Primary Clinical Diagnosis</span>
+                  <span className="text-[10px] uppercase font-black text-slate-400 block mb-1">Primary Clinical Diagnosis</span>
                   <p className="text-xs font-black text-slate-900">{selectedPatient.condition}</p>
                 </div>
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                  <span className="text-[10px] uppercase font-black text-slate-500 block mb-1">Active Prescribed Medications</span>
-                  <p className="text-xs font-bold text-amber-950">{selectedPatient.meds}</p>
+                  <span className="text-[10px] uppercase font-black text-slate-400 block mb-1">Active Prescribed Medications</span>
+                  <p className="text-xs font-bold text-teal-950">{selectedPatient.meds}</p>
                 </div>
               </div>
 
@@ -2186,14 +2195,14 @@ export default function HealthWorkerDashboard() {
                   <p className="text-xs font-black text-rose-950">{selectedPatient.allergies}</p>
                 </div>
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                  <span className="text-[10px] uppercase font-black text-slate-500 block mb-1">Emergency Household Contact</span>
+                  <span className="text-[10px] uppercase font-black text-slate-400 block mb-1">Emergency Household Contact</span>
                   <p className="text-xs font-extrabold text-slate-900">{selectedPatient.emergencyContact}</p>
                 </div>
               </div>
 
-              <div className="p-4 bg-amber-50/60 rounded-2xl border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="p-4 bg-teal-50/60 rounded-2xl border border-teal-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <span className="text-[10px] uppercase font-black text-amber-900 block">Last Recorded Clinical Vitals</span>
+                  <span className="text-[10px] uppercase font-black text-teal-900 block">Last Recorded Clinical Vitals</span>
                   <p className="text-sm font-black text-slate-900 mt-0.5">{selectedPatient.lastVitals}</p>
                 </div>
                 <button
@@ -2201,7 +2210,7 @@ export default function HealthWorkerDashboard() {
                   onClick={() => {
                     setActiveModal('vitals');
                   }}
-                  className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-black text-xs shadow-xs cursor-pointer"
+                  className="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-xl font-black text-xs shadow-xs cursor-pointer"
                 >
                   Update Vitals Now
                 </button>
@@ -2214,10 +2223,10 @@ export default function HealthWorkerDashboard() {
       {/* MODAL 5: REGISTER NEW CITIZEN */}
       {activeModal === 'register-citizen' && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-white w-full max-w-lg rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+          <div className="bg-white w-full max-w-lg rounded-3xl border-2 border-teal-300 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[22px]">person_add</span>
                 </div>
                 <div>
@@ -2242,7 +2251,7 @@ export default function HealthWorkerDashboard() {
                   value={newCitizen.name}
                   onChange={e => setNewCitizen({...newCitizen, name: e.target.value})}
                   placeholder="e.g. Shakuntala Devi"
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                   required
                 />
               </div>
@@ -2255,7 +2264,7 @@ export default function HealthWorkerDashboard() {
                     value={newCitizen.age}
                     onChange={e => setNewCitizen({...newCitizen, age: e.target.value})}
                     placeholder="e.g. 26"
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                     required
                   />
                 </div>
@@ -2264,7 +2273,7 @@ export default function HealthWorkerDashboard() {
                   <select
                     value={newCitizen.gender}
                     onChange={e => setNewCitizen({...newCitizen, gender: e.target.value})}
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                   >
                     <option value="Female">Female</option>
                     <option value="Male">Male</option>
@@ -2281,7 +2290,7 @@ export default function HealthWorkerDashboard() {
                     value={newCitizen.phone}
                     onChange={e => setNewCitizen({...newCitizen, phone: e.target.value})}
                     placeholder="9876543210"
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                     required
                   />
                 </div>
@@ -2290,7 +2299,7 @@ export default function HealthWorkerDashboard() {
                   <select
                     value={newCitizen.village}
                     onChange={e => setNewCitizen({...newCitizen, village: e.target.value})}
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                   >
                     <option value="Sitapur Ward 4">Sitapur Ward 4</option>
                     <option value="Rampur Ward 1">Rampur Ward 1</option>
@@ -2347,7 +2356,7 @@ export default function HealthWorkerDashboard() {
                 <select
                   value={newCitizen.assignedAsha}
                   onChange={e => setNewCitizen({...newCitizen, assignedAsha: e.target.value})}
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                 >
                   {ASHA_WORKFORCE.map(a => (
                     <option key={a.id} value={a.name}>{a.name} ({a.ward})</option>
@@ -2362,7 +2371,7 @@ export default function HealthWorkerDashboard() {
                   value={newCitizen.condition}
                   onChange={e => setNewCitizen({...newCitizen, condition: e.target.value})}
                   placeholder="e.g. Trimester 2 Pregnancy, Hypertension, Seasonal Flu"
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                 />
               </div>
 
@@ -2376,7 +2385,7 @@ export default function HealthWorkerDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black shadow-xs"
+                  className="px-5 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-black shadow-xs"
                 >
                   Register &amp; Create Patient Portal Account
                 </button>
@@ -2433,9 +2442,9 @@ export default function HealthWorkerDashboard() {
                 </div>
               </div>
 
-              <div className="bg-amber-50 p-3 rounded-xl border border-amber-200 flex items-start gap-2">
-                <span className="material-symbols-outlined text-[16px] text-amber-600 mt-0.5">info</span>
-                <p className="text-[10px] text-amber-800 font-bold">Citizen can now log in at <strong>/login</strong> using their email or phone number + password. They will land in their personal Patient Panel.</p>
+              <div className="bg-teal-50 p-3 rounded-xl border border-teal-200 flex items-start gap-2">
+                <span className="material-symbols-outlined text-[16px] text-teal-600 mt-0.5">info</span>
+                <p className="text-[10px] text-teal-800 font-bold">Citizen can now log in at <strong>/login</strong> using their email or phone number + password. They will land in their personal Patient Panel.</p>
               </div>
 
               <div className="flex gap-2">
@@ -2464,15 +2473,15 @@ export default function HealthWorkerDashboard() {
       {/* MODAL 6: LOG VACCINE DOSE */}
       {activeModal === 'log-vaccine' && selectedVaccine && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-white w-full max-w-md rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+          <div className="bg-white w-full max-w-md rounded-3xl border-2 border-teal-300 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[22px]">vaccines</span>
                 </div>
                 <div>
                   <h3 className="text-lg font-black text-white font-heading">Log Vaccine Administration</h3>
-                  <p className="text-xs text-amber-300/80 font-bold">{selectedVaccine.childName} • {selectedVaccine.vaccineName}</p>
+                  <p className="text-xs text-teal-300 font-bold">{selectedVaccine.childName} • {selectedVaccine.vaccineName}</p>
                 </div>
               </div>
               <button 
@@ -2485,10 +2494,10 @@ export default function HealthWorkerDashboard() {
             </div>
 
             <form onSubmit={handleLogVaccineDose} className="p-6 space-y-3.5 text-xs">
-              <div className="bg-amber-50 p-3.5 rounded-2xl border border-amber-200">
+              <div className="bg-teal-50 p-3.5 rounded-2xl border border-teal-200">
                 <strong className="text-slate-900 font-black block">{selectedVaccine.childName} ({selectedVaccine.age})</strong>
                 <p className="text-slate-600 font-semibold mt-0.5">{selectedVaccine.vaccineName} • {selectedVaccine.doseNumber}</p>
-                <p className="text-[11px] text-amber-900 font-bold mt-0.5">Assigned ASHA Mobilizer: {selectedVaccine.assignedAsha}</p>
+                <p className="text-[11px] text-teal-900 font-bold mt-0.5">Assigned ASHA Mobilizer: {selectedVaccine.assignedAsha}</p>
               </div>
 
               <div>
@@ -2497,7 +2506,7 @@ export default function HealthWorkerDashboard() {
                   type="text"
                   value={vaccineLogForm.batchNo}
                   onChange={e => setVaccineLogForm({...vaccineLogForm, batchNo: e.target.value})}
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500 font-mono"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600 font-mono"
                   placeholder="e.g. SII-COV-8291"
                   required
                 />
@@ -2509,7 +2518,7 @@ export default function HealthWorkerDashboard() {
                   type="text"
                   value={vaccineLogForm.facility}
                   onChange={e => setVaccineLogForm({...vaccineLogForm, facility: e.target.value})}
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                 />
               </div>
 
@@ -2519,7 +2528,7 @@ export default function HealthWorkerDashboard() {
                   rows="2"
                   value={vaccineLogForm.notes}
                   onChange={e => setVaccineLogForm({...vaccineLogForm, notes: e.target.value})}
-                  className="w-full bg-slate-50 px-3.5 py-2 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-teal-600"
                 ></textarea>
               </div>
 
@@ -2533,7 +2542,7 @@ export default function HealthWorkerDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black shadow-xs"
+                  className="px-5 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-black shadow-xs"
                 >
                   Verify &amp; Log on U-WIN
                 </button>
@@ -2546,10 +2555,10 @@ export default function HealthWorkerDashboard() {
       {/* MODAL 7: NATIONAL VACCINE SCHEDULE CHART */}
       {activeModal === 'schedule-chart' && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-white w-full max-w-2xl rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+          <div className="bg-white w-full max-w-2xl rounded-3xl border-2 border-teal-300 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[24px]">calendar_month</span>
                 </div>
                 <div>
@@ -2591,10 +2600,10 @@ export default function HealthWorkerDashboard() {
       {/* MODAL 8: ONBOARD NEW ASHA WORKER */}
       {activeModal === 'add-asha' && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-white w-full max-w-md rounded-3xl border-2 border-amber-400 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+          <div className="bg-white w-full max-w-md rounded-3xl border-2 border-teal-300 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[22px]">badge</span>
                 </div>
                 <div>
@@ -2619,7 +2628,7 @@ export default function HealthWorkerDashboard() {
                   value={newAshaForm.name}
                   onChange={e => setNewAshaForm({...newAshaForm, name: e.target.value})}
                   placeholder="e.g. ASHA Rekha Sharma"
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                   required
                 />
               </div>
@@ -2631,7 +2640,7 @@ export default function HealthWorkerDashboard() {
                   value={newAshaForm.phone}
                   onChange={e => setNewAshaForm({...newAshaForm, phone: e.target.value})}
                   placeholder="9876543235"
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                   required
                 />
               </div>
@@ -2642,7 +2651,7 @@ export default function HealthWorkerDashboard() {
                   <select
                     value={newAshaForm.ward}
                     onChange={e => setNewAshaForm({...newAshaForm, ward: e.target.value})}
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                   >
                     <option value="Sitapur Ward 4">Sitapur Ward 4</option>
                     <option value="Rampur Ward 1">Rampur Ward 1</option>
@@ -2657,7 +2666,7 @@ export default function HealthWorkerDashboard() {
                     type="number"
                     value={newAshaForm.households}
                     onChange={e => setNewAshaForm({...newAshaForm, households: e.target.value})}
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                   />
                 </div>
               </div>
@@ -2667,7 +2676,7 @@ export default function HealthWorkerDashboard() {
                 <select
                   value={newAshaForm.status}
                   onChange={e => setNewAshaForm({...newAshaForm, status: e.target.value})}
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                 >
                   <option value="Active on Duty">Active on Duty</option>
                   <option value="Field Survey">Field Survey</option>
@@ -2685,7 +2694,7 @@ export default function HealthWorkerDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black shadow-xs"
+                  className="px-5 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-black shadow-xs"
                 >
                   Onboard to Roster
                 </button>

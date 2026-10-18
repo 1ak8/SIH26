@@ -42,13 +42,11 @@ const GeminiChatbot = () => {
     }
   }, [isOpen]);
 
-  // Check voice support on mount
   useEffect(() => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     setVoiceSupported(!!SR);
   }, []);
 
-  // Speak text using TTS
   const speakText = useCallback((text) => {
     if (!synthRef.current || !speakerOn) return;
     synthRef.current.cancel();
@@ -77,7 +75,6 @@ const GeminiChatbot = () => {
     synthRef.current.speak(utterance);
   }, [speakerOn]);
 
-  // Auto-speak new AI replies
   useEffect(() => {
     if (messages.length > 1 && speakerOn) {
       const lastMsg = messages[messages.length - 1];
@@ -194,17 +191,17 @@ const GeminiChatbot = () => {
 
   return (
     <>
-      {/* Floating Chat Button */}
+      {/* Floating Chat Trigger Button with Medical Pulse Aura */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-[200] w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 cursor-pointer group ${
+        className={`fixed bottom-6 right-6 z-[200] w-14 h-14 rounded-2xl shadow-xl flex items-center justify-center transition-all duration-300 cursor-pointer group active:scale-95 ${
           isOpen
-            ? 'bg-slate-900 hover:bg-slate-800 rotate-0'
-            : 'bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 hover:scale-110 animate-bounce'
+            ? 'bg-slate-900 hover:bg-slate-800 rotate-90 text-white'
+            : 'bg-gradient-to-tr from-teal-700 via-teal-600 to-emerald-500 hover:scale-105 text-white shadow-teal-700/30 ring-4 ring-teal-500/20'
         }`}
-        title={isOpen ? 'Band karein' : 'SehatSaarthi AI kholein'}
+        title={isOpen ? 'Band karein' : 'SehatSaarthi AI Assistant'}
       >
-        <span className="material-symbols-outlined text-white text-[28px]">
+        <span className="material-symbols-outlined text-[28px]">
           {isOpen ? 'close' : 'smart_toy'}
         </span>
         {!isOpen && (
@@ -214,27 +211,30 @@ const GeminiChatbot = () => {
         )}
       </button>
 
-      {/* Chat Panel */}
+      {/* High-Tech Clinical AI Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-[199] w-[380px] max-w-[calc(100vw-3rem)] h-[560px] max-h-[calc(100vh-8rem)] bg-white rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border-2 border-slate-200 overflow-hidden flex flex-col animate-fadeIn">
+        <div className="fixed bottom-24 right-6 z-[199] w-[390px] max-w-[calc(100vw-2.5rem)] h-[580px] max-h-[calc(100vh-8rem)] bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-fadeIn">
 
           {/* Header */}
-          <div className="bg-slate-900 px-5 py-3.5 flex items-center gap-3 shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg">
-              <span className="material-symbols-outlined text-white text-[22px]">smart_toy</span>
+          <div className="bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 px-5 py-4 flex items-center gap-3 shrink-0 border-b border-teal-500/30">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 flex items-center justify-center shadow-md shadow-teal-500/20 text-white">
+              <span className="material-symbols-outlined text-[22px]">smart_toy</span>
             </div>
-            <div className="flex-1">
-              <h4 className="text-sm font-black text-white font-heading tracking-tight">SehatSaarthi AI</h4>
-              <div className="flex items-center gap-1.5">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <h4 className="text-sm font-black text-white font-heading tracking-tight">SehatSaarthi AI</h4>
+                <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 border border-teal-500/30">v2.5</span>
+              </div>
+              <div className="flex items-center gap-1.5 mt-0.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span className="text-[10px] text-emerald-300 font-bold">Hindi & English • Voice Enabled</span>
+                <span className="text-[10px] text-teal-200/90 font-bold">Bilingual Voice • Medical LLM</span>
               </div>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               {/* Language Toggle */}
               <button
                 onClick={toggleSpeechLang}
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
                 title={speechLang === 'hi-IN' ? 'Hindi mein bolein' : 'Speak in English'}
               >
                 <span className="text-[11px] font-black">{speechLang === 'hi-IN' ? 'HI' : 'EN'}</span>
@@ -242,8 +242,8 @@ const GeminiChatbot = () => {
               {/* Speaker Toggle */}
               <button
                 onClick={() => setSpeakerOn(!speakerOn)}
-                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${
-                  speakerOn ? 'bg-emerald-500/30 text-emerald-300' : 'bg-white/10 text-white/50'
+                className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors cursor-pointer ${
+                  speakerOn ? 'bg-teal-500/30 text-teal-300 border border-teal-500/40' : 'bg-white/10 text-white/50'
                 }`}
                 title={speakerOn ? 'Aawaz band karein' : 'Aawaz chalu karein'}
               >
@@ -252,7 +252,7 @@ const GeminiChatbot = () => {
               {/* Close */}
               <button
                 onClick={() => { setIsOpen(false); stopSpeaking(); }}
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
               </button>
@@ -260,27 +260,28 @@ const GeminiChatbot = () => {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gradient-to-b from-slate-50 to-white">
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3.5 bg-slate-50/60">
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${
+                <div className={`max-w-[86%] rounded-2xl px-4 py-3 text-xs leading-relaxed ${
                   msg.role === 'user'
-                    ? 'bg-amber-500 text-white rounded-br-md font-bold'
-                    : 'bg-white border border-slate-200 text-slate-800 rounded-bl-md shadow-sm'
+                    ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white rounded-br-xs font-semibold shadow-md shadow-teal-700/20'
+                    : 'bg-white border border-slate-200/90 text-slate-800 rounded-bl-xs shadow-xs'
                 }`}>
                   {msg.role === 'assistant' && (
-                    <div className="flex items-center justify-between gap-1 mb-1.5 pb-1.5 border-b border-slate-100">
-                      <div className="flex items-center gap-1">
-                        <span className="material-symbols-outlined text-amber-600 text-[14px]">smart_toy</span>
-                        <span className="text-[9px] font-black text-amber-700 uppercase tracking-wider">SehatSaarthi AI</span>
+                    <div className="flex items-center justify-between gap-1 mb-2 pb-1.5 border-b border-slate-100">
+                      <div className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-teal-600 text-[15px]">smart_toy</span>
+                        <span className="text-[10px] font-black text-teal-800 uppercase tracking-wider">Assistant</span>
                       </div>
                       {speakerOn && i === messages.length - 1 && (
                         <button
                           onClick={() => speakText(msg.content)}
-                          className="text-amber-500 hover:text-amber-700 cursor-pointer"
+                          className="text-teal-600 hover:text-teal-800 cursor-pointer flex items-center gap-0.5"
                           title="Phir se sunein"
                         >
-                          <span className="material-symbols-outlined text-[12px]">replay</span>
+                          <span className="material-symbols-outlined text-[13px]">replay</span>
+                          <span className="text-[9px] font-bold">Replay</span>
                         </button>
                       )}
                     </div>
@@ -292,10 +293,10 @@ const GeminiChatbot = () => {
 
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-white border border-slate-200 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
+                <div className="bg-white border border-slate-200 rounded-2xl rounded-bl-xs px-4 py-3 shadow-xs">
                   <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-amber-500 text-[16px] animate-spin">progress_activity</span>
-                    <span className="text-xs text-slate-500 font-bold">Soch raha hoon...</span>
+                    <span className="material-symbols-outlined text-teal-600 text-[18px] animate-spin">progress_activity</span>
+                    <span className="text-xs text-slate-600 font-bold">Analyzing clinical request...</span>
                   </div>
                 </div>
               </div>
@@ -303,15 +304,15 @@ const GeminiChatbot = () => {
 
             {messages.length === 1 && (
               <div className="space-y-2 pt-2">
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider px-1">Sawaal puchein</p>
+                <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider px-1">Frequent Inquiries</p>
                 {QUICK_PROMPTS.map((prompt, i) => (
                   <button
                     key={i}
                     onClick={() => sendMessage(prompt.text)}
-                    className="w-full text-left px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 hover:border-amber-300 hover:bg-amber-50 text-xs text-slate-700 font-bold transition-all cursor-pointer flex items-center gap-2"
+                    className="w-full text-left px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 hover:border-teal-400 hover:bg-teal-50/50 text-xs text-slate-700 font-bold transition-all cursor-pointer flex items-center gap-2.5 shadow-2xs group"
                   >
-                    <span className="material-symbols-outlined text-amber-500 text-[16px]">{prompt.icon}</span>
-                    {prompt.text}
+                    <span className="material-symbols-outlined text-teal-600 text-[17px] group-hover:scale-110 transition-transform">{prompt.icon}</span>
+                    <span>{prompt.text}</span>
                   </button>
                 ))}
               </div>
@@ -322,42 +323,41 @@ const GeminiChatbot = () => {
 
           {/* Voice Listening Overlay */}
           {isListening && (
-            <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-4 animate-fadeIn">
+            <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-md z-10 flex flex-col items-center justify-center gap-4 animate-fadeIn">
               <div className="relative">
-                <div className="w-24 h-24 rounded-full bg-red-500/20 flex items-center justify-center animate-ping"></div>
-                <div className="absolute inset-0 w-24 h-24 rounded-full bg-red-500/30 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-red-500 text-[40px]">mic</span>
+                <div className="w-24 h-24 rounded-full bg-rose-500/20 flex items-center justify-center animate-ping"></div>
+                <div className="absolute inset-0 w-24 h-24 rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center shadow-lg shadow-rose-500/40">
+                  <span className="material-symbols-outlined text-white text-[40px]">mic</span>
                 </div>
               </div>
-              <p className="text-white text-sm font-black">Bol rahi hoon...</p>
-              <p className="text-white/60 text-xs font-bold">Rukne ke liye mic dabayein</p>
+              <p className="text-white text-base font-black font-heading">Listening carefully...</p>
+              <p className="text-slate-300 text-xs font-medium">Boliye, sun raha hoon</p>
               {input && (
-                <div className="bg-white/10 px-4 py-2 rounded-xl max-w-[280px]">
-                  <p className="text-white text-xs font-bold italic">"{input}"</p>
+                <div className="bg-white/10 border border-white/20 px-4 py-2.5 rounded-2xl max-w-[280px]">
+                  <p className="text-white text-xs font-bold italic text-center">"{input}"</p>
                 </div>
               )}
               <button
                 onClick={toggleListening}
-                className="mt-2 px-6 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-xs font-black cursor-pointer"
+                className="mt-2 px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black cursor-pointer shadow-md shadow-rose-600/30"
               >
-                Band karein
+                Stop Recording
               </button>
             </div>
           )}
 
-          {/* Input Area */}
+          {/* Input Bar */}
           <div className="px-4 py-3 bg-white border-t border-slate-200 shrink-0">
             <div className="flex items-end gap-2">
-              {/* Mic Button */}
               {voiceSupported && (
                 <button
                   onClick={toggleListening}
                   className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all cursor-pointer ${
                     isListening
-                      ? 'bg-red-500 text-white shadow-lg shadow-red-500/30 animate-pulse'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                      ? 'bg-rose-500 text-white shadow-md shadow-rose-500/30 animate-pulse'
+                      : 'bg-slate-100 hover:bg-teal-50 text-slate-600 hover:text-teal-700'
                   }`}
-                  title={isListening ? 'Sunna band karein' : 'Bol ke puchein'}
+                  title={isListening ? 'Sunna band karein' : 'Voice Input'}
                 >
                   <span className="material-symbols-outlined text-[20px]">{isListening ? 'mic_off' : 'mic'}</span>
                 </button>
@@ -369,9 +369,9 @@ const GeminiChatbot = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={speechLang === 'hi-IN' ? 'Yahan type karein ya mic dabayein...' : 'Type here or tap mic...'}
+                  placeholder={speechLang === 'hi-IN' ? 'Yahan likhein ya mic dabayein...' : 'Ask question or tap mic...'}
                   rows={1}
-                  className="w-full bg-slate-100 rounded-xl px-4 py-2.5 pr-10 text-xs text-slate-900 font-bold resize-none focus:outline-none focus:ring-2 focus:ring-amber-400 placeholder:text-slate-400"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold resize-none focus:outline-none focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 placeholder:text-slate-400"
                   style={{ minHeight: '40px', maxHeight: '80px' }}
                 />
               </div>
@@ -381,15 +381,15 @@ const GeminiChatbot = () => {
                 disabled={!input.trim() || loading}
                 className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all cursor-pointer ${
                   input.trim() && !loading
-                    ? 'bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/30'
-                    : 'bg-slate-200 text-slate-400'
+                    ? 'bg-gradient-to-r from-teal-700 to-emerald-600 text-white shadow-md shadow-teal-700/25 active:scale-95'
+                    : 'bg-slate-100 text-slate-300'
                 }`}
               >
                 <span className="material-symbols-outlined text-[20px]">send</span>
               </button>
             </div>
-            <p className="text-[9px] text-slate-400 mt-1.5 text-center font-medium">
-              {voiceSupported ? 'Mic se bolein ya type karein' : 'Type karke puchein'} • AI — medical advice ka substitute nahi hai
+            <p className="text-[10px] text-slate-400 mt-2 text-center font-medium">
+              Ayushman Bharat Verified AI Companion • Medical emergency mein 108 dial karein
             </p>
           </div>
         </div>

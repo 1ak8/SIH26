@@ -97,19 +97,16 @@ export default function DoctorDashboard() {
     setActionLoadingId(appointmentId);
 
     if (newStatus === 'completed') {
-      // Remove from active queue immediately
       setQueue(prev => prev.filter(a => {
         const match = (a._id && a._id === appointmentId) || (a.id && a.id === appointmentId);
         return !match;
       }));
 
-      // Increment completed counter
       setData(prev => ({
         ...prev,
         completedToday: (prev?.completedToday || 19) + 1,
       }));
 
-      // Save to Doctor Consultation History cache immediately
       const historyItem = {
         _id: appointmentId,
         id: `SEHAT-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -132,9 +129,8 @@ export default function DoctorDashboard() {
         localStorage.setItem('sehatsaarthi_doctor_history', JSON.stringify([historyItem, ...existing]));
       } catch(e) {}
 
-      showToast(`Consultation for ${item.name || item.patient?.name} completed & moved to History!`);
+      showToast(`Consultation for ${item.name || item.patient?.name} completed & logged to digital records!`);
     } else {
-      // Update in-consultation status
       setQueue(prev => prev.map(a => {
         const match = (a._id && a._id === appointmentId) || (a.id && a.id === appointmentId);
         if (match) {
@@ -149,7 +145,7 @@ export default function DoctorDashboard() {
 
       if (newStatus === 'in_consultation') {
         setActiveConsultation(item);
-        showToast(`Tele-Consultation started with ${item.name || item.patient?.name}! Connected to Kiosk.`);
+        showToast(`Tele-Consultation started with ${item.name || item.patient?.name}! Kiosk link active.`);
       }
     }
 
@@ -176,52 +172,54 @@ export default function DoctorDashboard() {
   };
 
   return (
-    <div className="bg-[#fbfaf7] text-slate-900 font-sans min-h-screen">
+    <div className="bg-slate-50 text-slate-900 font-sans min-h-screen selection:bg-teal-100 selection:text-teal-900">
       <DoctorNavbar />
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-24 right-6 z-[120] bg-slate-900 text-amber-300 px-5 py-3 rounded-2xl shadow-xl border border-amber-400/50 flex items-center gap-3 text-sm font-bold animate-bounce">
-          <span className="material-symbols-outlined text-amber-400">check_circle</span>
+        <div className="fixed top-24 right-6 z-[120] bg-slate-900 text-teal-300 px-5 py-3 rounded-2xl shadow-xl border border-teal-500/40 flex items-center gap-3 text-xs font-black animate-fadeIn">
+          <span className="material-symbols-outlined text-teal-400 text-[18px]">check_circle</span>
           <span>{toastMessage}</span>
         </div>
       )}
 
-      <main className="w-full px-6 lg:px-12 xl:px-16 pt-28 pb-16">
+      <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
         {/* Live OPD Console Header Banner */}
-        <div className="bg-gradient-to-r from-amber-500/15 via-amber-100/40 to-transparent p-6 sm:p-8 rounded-3xl border-2 border-amber-300 shadow-sm mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+        <div className="bg-gradient-to-r from-teal-950 via-teal-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-teal-500/30 shadow-xl mb-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-extrabold mb-3 shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-teal-200 text-xs font-black mb-3 shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span>National Tele-Consultation Mission • E-Sanjeevani Grid</span>
               </div>
-              <h1 className="font-heading text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              <h1 className="font-heading text-2xl sm:text-4xl font-black text-white tracking-tight">
                 Tele-OPD Doctor Console
               </h1>
-              <p className="text-base text-slate-700 font-semibold mt-1">
-                Attending Specialist: <span className="text-amber-800 underline decoration-amber-400 decoration-2 notranslate" translate="no">{user?.name || 'Dr. Rajesh Sharma, MD'}</span> • CHC Sitapur Central
+              <p className="text-xs sm:text-base text-slate-300 font-medium mt-1.5">
+                Attending Specialist: <span className="text-teal-300 font-black notranslate" translate="no">{user?.name || 'Dr. Rajesh Sharma, MD'}</span> • CHC Sitapur Central
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3.5 shrink-0 self-start lg:self-auto">
-              <div className="bg-white border-2 border-amber-300 px-4 py-3 rounded-2xl shadow-sm flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[20px]">timer</span>
+            <div className="flex flex-wrap items-center gap-3 shrink-0 self-start lg:self-auto">
+              <div className="bg-white/10 backdrop-blur-md border border-white/15 px-4 py-2.5 rounded-2xl shadow-sm flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-teal-500/20 text-teal-300 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[19px]">timer</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-500 uppercase font-black tracking-wider">Live OPD Time</span>
-                  <span className="text-lg font-black text-slate-900 font-mono leading-tight">{formatTime(sessionSeconds)}</span>
+                  <span className="text-[10px] text-teal-300 uppercase font-black tracking-wider">Live OPD Time</span>
+                  <span className="text-base font-black text-white font-mono leading-tight">{formatTime(sessionSeconds)}</span>
                 </div>
               </div>
 
-              <div className="bg-white border-2 border-emerald-400 px-4 py-3 rounded-2xl shadow-sm flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[20px]">how_to_reg</span>
+              <div className="bg-white/10 backdrop-blur-md border border-emerald-400/30 px-4 py-2.5 rounded-2xl shadow-sm flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[19px]">how_to_reg</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] text-emerald-800 uppercase font-black tracking-wider">Completed Today</span>
-                  <span className="text-lg font-black text-emerald-950 leading-tight">{data?.completedToday || 19} Patients</span>
+                  <span className="text-[10px] text-emerald-300 uppercase font-black tracking-wider">Completed Today</span>
+                  <span className="text-base font-black text-white font-mono leading-tight">{data?.completedToday || 19} Citizens</span>
                 </div>
               </div>
             </div>
@@ -229,45 +227,47 @@ export default function DoctorDashboard() {
         </div>
 
         {/* 3 High-Contrast Clinical Stat Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
           <Link 
             to="/doctor/queue"
-            className="bg-white p-6 rounded-3xl border-2 border-amber-300 hover:border-amber-500 shadow-sm flex items-center justify-between gap-4 transition-all group"
+            className="bg-white p-6 rounded-3xl border border-slate-200 hover:border-teal-400 shadow-2xs hover:shadow-lg transition-all group flex items-center justify-between gap-4"
           >
             <div>
-              <span className="text-xs uppercase font-extrabold text-amber-800 tracking-wider block mb-1">Live Queue Waiting</span>
-              <span className="text-4xl font-black text-amber-950">{queue.filter(a => a.status !== 'completed' && a.status !== 'Completed' && a.rawStatus !== 'completed').length}</span>
-              <p className="text-xs text-amber-800 font-bold mt-1">Ready for consultation</p>
+              <span className="text-xs uppercase font-black text-slate-400 tracking-wider block mb-1">Live Queue Waiting</span>
+              <span className="text-4xl font-black text-slate-900 font-mono">
+                {queue.filter(a => a.status !== 'completed' && a.status !== 'Completed' && a.rawStatus !== 'completed').length}
+              </span>
+              <p className="text-xs text-teal-700 font-bold mt-1">Ready for consultation</p>
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-all">
+            <div className="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0 group-hover:bg-teal-700 group-hover:text-white transition-all shadow-2xs">
               <span className="material-symbols-outlined text-[32px]">reduce_capacity</span>
             </div>
           </Link>
 
           <Link 
             to="/doctor/labs"
-            className="bg-white p-6 rounded-3xl border-2 border-slate-200/90 hover:border-amber-400 shadow-sm flex items-center justify-between gap-4 transition-all group"
+            className="bg-white p-6 rounded-3xl border border-slate-200 hover:border-sky-400 shadow-2xs hover:shadow-lg transition-all group flex items-center justify-between gap-4"
           >
             <div>
-              <span className="text-xs uppercase font-extrabold text-slate-500 tracking-wider block mb-1">Diagnostic Labs</span>
-              <span className="text-4xl font-black text-slate-900">3</span>
-              <p className="text-xs text-slate-500 font-semibold mt-1">Pending lab reports</p>
+              <span className="text-xs uppercase font-black text-slate-400 tracking-wider block mb-1">Diagnostic Labs</span>
+              <span className="text-4xl font-black text-slate-900 font-mono">3</span>
+              <p className="text-xs text-sky-700 font-bold mt-1">Pending lab results</p>
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-sky-50 border-2 border-sky-200 text-sky-700 flex items-center justify-center shrink-0 group-hover:bg-sky-500 group-hover:text-white transition-all">
+            <div className="w-14 h-14 rounded-2xl bg-sky-50 border border-sky-200 text-sky-700 flex items-center justify-center shrink-0 group-hover:bg-sky-600 group-hover:text-white transition-all shadow-2xs">
               <span className="material-symbols-outlined text-[32px]">science</span>
             </div>
           </Link>
 
           <Link 
             to="/doctor/prescriptions"
-            className="bg-white p-6 rounded-3xl border-2 border-slate-200/90 hover:border-amber-400 shadow-sm flex items-center justify-between gap-4 transition-all group"
+            className="bg-white p-6 rounded-3xl border border-slate-200 hover:border-emerald-400 shadow-2xs hover:shadow-lg transition-all group flex items-center justify-between gap-4"
           >
             <div>
-              <span className="text-xs uppercase font-extrabold text-slate-500 tracking-wider block mb-1">Digital Prescriptions</span>
-              <span className="text-4xl font-black text-slate-900">{data?.prescriptionsToday || 3}</span>
-              <p className="text-xs text-slate-500 font-semibold mt-1">Signed via Jan Aushadhi</p>
+              <span className="text-xs uppercase font-black text-slate-400 tracking-wider block mb-1">Digital Prescriptions</span>
+              <span className="text-4xl font-black text-slate-900 font-mono">{data?.prescriptionsToday || 3}</span>
+              <p className="text-xs text-emerald-700 font-bold mt-1">Signed via Jan Aushadhi</p>
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-emerald-50 border-2 border-emerald-200 text-emerald-800 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-2xs">
               <span className="material-symbols-outlined text-[32px]">medication</span>
             </div>
           </Link>
@@ -277,17 +277,17 @@ export default function DoctorDashboard() {
         <section className="mb-10">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-3 border-b border-slate-200">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-sm shrink-0">
+              <div className="w-10 h-10 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shadow-2xs shrink-0">
                 <span className="material-symbols-outlined text-[22px]">video_camera_front</span>
               </div>
               <div>
-                <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Active Tele-Consultations Queue</h2>
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight font-heading">Active Tele-Consultations Queue</h2>
                 <p className="text-xs sm:text-sm text-slate-600 font-medium">Patients connected from rural sub-centres with assigned ASHA workers</p>
               </div>
             </div>
             <Link 
               to="/doctor/queue"
-              className="inline-flex items-center gap-1.5 text-xs font-extrabold text-amber-800 bg-amber-100 hover:bg-amber-200 px-3.5 py-1.5 rounded-full border border-amber-300 transition-all self-start sm:self-auto"
+              className="inline-flex items-center gap-1.5 text-xs font-black text-teal-900 bg-teal-50 hover:bg-teal-100 px-3.5 py-1.5 rounded-full border border-teal-200 transition-all self-start sm:self-auto"
             >
               <span>View Full Queue ({queue.filter(a => a.status !== 'completed' && a.status !== 'Completed' && a.rawStatus !== 'completed').length})</span>
               <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
@@ -299,7 +299,7 @@ export default function DoctorDashboard() {
               const activeList = queue.filter(a => a.status !== 'completed' && a.status !== 'Completed' && a.rawStatus !== 'completed');
               if (activeList.length === 0) {
                 return (
-                  <div className="p-8 text-center bg-white rounded-3xl border-2 border-slate-200">
+                  <div className="p-8 text-center bg-white rounded-3xl border border-slate-200">
                     <span className="material-symbols-outlined text-4xl text-emerald-600 block mx-auto mb-2">check_circle</span>
                     <h4 className="text-base font-black text-slate-900">All Scheduled Consultations Completed!</h4>
                     <p className="text-xs text-slate-500 mt-1">All patients in queue have been attended. Completed records have automatically moved to Consultation History.</p>
@@ -323,60 +323,60 @@ export default function DoctorDashboard() {
                 return (
                   <div 
                     key={pId}
-                    className={`bg-white p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 shadow-sm hover:shadow-md ${
+                    className={`bg-white p-5 sm:p-6 rounded-3xl border transition-all duration-200 shadow-2xs hover:shadow-md ${
                       isCurrent 
-                        ? 'border-amber-500 bg-amber-50/25' 
-                        : 'border-slate-200 hover:border-amber-400'
+                        ? 'border-teal-500 bg-teal-50/20 ring-2 ring-teal-500/10' 
+                        : 'border-slate-200 hover:border-teal-300'
                     }`}
                   >
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
                       <div className="flex items-start sm:items-center gap-4">
-                        <div className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center font-bold text-xl shrink-0 ${
+                        <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center font-bold text-xl shrink-0 font-mono ${
                           isCurrent 
-                            ? 'bg-amber-100 border-amber-400 text-amber-900 shadow-xs' 
+                            ? 'bg-teal-700 border-teal-700 text-white shadow-sm shadow-teal-700/20' 
                             : 'bg-slate-50 border-slate-200 text-slate-700'
                         }`}>
                           #{String(pToken).padStart(2, '0')}
                         </div>
                         <div>
                           <div className="flex flex-wrap items-center gap-2.5 mb-1">
-                            <h3 className="text-xl font-extrabold text-slate-900 leading-snug notranslate" translate="no">{pName}</h3>
-                            <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{pAge} • {pGender}</span>
-                            <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-black border ${
+                            <h3 className="text-xl font-black text-slate-900 leading-snug notranslate" translate="no">{pName}</h3>
+                            <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-lg">{pAge} • {pGender}</span>
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-black border ${
                               isCurrent 
-                                ? 'bg-amber-100 text-amber-950 border-amber-400 shadow-2xs animate-pulse' 
+                                ? 'bg-teal-50 text-teal-950 border-teal-300 shadow-2xs animate-pulse' 
                                 : pStatus === 'Next in Line'
-                                  ? 'bg-sky-100 text-sky-900 border-sky-300'
+                                  ? 'bg-sky-50 text-sky-900 border-sky-300'
                                   : 'bg-slate-100 text-slate-700 border-slate-200'
                             }`}>
-                              {isCurrent && <span className="material-symbols-outlined text-[14px]">videocam</span>}
-                              {pStatus}
+                              {isCurrent && <span className="material-symbols-outlined text-[15px] text-teal-600">videocam</span>}
+                              <span>{pStatus}</span>
                             </span>
                           </div>
-                          <p className="text-sm font-bold text-slate-700">{pSymptoms}</p>
+                          <p className="text-xs sm:text-sm font-bold text-slate-700">{pSymptoms}</p>
                           <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 font-semibold mt-1">
                             <span>{pLocation}</span>
                             <span>•</span>
-                            <span className="text-amber-900 font-extrabold">ASHA: {pAsha}</span>
+                            <span className="text-teal-900 font-extrabold">ASHA: {pAsha}</span>
                             <span>•</span>
-                            <span className="font-mono text-slate-700 font-bold notranslate" translate="no">ABHA: {pAbha}</span>
+                            <span className="font-mono text-slate-600 font-bold notranslate" translate="no">ABHA: {pAbha}</span>
                           </div>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2.5 shrink-0 pt-2 lg:pt-0">
-                        {/* Info "i" Button */}
+                        {/* Info Button */}
                         <button 
                           type="button"
                           onClick={() => setExpandedPatientId(expandedPatientId === pId ? null : pId)}
-                          className={`h-12 w-12 rounded-xl border-2 flex items-center justify-center transition-all shadow-xs ${
+                          className={`h-11 w-11 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
                             expandedPatientId === pId 
-                              ? 'bg-amber-600 text-white border-amber-600 shadow-sm' 
-                              : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-700 hover:text-amber-700 hover:border-amber-400'
+                              ? 'bg-teal-700 text-white border-teal-700 shadow-2xs' 
+                              : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-teal-700'
                           }`}
                           title="View Patient Clinical Dossier"
                         >
-                          <span className="material-symbols-outlined text-[22px]">info</span>
+                          <span className="material-symbols-outlined text-[20px]">info</span>
                         </button>
 
                         <Link 
@@ -390,9 +390,9 @@ export default function DoctorDashboard() {
                             location: pLocation,
                             token: pToken
                           }}
-                          className="h-12 px-4 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-xs"
+                          className="h-11 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs font-black flex items-center justify-center gap-1.5 transition-all shadow-2xs"
                         >
-                          <span className="material-symbols-outlined text-[18px] text-amber-600">medication</span>
+                          <span className="material-symbols-outlined text-[18px] text-teal-700">medication</span>
                           <span>Prescribe</span>
                         </Link>
 
@@ -400,17 +400,17 @@ export default function DoctorDashboard() {
                           <button 
                             onClick={() => handleUpdateStatus(item, 'completed')}
                             disabled={actionLoadingId === pId}
-                            className="h-12 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-extrabold rounded-xl shadow-md shadow-emerald-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                            className="h-11 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-black rounded-xl shadow-md shadow-emerald-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
                             type="button"
                           >
-                            <span className="material-symbols-outlined text-[20px]">check_circle</span>
+                            <span className="material-symbols-outlined text-[18px]">check_circle</span>
                             <span>Complete Consultation</span>
                           </button>
                         ) : (
                           <button 
                             onClick={() => handleUpdateStatus(item, 'in_consultation')}
                             disabled={actionLoadingId === pId}
-                            className="h-12 px-5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-extrabold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                            className="h-11 px-5 bg-teal-700 hover:bg-teal-800 text-white text-xs font-black rounded-xl shadow-md shadow-teal-700/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
                             type="button"
                           >
                             <span className="material-symbols-outlined text-[18px]">videocam</span>
@@ -422,30 +422,30 @@ export default function DoctorDashboard() {
 
                     {/* In-Place Expanded Patient Clinical Dossier */}
                     {expandedPatientId === pId && (
-                      <div className="w-full pt-4 mt-4 border-t-2 border-slate-100 animate-fadeIn">
-                        <div className="bg-amber-50/60 rounded-2xl border-2 border-amber-200/80 p-5">
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-amber-200/70">
+                      <div className="w-full pt-4 mt-4 border-t border-slate-100 animate-fadeIn">
+                        <div className="bg-slate-50/80 rounded-2xl border border-slate-200 p-4 sm:p-5">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-200">
                             <div className="flex items-center gap-2">
-                              <span className="material-symbols-outlined text-amber-700 text-[20px]">clinical_notes</span>
-                              <span className="text-xs uppercase font-black text-amber-950 tracking-wider">Clinical Vitals &amp; ASHA Triage Dossier</span>
+                              <span className="material-symbols-outlined text-teal-700 text-[19px]">clinical_notes</span>
+                              <span className="text-xs uppercase font-black text-slate-900 tracking-wider">Clinical Vitals &amp; ASHA Triage Dossier</span>
                             </div>
-                            <span className="text-xs font-mono font-extrabold bg-white text-amber-950 px-3 py-1 rounded-lg border border-amber-300 shadow-2xs self-start sm:self-auto">
+                            <span className="text-xs font-mono font-bold bg-white text-slate-800 px-3 py-1 rounded-lg border border-slate-200 self-start sm:self-auto">
                               ABHA: {pAbha}
                             </span>
                           </div>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
-                            <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
-                              <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Reported Symptoms</span>
-                              <p className="text-xs font-extrabold text-slate-900">{pSymptoms}</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                              <span className="text-[10px] uppercase font-black text-slate-400 block mb-0.5">Reported Symptoms</span>
+                              <p className="text-xs font-bold text-slate-900">{pSymptoms}</p>
                             </div>
-                            <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
-                              <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Logged Vitals</span>
-                              <p className="text-xs font-black text-amber-950">BP 120/80 • Pulse 74 • SpO2 98%</p>
+                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                              <span className="text-[10px] uppercase font-black text-slate-400 block mb-0.5">Logged Telemetry Vitals</span>
+                              <p className="text-xs font-black text-teal-900 font-mono">BP 120/80 • Pulse 74 • SpO2 98%</p>
                             </div>
-                            <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-2xs">
-                              <span className="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Assigned ASHA Worker</span>
-                              <p className="text-xs font-extrabold text-slate-900">{pAsha} • {pLocation}</p>
+                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                              <span className="text-[10px] uppercase font-black text-slate-400 block mb-0.5">Assigned Field Supervisor</span>
+                              <p className="text-xs font-bold text-slate-900">{pAsha} • {pLocation}</p>
                             </div>
                           </div>
                         </div>
@@ -460,8 +460,8 @@ export default function DoctorDashboard() {
 
         {/* ACTIVE TELE-CONSULTATION ROOM MODAL FOR DOCTOR */}
         {activeConsultation && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-4 animate-fadeIn">
-            <div className="bg-slate-950 text-white w-full max-w-4xl rounded-3xl border border-slate-700 shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/75 backdrop-blur-md p-3 sm:p-4 animate-fadeIn">
+            <div className="bg-slate-950 text-white w-full max-w-4xl rounded-3xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
               {/* Modal Header */}
               <div className="px-6 py-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -469,7 +469,7 @@ export default function DoctorDashboard() {
                   <div>
                     <h3 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
                       <span>Live Tele-OPD Consultation</span>
-                      <span className="text-xs font-mono text-amber-400 bg-slate-800 px-2.5 py-0.5 rounded-md border border-slate-700">
+                      <span className="text-xs font-mono text-teal-300 bg-slate-800 px-2.5 py-0.5 rounded-md border border-slate-700">
                         Token #{activeConsultation.id || 4}
                       </span>
                     </h3>
@@ -494,20 +494,20 @@ export default function DoctorDashboard() {
                 <div className="lg:col-span-7 flex flex-col gap-3">
                   <div className="relative aspect-video rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden flex items-center justify-center group shadow-inner">
                     <div className="flex flex-col items-center gap-2 z-10 text-center p-4">
-                      <div className="w-20 h-20 rounded-full bg-amber-500/20 border-2 border-amber-400/40 flex items-center justify-center text-amber-400">
+                      <div className="w-20 h-20 rounded-full bg-teal-500/20 border-2 border-teal-400/40 flex items-center justify-center text-teal-400">
                         <span className="material-symbols-outlined text-[42px]">person</span>
                       </div>
                       <span className="text-sm font-black text-white notranslate" translate="no">{activeConsultation.name || activeConsultation.patient?.name}</span>
                       <span className="text-xs text-emerald-400 font-extrabold flex items-center gap-1.5 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/30">
                         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        HD Encrypted Video Stream • Online
+                        HD Encrypted Video Stream • Connected
                       </span>
                     </div>
 
                     {/* Audio visualizer simulation */}
                     <div className="absolute bottom-4 left-4 right-4 flex items-center justify-center gap-1">
                       {[18, 35, 22, 45, 60, 30, 50, 25, 40, 55, 30, 18].map((h, i) => (
-                        <span key={i} style={{ height: `${h}px` }} className="w-1 bg-amber-400/70 rounded-full animate-pulse"></span>
+                        <span key={i} style={{ height: `${h}px` }} className="w-1 bg-teal-400/70 rounded-full animate-pulse"></span>
                       ))}
                     </div>
                   </div>
@@ -526,7 +526,7 @@ export default function DoctorDashboard() {
                         handleUpdateStatus(activeConsultation, 'completed');
                         setActiveConsultation(null);
                       }}
-                      className="px-5 py-2.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-black flex items-center gap-1.5 transition-all shadow-md"
+                      className="px-5 py-2.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-black flex items-center gap-1.5 transition-all shadow-md active:scale-98 cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-[18px]">call_end</span>
                       <span>End &amp; Complete Consultation</span>
@@ -536,14 +536,13 @@ export default function DoctorDashboard() {
 
                 {/* Right: Clinical Information & Quick Prescription */}
                 <div className="lg:col-span-5 flex flex-col gap-3">
-                  {/* Patient Info Card */}
                   <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
                     <div className="flex justify-between items-start">
                       <div>
                         <span className="text-[10px] text-slate-400 font-bold uppercase block">Citizen</span>
                         <strong className="text-white text-base font-black">{activeConsultation.name || activeConsultation.patient?.name}</strong>
                       </div>
-                      <span className="text-[10px] font-mono text-amber-300 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+                      <span className="text-[10px] font-mono text-teal-300 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
                         ABHA: {activeConsultation.abha || '91-4820-1940-2810'}
                       </span>
                     </div>
@@ -554,7 +553,7 @@ export default function DoctorDashboard() {
                     </div>
 
                     <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
-                      <span className="text-[10px] text-amber-400 uppercase font-black block mb-1">Live Vitals Received from Field Kiosk</span>
+                      <span className="text-[10px] text-teal-400 uppercase font-black block mb-1">Live Vitals Received from Field Kiosk</span>
                       <p className="text-white font-mono font-black">{activeConsultation.vitals || 'BP 120/80 mmHg • Pulse 74 • SpO2 98%'}</p>
                     </div>
                   </div>
@@ -572,7 +571,7 @@ export default function DoctorDashboard() {
                         location: activeConsultation.location || 'Rampur Sub-Centre',
                         token: activeConsultation.id || 4,
                       }}
-                      className="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                      className="w-full py-3 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-black text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
                     >
                       <span className="material-symbols-outlined text-[18px]">medication</span>
                       <span>Write Digital e-Prescription (Jan Aushadhi)</span>
@@ -602,28 +601,28 @@ export default function DoctorDashboard() {
         </section>
       </main>
 
-      {/* FOOTER: Exact same as Patient Panel */}
+      {/* FOOTER */}
       <footer className="w-full bg-white border-t border-slate-200 mt-12">
-        <div className="w-full px-6 lg:px-12 xl:px-16 py-8">
+        <div className="w-full px-6 lg:px-12 xl:px-16 py-8 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div className="md:col-span-2 flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-amber-600 text-[28px]">verified</span>
-                <span className="text-lg text-slate-900 font-extrabold">Ministry of Health &amp; Family Welfare</span>
+                <span className="material-symbols-outlined text-teal-600 text-[26px]">verified</span>
+                <span className="text-base text-slate-900 font-black">Ministry of Health &amp; Family Welfare</span>
               </div>
-              <p className="text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
-                <span className="notranslate" translate="no">SehatSaarthi</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
+              <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
+                <span className="notranslate font-bold text-slate-900" translate="no">SehatSaarthi</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
               </p>
             </div>
-            <div className="flex flex-col gap-1.5 justify-center md:items-end">
-              <span className="text-xs text-slate-500 uppercase font-extrabold tracking-wider">National Emergency Helplines</span>
-              <span className="text-xl font-black text-rose-700">Toll-Free 1075 / 108</span>
+            <div className="flex flex-col gap-1 justify-center md:items-end">
+              <span className="text-[10px] text-slate-400 uppercase font-black tracking-wider">National Emergency Helplines</span>
+              <span className="text-xl font-black text-rose-700 font-mono">Toll-Free 1075 / 108</span>
               <span className="text-xs text-slate-500 font-semibold">24x7 Tele-Consult &amp; Ambulance Dispatch</span>
             </div>
           </div>
-          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-medium">
+          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 font-medium">
             <p>© 2026 Government Public Healthcare Infrastructure. All citizen rights reserved.</p>
-            <p className="text-amber-900 font-bold">Radical Clarity &amp; Rural Accessibility Compliant</p>
+            <p className="text-teal-900 font-bold">ABDM Level-3 Clinical Compliance</p>
           </div>
         </div>
       </footer>

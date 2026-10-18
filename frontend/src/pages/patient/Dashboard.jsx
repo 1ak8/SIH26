@@ -679,102 +679,108 @@ export default function PatientDashboard() {
       )}
 
       {/* MAIN */}
-      <main className="w-full bg-surface-container-lowest px-6 lg:px-12 xl:px-16 pt-28">
+      <main className="w-full bg-[#f8fafc] px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28">
         {activeTab === 'dashboard' && (
           <div className="flex flex-col w-full pb-8">
             {/* Welcome Header */}
-            <div className="w-full py-5 mb-3 bg-gradient-to-r from-amber-500/10 via-amber-100/30 to-transparent p-5 sm:p-6 rounded-2xl border border-amber-200/80 shadow-xs">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="w-full mb-6 bg-gradient-to-r from-teal-950 via-teal-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-teal-500/30 shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-amber-300/80 text-amber-900 text-xs font-bold mb-2 shadow-xs">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Ayushman Bharat Digital Health Grid</span>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-teal-200 text-xs font-black mb-3 shadow-2xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Ayushman Bharat Digital Health Grid • Sitapur Sub-Centre</span>
                   </div>
-                  <h1 className="font-heading text-3xl sm:text-4xl lg:text-[40px] font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-                    Hello, <span className="notranslate" translate="no">{user?.name?.split(' ')[0] || 'Patient'}</span> <span className="text-3xl sm:text-4xl">👋</span>
+                  <h1 className="font-heading text-3xl sm:text-4xl lg:text-[42px] font-black tracking-tight flex items-center gap-2.5 text-white">
+                    Hello, <span className="notranslate text-teal-300" translate="no">{user?.name?.split(' ')[0] || 'Patient'}</span> <span className="text-3xl sm:text-4xl">👋</span>
                   </h1>
-                  <p className="text-base sm:text-lg text-slate-700 font-semibold mt-1">
-                    Your health, our priority — <span className="text-amber-800 underline decoration-amber-400 decoration-2">Sitapur Rural Sub-Centre</span>
+                  <p className="text-sm sm:text-base text-slate-300 font-medium mt-1.5 max-w-xl">
+                    Your continuous care portal — connected directly to Sitapur CHC &amp; verified field doctors.
                   </p>
                 </div>
-                <div className="inline-flex items-center gap-2.5 bg-white border-2 border-emerald-400 px-4 py-2.5 rounded-2xl text-emerald-900 text-sm font-extrabold shadow-sm self-start md:self-auto">
-                  <span className="relative flex h-3 w-3 shrink-0">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-600"></span>
-                  </span>
-                  <span>{t('activeCitizenHealthRecord')}</span>
-                </div>
+
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                  <div className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-md border border-emerald-400/40 px-4 py-2.5 rounded-2xl text-emerald-300 text-xs font-black shadow-sm">
+                    <span className="relative flex h-2.5 w-2.5 shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <span>{t('activeCitizenHealthRecord')}</span>
+                  </div>
+
+                  {/* AI Treatment Quick Button */}
+                  <button 
+                    onClick={() => navigate('/patient/treatment')}
+                    className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-400 hover:from-teal-400 hover:to-emerald-300 text-slate-950 px-5 py-2.5 rounded-2xl font-black text-xs shadow-lg shadow-teal-500/20 hover:scale-102 transition-all duration-200 cursor-pointer active:scale-98"
+                  >
+                    <span className="material-symbols-outlined text-[19px]">psychology</span>
+                    <span>AI Treatment Advisor</span>
+                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                  </button>
                 </div>
               </div>
-
-              {/* AI Treatment Quick Button */}
-              <button 
-                onClick={() => navigate('/patient/treatment')}
-                className="mt-4 mb-2 inline-flex items-center gap-2.5 bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-700 hover:to-sky-800 text-white px-5 py-3 rounded-2xl font-extrabold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[20px]">psychology</span>
-                <span>AI Treatment Advisor</span>
-                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-              </button>
+            </div>
 
             {/* Primary Care Services */}
             <section className="mb-10">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-sm shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center shadow-2xs shrink-0">
                     <span className="material-symbols-outlined text-[22px]">apps</span>
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="font-heading text-2xl font-extrabold text-slate-900 tracking-tight">{t('primaryCareServices')}</h2>
-                      <span className="bg-amber-100 text-amber-900 text-xs px-2.5 py-0.5 rounded-full border border-amber-300 font-extrabold hidden sm:inline">{t('fastAccess')}</span>
+                      <h2 className="font-heading text-2xl font-black text-slate-900 tracking-tight">{t('primaryCareServices')}</h2>
+                      <span className="bg-teal-50 text-teal-900 text-xs px-2.5 py-0.5 rounded-full border border-teal-200 font-extrabold hidden sm:inline">{t('fastAccess')}</span>
                     </div>
                     <p className="text-xs sm:text-sm text-slate-600 font-medium">{t('selectAnyServiceToBegin')}</p>
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
                 {[
-                  { icon: 'calendar_month', title: t('bookTeleConsult'), desc: t('consultChc'), badge: t('freeGovService'), action: () => navigate('/patient/doctors'), color: 'amber', bg: 'from-amber-500/10 to-amber-50/50' },
+                  { icon: 'calendar_month', title: t('bookTeleConsult'), desc: t('consultChc'), badge: t('freeGovService'), action: () => navigate('/patient/doctors'), color: 'teal', bg: 'from-teal-500/10 to-teal-50/50' },
                   { icon: 'airport_shuttle', title: 'Check Ambulance Availability', desc: 'Real-time GPS tracking, nearest ALS/BLS units & 108 emergency dispatch', badge: '108 Fleet • Live', action: () => navigate('/patient/ambulance'), color: 'rose', bg: 'from-rose-500/10 to-rose-50/50' },
-                  { icon: 'near_me', title: t('findNearestPhc'), desc: t('dispensariesSubCentres'), badge: 'Sitapur Ward 4', action: () => setActiveModal('find-phc'), color: 'violet', bg: 'from-violet-500/10 to-violet-50/50' },
+                  { icon: 'near_me', title: t('findNearestPhc'), desc: t('dispensariesSubCentres'), badge: 'Sitapur Ward 4', action: () => setActiveModal('find-phc'), color: 'sky', bg: 'from-sky-500/10 to-sky-50/50' },
                   { icon: 'forward', title: 'My Referrals', desc: 'Track referrals to specialists, hospitals & labs with real-time status', badge: 'Live Tracking', action: () => navigate('/patient/referrals'), color: 'emerald', bg: 'from-emerald-500/10 to-emerald-50/50' },
                 ].map(card => (
                   <button 
                     key={card.title} 
                     onClick={card.action} 
-                    className={`group text-left bg-white hover:bg-slate-50/80 p-6 rounded-2xl border-2 shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-between focus:outline-none focus:ring-4 focus:ring-amber-500/30 relative overflow-hidden ${
-                      card.color === 'amber' ? 'border-amber-300 hover:border-amber-500' :
-                      card.color === 'rose' ? 'border-rose-300 hover:border-rose-500' :
-                      card.color === 'emerald' ? 'border-emerald-300 hover:border-emerald-500' :
-                      card.color === 'sky' ? 'border-sky-300 hover:border-sky-500' :
-                      'border-violet-300 hover:border-violet-500'
+                    className={`group text-left bg-white hover:bg-slate-50/80 p-6 rounded-3xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between focus:outline-none focus:ring-4 focus:ring-teal-500/20 relative overflow-hidden ${
+                      card.color === 'teal' ? 'hover:border-teal-500' :
+                      card.color === 'rose' ? 'hover:border-rose-500' :
+                      card.color === 'emerald' ? 'hover:border-emerald-500' :
+                      'hover:border-sky-500'
                     }`} 
                     type="button"
                   >
                     <div className="flex items-center justify-between w-full mb-5">
-                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm border-2 transition-all ${
-                        card.color === 'amber' ? 'bg-amber-50 text-amber-700 border-amber-200 group-hover:bg-amber-500 group-hover:text-white group-hover:border-amber-500' :
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-xs border transition-all ${
+                        card.color === 'teal' ? 'bg-teal-50 text-teal-700 border-teal-200 group-hover:bg-teal-600 group-hover:text-white group-hover:border-teal-600' :
                         card.color === 'rose' ? 'bg-rose-50 text-rose-700 border-rose-200 group-hover:bg-rose-600 group-hover:text-white group-hover:border-rose-600' :
-                        card.color === 'emerald' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500' :
-                        card.color === 'sky' ? 'bg-sky-50 text-sky-700 border-sky-200 group-hover:bg-sky-500 group-hover:text-white group-hover:border-sky-500' :
-                        'bg-violet-50 text-violet-700 border-violet-200 group-hover:bg-violet-500 group-hover:text-white group-hover:border-violet-500'
+                        card.color === 'emerald' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600' :
+                        'bg-sky-50 text-sky-700 border-sky-200 group-hover:bg-sky-600 group-hover:text-white group-hover:border-sky-600'
                       }`}>
-                        <span className="material-symbols-outlined text-[32px]">{card.icon}</span>
+                        <span className="material-symbols-outlined text-[30px]">{card.icon}</span>
                       </div>
-                      <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center text-slate-600 group-hover:text-white group-hover:bg-amber-500 group-hover:border-amber-500 transition-all shadow-xs">
-                        <span className="material-symbols-outlined text-[20px] font-bold group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                      <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-white group-hover:bg-teal-600 group-hover:border-teal-600 transition-all shadow-2xs">
+                        <span className="material-symbols-outlined text-[19px] font-bold group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
                       </div>
                     </div>
                     <div>
-                      <span className="text-xl font-extrabold text-slate-900 group-hover:text-amber-700 transition-colors block mb-1.5 leading-snug">{card.title}</span>
-                      <p className="text-sm text-slate-600 font-medium leading-relaxed mb-4">{card.desc}</p>
-                      <span className={`inline-flex items-center gap-1 text-xs font-extrabold px-3 py-1.5 rounded-full border shadow-xs ${
+                      <span className="text-lg font-black text-slate-900 group-hover:text-teal-700 transition-colors block mb-1.5 leading-snug">{card.title}</span>
+                      <p className="text-xs text-slate-600 font-medium leading-relaxed mb-4">{card.desc}</p>
+                      <span className={`inline-flex items-center gap-1.5 text-[11px] font-black px-3 py-1 rounded-full border shadow-2xs ${
                         card.color === 'rose'
-                          ? 'bg-rose-50 text-rose-900 border-rose-300'
-                          : 'bg-amber-50 text-amber-900 border-amber-300'
+                          ? 'bg-rose-50 text-rose-900 border-rose-200'
+                          : card.color === 'teal'
+                          ? 'bg-teal-50 text-teal-900 border-teal-200'
+                          : 'bg-emerald-50 text-emerald-900 border-emerald-200'
                       }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${card.color === 'rose' ? 'bg-rose-600 animate-pulse' : 'bg-amber-600'}`}></span>
+                        <span className={`w-1.5 h-1.5 rounded-full ${card.color === 'rose' ? 'bg-rose-600 animate-pulse' : 'bg-teal-600'}`}></span>
                         {card.badge}
                       </span>
                     </div>
@@ -785,94 +791,94 @@ export default function PatientDashboard() {
 
             {/* Upcoming Care */}
             <section className="mb-10">
-              <div className="bg-white p-6 sm:p-7 rounded-3xl border-2 border-amber-300/80 shadow-md">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-slate-200 pb-4">
+              <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-slate-100 pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-slate-900 text-amber-400 flex items-center justify-center shrink-0 shadow-sm">
+                    <div className="w-10 h-10 rounded-2xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center shrink-0 shadow-2xs">
                       <span className="material-symbols-outlined text-[22px]">event_upcoming</span>
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h2 className="font-heading text-2xl font-extrabold text-slate-900 tracking-tight">Your Upcoming Care</h2>
-                        <span className="bg-amber-600 text-white text-xs font-extrabold px-3 py-0.5 rounded-full uppercase tracking-wider shadow-xs">Next 48 Hours</span>
+                        <h2 className="font-heading text-2xl font-black text-slate-900 tracking-tight">Your Upcoming Care</h2>
+                        <span className="bg-teal-700 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-2xs">Next 48 Hours</span>
                       </div>
                       <p className="text-xs sm:text-sm text-slate-600 font-medium">Verified doctor tele-consultation queue</p>
                     </div>
                   </div>
-                  <div className="inline-flex items-center gap-2.5 bg-emerald-50 border-2 border-emerald-300 px-3.5 py-1.5 rounded-full text-emerald-900 text-xs font-extrabold self-start sm:self-auto shadow-xs">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
+                  <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-full text-emerald-900 text-xs font-black self-start sm:self-auto shadow-2xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
                     <span>Live Queue Monitored • लाइव टोकन</span>
                   </div>
                 </div>
                 {data?.upcomingAppointments?.length > 0 ? (
                   data.upcomingAppointments.map(a => (
-                    <div key={a._id} className="bg-amber-50/40 hover:bg-amber-50/70 p-5 sm:p-6 rounded-2xl border-2 border-amber-200 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-5 mb-4 transition-all">
+                    <div key={a._id} className="bg-slate-50/70 hover:bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-2xs flex flex-col lg:flex-row lg:items-center justify-between gap-5 mb-4 transition-all">
                       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                        <div className="flex flex-col items-center justify-center w-24 py-3 rounded-2xl bg-white border-2 border-amber-400 text-center shrink-0 shadow-sm">
-                          <span className="text-xs text-amber-800 font-extrabold uppercase tracking-wider">{new Date(a.date).toLocaleDateString('en', {weekday:'short'})}</span>
-                          <span className="text-2xl font-black text-amber-950 leading-tight">{a.timeSlot}</span>
+                        <div className="flex flex-col items-center justify-center w-24 py-3 rounded-2xl bg-white border border-teal-300 text-center shrink-0 shadow-2xs">
+                          <span className="text-[11px] text-teal-800 font-black uppercase tracking-wider">{new Date(a.date).toLocaleDateString('en', {weekday:'short'})}</span>
+                          <span className="text-2xl font-black text-slate-900 leading-tight">{a.timeSlot}</span>
                         </div>
                         <div>
                           <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-                            <span className="text-xl font-extrabold text-slate-900 notranslate" translate="no">{a.doctor?.name || 'Dr. Rajesh Sharma'}</span>
-                            <span className="bg-sky-100 text-sky-900 font-extrabold px-3 py-1 rounded-full text-xs border border-sky-300">Tele-Consult</span>
-                            <span className="bg-emerald-100 text-emerald-900 font-black px-3.5 py-1 rounded-full text-xs border-2 border-emerald-400 shadow-xs notranslate" translate="no">Token #{a.tokenNumber}</span>
+                            <span className="text-xl font-black text-slate-900 notranslate" translate="no">{a.doctor?.name || 'Dr. Rajesh Sharma'}</span>
+                            <span className="bg-sky-50 text-sky-800 font-black px-3 py-1 rounded-full text-xs border border-sky-200">Tele-Consult</span>
+                            <span className="bg-emerald-50 text-emerald-900 font-black px-3.5 py-1 rounded-full text-xs border border-emerald-300 shadow-2xs notranslate" translate="no">Token #{a.tokenNumber}</span>
                           </div>
-                          <p className="text-sm text-slate-700 font-semibold">General Medicine • ABHA Linked Consultation</p>
+                          <p className="text-xs sm:text-sm text-slate-600 font-semibold">General Medicine • ABHA Linked Consultation</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 shrink-0 pt-2 lg:pt-0">
                         <button 
                           onClick={() => handleOpenVitalsNotes(a)} 
-                          className="h-12 px-5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-sm font-bold transition-all shadow-xs flex items-center gap-2" 
+                          className="h-11 px-5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-800 text-xs font-black transition-all shadow-2xs flex items-center gap-2 cursor-pointer" 
                           type="button"
                         >
-                          <span className="material-symbols-outlined text-[18px] text-amber-700">vital_signs</span>
+                          <span className="material-symbols-outlined text-[18px] text-teal-700">vital_signs</span>
                           <span>View Vitals &amp; Notes</span>
                         </button>
                         <button 
                           onClick={() => handleEnterConsultation(a)} 
-                          className="h-12 px-6 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-sm font-extrabold transition-all flex items-center gap-2 shadow-sm transform hover:-translate-y-0.5 cursor-pointer" 
+                          className="h-11 px-6 rounded-xl bg-gradient-to-r from-teal-700 to-teal-600 hover:from-teal-800 text-white text-xs font-black transition-all flex items-center gap-2 shadow-md shadow-teal-700/20 active:scale-98 cursor-pointer" 
                           type="button"
                         >
-                          <span className="material-symbols-outlined text-[22px]">videocam</span>
+                          <span className="material-symbols-outlined text-[20px]">videocam</span>
                           <span>Enter Consultation</span>
                         </button>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="bg-amber-50/40 hover:bg-amber-50/70 p-5 sm:p-6 rounded-2xl border-2 border-amber-200 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-5 transition-all">
+                  <div className="bg-slate-50/70 hover:bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-2xs flex flex-col lg:flex-row lg:items-center justify-between gap-5 transition-all">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                      <div className="flex flex-col items-center justify-center w-24 py-3 rounded-2xl bg-white border-2 border-amber-400 text-center shrink-0 shadow-sm">
-                        <span className="text-xs text-amber-800 font-extrabold uppercase tracking-wider">Today</span>
-                        <span className="text-2xl font-black text-amber-950 leading-tight">4:00</span>
-                        <span className="text-xs text-amber-800 font-black uppercase">PM</span>
+                      <div className="flex flex-col items-center justify-center w-24 py-3 rounded-2xl bg-white border border-teal-300 text-center shrink-0 shadow-2xs">
+                        <span className="text-[11px] text-teal-800 font-black uppercase tracking-wider">Today</span>
+                        <span className="text-2xl font-black text-slate-900 leading-tight">4:00</span>
+                        <span className="text-[10px] text-teal-700 font-black uppercase">PM</span>
                       </div>
                       <div>
                         <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-                          <span className="text-xl font-extrabold text-slate-900 notranslate" translate="no">Dr. Rajesh Sharma</span>
-                          <span className="bg-sky-100 text-sky-900 font-extrabold px-3 py-1 rounded-full text-xs border border-sky-300">Tele-Consult</span>
-                          <span className="bg-emerald-100 text-emerald-900 font-black px-3.5 py-1 rounded-full text-xs border-2 border-emerald-400 shadow-xs notranslate" translate="no">Token #04</span>
+                          <span className="text-xl font-black text-slate-900 notranslate" translate="no">Dr. Rajesh Sharma</span>
+                          <span className="bg-sky-50 text-sky-800 font-black px-3 py-1 rounded-full text-xs border border-sky-200">Tele-Consult</span>
+                          <span className="bg-emerald-50 text-emerald-900 font-black px-3.5 py-1 rounded-full text-xs border border-emerald-300 shadow-2xs notranslate" translate="no">Token #04</span>
                         </div>
-                        <p className="text-sm text-slate-700 font-semibold">General Medicine • CHC Sitapur Central • ABHA Linked Consultation</p>
+                        <p className="text-xs sm:text-sm text-slate-600 font-semibold">General Medicine • CHC Sitapur Central • ABHA Linked Consultation</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0 pt-2 lg:pt-0">
                       <button 
                         onClick={() => handleOpenVitalsNotes(null)} 
-                        className="h-12 px-5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-sm font-bold transition-all shadow-xs flex items-center gap-2" 
+                        className="h-11 px-5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-800 text-xs font-black transition-all shadow-2xs flex items-center gap-2 cursor-pointer" 
                         type="button"
                       >
-                        <span className="material-symbols-outlined text-[18px] text-amber-700">vital_signs</span>
+                        <span className="material-symbols-outlined text-[18px] text-teal-700">vital_signs</span>
                         <span>View Vitals &amp; Notes</span>
                       </button>
                       <button 
                         onClick={() => handleEnterConsultation(null)} 
-                        className="h-12 px-6 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-sm font-extrabold transition-all flex items-center gap-2 shadow-sm transform hover:-translate-y-0.5 cursor-pointer" 
+                        className="h-11 px-6 rounded-xl bg-gradient-to-r from-teal-700 to-teal-600 hover:from-teal-800 text-white text-xs font-black transition-all flex items-center gap-2 shadow-md shadow-teal-700/20 active:scale-98 cursor-pointer" 
                         type="button"
                       >
-                        <span className="material-symbols-outlined text-[22px]">videocam</span>
+                        <span className="material-symbols-outlined text-[20px]">videocam</span>
                         <span>Enter Consultation</span>
                       </button>
                     </div>
@@ -882,75 +888,75 @@ export default function PatientDashboard() {
             </section>
 
               {/* Bottom Grid: Camp & ASHA Companion */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 {/* Village Health Camp */}
-                <div className="bg-white p-5 rounded-2xl border-2 border-slate-200/90 hover:border-amber-400 shadow-sm transition-all duration-200 flex flex-col">
-                  <div className="flex items-start gap-3.5 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
+                <div className="bg-white p-6 rounded-3xl border border-slate-200 hover:border-teal-400 shadow-sm transition-all duration-200 flex flex-col">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0">
                       <span className="material-symbols-outlined text-[26px]">vaccines</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <span className="text-xs uppercase tracking-wider text-slate-500 font-extrabold">Village Health Camp</span>
-                        <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-black px-2.5 py-0.5 rounded-full">
-                          <span className="w-2 h-2 rounded-full bg-amber-600"></span>
+                        <span className="text-xs uppercase tracking-wider text-slate-400 font-black">Village Health Camp</span>
+                        <span className="inline-flex items-center gap-1.5 bg-teal-50 text-teal-900 border border-teal-200 text-[10px] font-black px-2.5 py-0.5 rounded-full">
+                          <span className="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
                           This Thursday
                         </span>
                       </div>
-                      <h3 className="text-lg font-extrabold text-slate-900 leading-snug">Immunization & Maternal Health Checkup</h3>
-                      <p className="text-sm text-slate-600 font-medium mt-0.5">Anganwadi Centre 3 • Walk-in free for all mothers and infants</p>
+                      <h3 className="text-lg font-black text-slate-900 leading-snug">Immunization &amp; Maternal Health Checkup</h3>
+                      <p className="text-xs text-slate-600 font-medium mt-0.5">Anganwadi Centre 3 • Walk-in free for all mothers and infants</p>
                     </div>
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700">✓ Free Vaccination (Polio/BCG/TT)</span>
-                    <span className="bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700">✓ BP, Sugar & Weight Check</span>
-                    <span className="bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700">✓ Nutrition Supplements Refill</span>
+                    <span className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">✓ Free Vaccination (Polio/BCG/TT)</span>
+                    <span className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">✓ BP, Sugar &amp; Weight Check</span>
+                    <span className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">✓ Nutrition Supplements Refill</span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-3 border-t border-slate-100 mt-auto">
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
                     <div className="flex items-center gap-1.5 text-xs text-slate-600 font-semibold">
-                      <span className="material-symbols-outlined text-[16px] text-amber-600">location_on</span>
+                      <span className="material-symbols-outlined text-[16px] text-teal-600">location_on</span>
                       <span>Anganwadi Centre 3 (Ward 4)</span>
                     </div>
                     <button 
                       type="button" 
                       onClick={() => navigate('/patient/immunization')}
-                      className="h-9 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                      className="h-9 px-4 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer active:scale-98"
                     >
                       <span className="material-symbols-outlined text-[16px]">vaccines</span>
-                      <span>View Immunization Records</span>
+                      <span>View Records</span>
                     </button>
                   </div>
                 </div>
 
                 {/* ASHA Companion Card */}
-                <div className="bg-white p-5 rounded-2xl border-2 border-amber-300 hover:border-amber-500 shadow-sm transition-all duration-200 flex flex-col">
-                  <div className="flex items-start gap-3.5 mb-4">
+                <div className="bg-white p-6 rounded-3xl border border-slate-200 hover:border-teal-400 shadow-sm transition-all duration-200 flex flex-col">
+                  <div className="flex items-start gap-4 mb-4">
                     <div className="relative shrink-0">
-                      <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-12 h-12 rounded-xl object-cover border-2 border-amber-400 notranslate" translate="no" />
+                      <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-12 h-12 rounded-2xl object-cover border border-teal-200 notranslate bg-white" translate="no" />
                       <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" title="Active in Village"></span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <span className="text-xs uppercase tracking-wider text-slate-500 font-extrabold">Village ASHA Companion</span>
-                        <span className="inline-flex items-center gap-1.5 text-emerald-900 text-[11px] font-extrabold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span className="text-xs uppercase tracking-wider text-slate-400 font-black">Village ASHA Companion</span>
+                        <span className="inline-flex items-center gap-1.5 text-emerald-900 text-[10px] font-black bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                           Active Today
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-extrabold text-slate-900 leading-tight notranslate" translate="no">Sunita Devi</h3>
-                        <span className="material-symbols-outlined text-amber-600 text-[18px]" title="Govt Certified ASHA">verified</span>
+                        <h3 className="text-lg font-black text-slate-900 leading-tight notranslate" translate="no">Sunita Devi</h3>
+                        <span className="material-symbols-outlined text-teal-600 text-[18px]" title="Govt Certified ASHA">verified</span>
                       </div>
                       <p className="text-xs text-slate-600 font-semibold mt-0.5">Govt Certified Field Health Worker • Sitapur Ward 4</p>
                     </div>
                   </div>
 
-                  <div className="bg-amber-50/60 p-3 rounded-xl border border-amber-200/80 text-xs font-medium text-slate-700 leading-relaxed mb-4">
-                    Assigned for home visits, child immunizations, Jan Aushadhi refills & emergency PHC escort.
-                    <div className="mt-2 text-xs font-extrabold text-amber-950 flex items-center gap-1.5">
-                      <span className="material-symbols-outlined text-[14px] text-amber-700">schedule</span>
+                  <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-xs font-medium text-slate-700 leading-relaxed mb-4">
+                    Assigned for home visits, child immunizations, Jan Aushadhi refills &amp; emergency PHC escort.
+                    <div className="mt-2 text-xs font-black text-teal-900 flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[15px] text-teal-700">schedule</span>
                       <span>Working Hours: 8:00 AM – 6:00 PM</span>
                     </div>
                   </div>
@@ -958,7 +964,7 @@ export default function PatientDashboard() {
                   <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 mt-auto">
                     <a 
                       href="tel:9876543210" 
-                      className="h-9 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                      className="h-9 px-4 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-2xs transition-all active:scale-98"
                     >
                       <span className="material-symbols-outlined text-[16px]">call</span>
                       <span>Call Sunita Devi</span>
@@ -966,9 +972,9 @@ export default function PatientDashboard() {
                     <button 
                       type="button" 
                       onClick={() => setActiveModal('request-visit')}
-                      className="h-9 px-4 rounded-xl bg-white border-2 border-amber-400 hover:bg-amber-50 text-slate-800 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                      className="h-9 px-4 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                     >
-                      <span className="material-symbols-outlined text-[16px] text-amber-600">home_health</span>
+                      <span className="material-symbols-outlined text-[16px] text-teal-600">home_health</span>
                       <span>Request Visit</span>
                     </button>
                   </div>
@@ -1032,65 +1038,69 @@ export default function PatientDashboard() {
 
         {activeTab === 'profile' && (
           <div className="py-6 animate-fadeIn max-w-4xl mx-auto">
-            {/* Digital ABHA Card */}
-            <div className="bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 text-white p-6 sm:p-8 rounded-3xl shadow-xl shadow-amber-500/20 mb-8 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+            {/* Digital ABHA Smart Card */}
+            <div className="bg-gradient-to-br from-teal-950 via-slate-900 to-teal-900 text-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-teal-500/40 mb-8 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="absolute bottom-0 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              
               <div className="relative z-10">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-white/20 mb-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/10 mb-6">
                   <div className="flex items-center gap-3">
-                      <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-12 h-12 rounded-2xl object-cover border border-white/30 notranslate" translate="no" />
+                    <div className="w-12 h-12 rounded-2xl bg-white p-1 shadow-md shrink-0">
+                      <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-full h-full object-cover rounded-xl notranslate" translate="no" />
+                    </div>
                     <div>
-                      <span className="text-xs font-black uppercase tracking-wider text-amber-100 block">National Health Authority • ABDM</span>
-                      <h3 className="text-xl font-black text-white">Digital Ayushman Health Card</h3>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-teal-300 block">National Health Authority • Ayushman Bharat Digital Mission</span>
+                      <h3 className="text-xl sm:text-2xl font-black text-white font-heading">Digital Ayushman Health Card (ABHA)</h3>
                     </div>
                   </div>
-                  <div className="inline-flex items-center gap-2 bg-emerald-500/90 text-white px-3.5 py-1 rounded-full text-xs font-extrabold shadow-sm border border-emerald-300 self-start sm:self-auto">
-                    <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                    <span>Verified Citizen Record</span>
+                  <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 px-3.5 py-1.5 rounded-full text-xs font-black shadow-xs border border-emerald-400/40 self-start sm:self-auto">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>ABDM Verified Citizen</span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-center">
-                  <div className="sm:col-span-2 space-y-3">
+                  <div className="sm:col-span-2 space-y-4">
                     <div>
-                      <span className="text-xs uppercase font-extrabold text-amber-200 tracking-wider">Citizen Full Name</span>
-                      <p className="text-2xl font-black text-white">{user?.name || 'Aditya Sharma'}</p>
+                      <span className="text-[11px] uppercase font-black text-teal-300/80 tracking-wider">Citizen Full Name</span>
+                      <p className="text-2xl sm:text-3xl font-black text-white tracking-tight">{user?.name || 'Aditya Sharma'}</p>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4 pt-1">
                       <div>
-                        <span className="text-xs uppercase font-extrabold text-amber-200 tracking-wider">ABHA Number</span>
-                        <p className="text-lg font-mono font-black text-amber-100">{user?.abhaId || '91-4820-1940-2810'}</p>
+                        <span className="text-[11px] uppercase font-black text-teal-300/80 tracking-wider">14-Digit ABHA ID</span>
+                        <p className="text-base sm:text-lg font-mono font-black text-teal-200">{user?.abhaId || '91-4820-1940-2810'}</p>
                       </div>
                       <div>
-                        <span className="text-xs uppercase font-extrabold text-amber-200 tracking-wider">Mobile Contact</span>
-                        <p className="text-base font-extrabold text-white">{user?.phone || '+91 9876543210'}</p>
+                        <span className="text-[11px] uppercase font-black text-teal-300/80 tracking-wider">Linked Mobile</span>
+                        <p className="text-base font-black text-white font-mono">{user?.phone || '+91 9876543210'}</p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 text-center flex flex-col items-center justify-center">
+                  <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 text-center flex flex-col items-center justify-center shadow-lg">
                     <span className="material-symbols-outlined text-white text-[48px] mb-1">qr_code_2</span>
-                    <span className="text-[11px] font-bold text-amber-100">Scan at any PHC / CHC</span>
+                    <span className="text-[10px] font-black text-teal-200 uppercase tracking-wider">Scan at any PHC / CHC OPD</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Personal Details & SC Card */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-slate-200 shadow-sm mb-6">
+            {/* Personal Details & Linked Centre */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm mb-6">
               <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center font-bold">
+                  <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center font-bold">
                     <span className="material-symbols-outlined text-[22px]">person</span>
                   </div>
                   <div>
-                    <h2 className="text-xl font-extrabold text-slate-900">{t('personalDetails')}</h2>
-                    <p className="text-xs text-slate-500 font-medium">Personal identity &amp; healthcare centre links</p>
+                    <h2 className="text-xl font-black text-slate-900">{t('personalDetails')}</h2>
+                    <p className="text-xs text-slate-500 font-medium">Identity verification &amp; healthcare centre links</p>
                   </div>
                 </div>
                 <button 
                   onClick={() => setActiveModal('edit-profile')} 
-                  className="bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white px-5 py-2.5 rounded-xl text-xs font-extrabold shadow-sm transition-all flex items-center gap-1.5"
+                  className="bg-teal-700 hover:bg-teal-800 text-white px-5 py-2.5 rounded-xl text-xs font-black shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-98"
                 >
                   <span className="material-symbols-outlined text-[16px]">edit</span>
                   <span>{t('editProfileInformation')}</span>
@@ -1099,41 +1109,41 @@ export default function PatientDashboard() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                  <span className="text-xs uppercase font-extrabold text-slate-500 block mb-1">{t('fullName')}</span>
-                  <p className="text-base font-extrabold text-slate-900">{user?.name || 'Aditya Sharma'}</p>
+                  <span className="text-xs uppercase font-black text-slate-400 block mb-1">{t('fullName')}</span>
+                  <p className="text-base font-black text-slate-900">{user?.name || 'Aditya Sharma'}</p>
                 </div>
                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                  <span className="text-xs uppercase font-extrabold text-slate-500 block mb-1">{t('abhaId')}</span>
-                  <p className="text-base font-mono font-extrabold text-amber-900">{user?.abhaId || '91-4820-1940-2810'}</p>
+                  <span className="text-xs uppercase font-black text-slate-400 block mb-1">{t('abhaId')}</span>
+                  <p className="text-base font-mono font-black text-teal-800">{user?.abhaId || '91-4820-1940-2810'}</p>
                 </div>
                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                  <span className="text-xs uppercase font-extrabold text-slate-500 block mb-1">{t('mobileNumber')}</span>
-                  <p className="text-base font-extrabold text-slate-900">{user?.phone || '+91 9876543210'}</p>
+                  <span className="text-xs uppercase font-black text-slate-400 block mb-1">{t('mobileNumber')}</span>
+                  <p className="text-base font-mono font-black text-slate-900">{user?.phone || '+91 9876543210'}</p>
                 </div>
                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                  <span className="text-xs uppercase font-extrabold text-slate-500 block mb-1">{t('linkedSubCentre')}</span>
-                  <p className="text-base font-extrabold text-slate-900">Sitapur Rural SC (Ward 4)</p>
+                  <span className="text-xs uppercase font-black text-slate-400 block mb-1">{t('linkedSubCentre')}</span>
+                  <p className="text-base font-black text-slate-900">Sitapur Rural SC (Ward 4)</p>
                 </div>
               </div>
             </div>
             
             {/* Bluetooth Connected Devices */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-slate-200 shadow-sm">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
               <div className="flex items-center gap-3 pb-4 border-b border-slate-100 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-amber-50 border-2 border-amber-200 text-amber-700 flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[22px]">watch</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-extrabold text-slate-900">{t('connectedDevicesSync')}</h3>
+                  <h3 className="text-xl font-black text-slate-900">{t('connectedDevicesSync')}</h3>
                   <p className="text-xs text-slate-500 font-medium">Auto-sync vitals (BP, SpO2, Pulse) from portable medical kits</p>
                 </div>
               </div>
               <p className="text-sm text-slate-600 font-medium mb-5">{t('noPortableDevices')}</p>
               <button 
                 onClick={() => alert('Searching for nearby Bluetooth Vitals Monitors... Make sure device is powered ON.')}
-                className="bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white px-5 py-3 rounded-xl text-sm font-extrabold shadow-sm transition-all flex items-center gap-2"
+                className="bg-teal-700 hover:bg-teal-800 text-white px-5 py-3 rounded-xl text-xs font-black shadow-sm transition-all flex items-center gap-2 cursor-pointer active:scale-98"
               >
-                <span className="material-symbols-outlined text-[20px]">bluetooth_searching</span>
+                <span className="material-symbols-outlined text-[19px]">bluetooth_searching</span>
                 <span>{t('connectBluetoothMonitor')}</span>
               </button>
             </div>
@@ -1169,29 +1179,29 @@ export default function PatientDashboard() {
 
       {/* Modals */}
       {activeModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md p-3 sm:p-4 animate-fadeIn">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/70 backdrop-blur-md p-3 sm:p-4 animate-fadeIn">
           <div className={`w-full ${
             activeModal === 'teleconsult-room' 
-              ? 'max-w-4xl bg-slate-950 border border-slate-700 text-white' 
+              ? 'max-w-4xl bg-slate-950 border border-slate-800 text-white' 
               : activeModal === 'vitals-notes' 
               ? 'max-w-2xl bg-white text-slate-900 border border-slate-200' 
               : activeModal === 'lab-tests'
-              ? 'max-w-3xl bg-white text-slate-900 border-2 border-amber-300'
+              ? 'max-w-3xl bg-white text-slate-900 border border-slate-200'
               : activeModal === 'find-phc'
-              ? 'max-w-3xl bg-white text-slate-900 border-2 border-amber-300'
-              : 'max-w-lg bg-surface-container-lowest text-on-surface'
+              ? 'max-w-3xl bg-white text-slate-900 border border-slate-200'
+              : 'max-w-lg bg-white text-slate-900 border border-slate-200'
           } rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]`}>
             {/* Modal Header */}
             <div className={`px-6 py-4 border-b flex items-center justify-between ${
               activeModal === 'teleconsult-room'
                 ? 'bg-slate-900 border-slate-800 text-white'
                 : activeModal === 'vitals-notes'
-                ? 'bg-amber-50/70 border-amber-200 text-slate-900'
+                ? 'bg-teal-50/90 border-teal-200 text-slate-900'
                 : activeModal === 'lab-tests'
-                ? 'bg-slate-900 border-slate-800 text-white'
+                ? 'bg-gradient-to-r from-slate-900 to-teal-950 border-slate-800 text-white'
                 : activeModal === 'find-phc'
-                ? 'bg-slate-900 border-slate-800 text-white'
-                : 'bg-surface-container-low border-surface-variant'
+                ? 'bg-gradient-to-r from-slate-900 to-teal-950 border-slate-800 text-white'
+                : 'bg-slate-50 border-slate-200'
             }`}>
               <h3 className="text-base sm:text-lg font-black flex items-center gap-2">
                 {activeModal === 'teleconsult-room' && (
@@ -1202,20 +1212,20 @@ export default function PatientDashboard() {
                 )}
                 {activeModal === 'vitals-notes' && (
                   <>
-                    <span className="material-symbols-outlined text-amber-700 text-[22px]">vital_signs</span>
+                    <span className="material-symbols-outlined text-teal-700 text-[22px]">vital_signs</span>
                     <span>Clinical Vitals &amp; Pre-Consultation Notes</span>
                   </>
                 )}
                 {activeModal === 'request-visit' && 'Request ASHA Home Visit (गृह-भ्रमण अनुरोध)'}
                 {activeModal === 'lab-tests' && (
                   <>
-                    <span className="material-symbols-outlined text-amber-400 text-[24px]">biotech</span>
+                    <span className="material-symbols-outlined text-teal-400 text-[24px]">biotech</span>
                     <span>Diagnostic Lab Tests &amp; Reports (जांच रिपोर्ट)</span>
                   </>
                 )}
                 {activeModal === 'find-phc' && (
                   <>
-                    <span className="material-symbols-outlined text-amber-400 text-[24px]">local_hospital</span>
+                    <span className="material-symbols-outlined text-teal-400 text-[24px]">local_hospital</span>
                     <span>Find Nearest PHC, CHC &amp; Health Kiosks (निकटतम स्वास्थ्य केंद्र)</span>
                   </>
                 )}
@@ -1244,22 +1254,22 @@ export default function PatientDashboard() {
                 {activeModal === 'vitals-notes' && (
                   <div className="flex flex-col gap-5">
                     {/* Doctor & Appointment Meta Card */}
-                    <div className="bg-amber-50/80 p-4 rounded-2xl border border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="bg-teal-50/70 p-4 rounded-2xl border border-teal-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-teal-700 text-white flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
                           <span className="material-symbols-outlined text-[26px]">stethoscope</span>
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <h4 className="text-base font-extrabold text-slate-900 notranslate" translate="no">{selectedAppointment?.doctor?.name || 'Dr. Rajesh Sharma'}</h4>
+                            <h4 className="text-base font-black text-slate-900 notranslate" translate="no">{selectedAppointment?.doctor?.name || 'Dr. Rajesh Sharma'}</h4>
                             <span className="bg-emerald-100 text-emerald-900 text-[11px] font-black px-2.5 py-0.5 rounded-full border border-emerald-300 notranslate" translate="no">Token #{selectedAppointment?.tokenNumber || '04'}</span>
                           </div>
                           <p className="text-xs text-slate-600 font-medium">General Medicine • CHC Sitapur Central • Tele-OPD 04</p>
                         </div>
                       </div>
-                      <div className="text-left sm:text-right sm:border-l sm:border-amber-200 sm:pl-4">
+                      <div className="text-left sm:text-right sm:border-l sm:border-teal-200 sm:pl-4">
                         <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Consultation Slot</span>
-                        <span className="text-sm font-black text-amber-900">{selectedAppointment?.timeSlot || '04:00 PM'} (Today)</span>
+                        <span className="text-sm font-black text-teal-950">{selectedAppointment?.timeSlot || '04:00 PM'} (Today)</span>
                       </div>
                     </div>
 

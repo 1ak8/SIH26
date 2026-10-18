@@ -71,13 +71,12 @@ export default function AdminDashboard() {
   const [doctorRoster, setDoctorRoster] = useState(DEFAULT_DOCTOR_ROSTER);
   const [activeDirective, setActiveDirective] = useState(null);
 
-  const [activeView, setActiveView] = useState('overview'); // 'overview', 'teleCenters', 'fieldForce', 'inventory'
-  const [activeModal, setActiveModal] = useState(null); // 'exportProgress', 'districtFilter', 'shiftRoster', 'issueDirective', 'addStock', 'viewFacility'
+  const [activeView, setActiveView] = useState('overview');
+  const [activeModal, setActiveModal] = useState(null);
   const [selectedFacility, setSelectedFacility] = useState(null);
   const [exportProgress, setExportProgress] = useState(0);
   const [toast, setToast] = useState(null);
 
-  // Forms State
   const [directiveForm, setDirectiveForm] = useState({
     title: '',
     priority: 'high',
@@ -92,8 +91,6 @@ export default function AdminDashboard() {
   });
 
   const [selectedDistrict, setSelectedDistrict] = useState('All Districts (Sitapur Hub)');
-
-  // Multilingual toggle
   const [lang, setLang] = useState('en');
   const t = (enText, hiText) => lang === 'en' ? enText : (hiText || enText);
 
@@ -124,7 +121,6 @@ export default function AdminDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // 1. Export Data Report Action
   const handleExport = () => {
     setActiveModal('exportProgress');
     setExportProgress(0);
@@ -165,7 +161,6 @@ export default function AdminDashboard() {
     }, 300);
   };
 
-  // 2. Broadcast State Directive
   const submitDirective = async (e) => {
     e.preventDefault();
     if (!directiveForm.title || !directiveForm.message) {
@@ -191,7 +186,6 @@ export default function AdminDashboard() {
     setDirectiveForm({ title: '', priority: 'high', message: '' });
   };
 
-  // 3. Auto-Requisition & Replenish Stock
   const handleAutoRequisition = (drugId) => {
     setInventory(prev => prev.map(d => {
       if (d.id === drugId) {
@@ -206,7 +200,6 @@ export default function AdminDashboard() {
     showToast(`Replenishment Order #REQ-${Math.floor(10000 + Math.random() * 90000)} dispatched! +2,500 units added.`);
   };
 
-  // 4. Add New Stock Form Submit
   const handleAddStockSubmit = (e) => {
     e.preventDefault();
     const newDrug = {
@@ -225,95 +218,100 @@ export default function AdminDashboard() {
     setActiveModal(null);
   };
 
-  // 5. Reassign Doctor Shift Roster
   const handleSaveRoster = () => {
     showToast('Doctor shift rotations updated & synced with District Health Officer!');
     setActiveModal(null);
   };
 
-  // 6. Dismiss Alert
   const dismissAlert = (alertId) => {
     setAlerts(prev => prev.filter(a => a.id !== alertId));
     showToast('Escalation marked as resolved and archived.');
   };
 
   return (
-    <div className="bg-[#fbfaf7] text-slate-900 font-sans min-h-screen">
+    <div className="bg-slate-50 text-slate-900 font-sans min-h-screen selection:bg-teal-100 selection:text-teal-900">
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed top-24 right-6 z-[150] bg-slate-900 text-amber-300 px-5 py-3 rounded-2xl shadow-xl border border-amber-400/50 flex items-center gap-3 text-sm font-bold animate-bounce">
-          <span className="material-symbols-outlined text-amber-400">check_circle</span>
+        <div className="fixed top-24 right-6 z-[150] bg-slate-900 text-teal-300 px-5 py-3 rounded-2xl shadow-xl border border-teal-500/40 flex items-center gap-3 text-xs font-black animate-fadeIn">
+          <span className="material-symbols-outlined text-teal-400 text-[18px]">check_circle</span>
           <span>{toast}</span>
         </div>
       )}
 
-      {/* HEADER: Matching Warm Amber & Slate Theme */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs w-full">
-        <div className="w-full px-6 lg:px-12 xl:px-16 flex items-center justify-between gap-8 h-20">
+      {/* HEADER: Next-Gen National Command Bar */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs w-full">
+        <div className="w-full px-4 lg:px-8 xl:px-12 flex items-center justify-between gap-4 h-[72px]">
           {/* Logo with Govt Portal Badge */}
-          <div className="flex items-center gap-3.5 shrink-0 group">
-            <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-11 h-11 rounded-2xl object-cover shrink-0 notranslate" translate="no" />
+          <div className="flex items-center gap-2.5 shrink-0 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-700 via-teal-600 to-emerald-500 p-0.5 shadow-md shadow-teal-700/20 flex items-center justify-center shrink-0">
+              <img src="/images/logo-transparent.png" alt="SehatSaarthi" className="w-full h-full rounded-[10px] object-cover notranslate bg-white" translate="no" />
+            </div>
             <div className="flex flex-col">
-              <span className="font-brand font-black text-slate-900 tracking-tight text-2xl leading-none notranslate" translate="no">SehatSaarthi</span>
-              <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 self-start mt-1">
-                Govt Portal • Mission Directorate MIS
-              </span>
+              <span className="font-brand font-black text-slate-900 tracking-tight text-[22px] leading-none group-hover:text-teal-700 transition-colors notranslate" translate="no">SehatSaarthi</span>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="text-[9px] uppercase font-black tracking-wider px-1.5 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200 self-start">
+                  Mission Directorate MIS
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              </div>
             </div>
           </div>
 
-          {/* Clean Navigation Items */}
-          <nav className="hidden lg:flex items-center gap-2 xl:gap-3">
+          {/* Navigation Items */}
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-2.5 flex-1 min-w-0 overflow-x-auto scrollbar-hide px-2">
             <button 
               onClick={() => setActiveView('overview')} 
-              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 font-black text-[13px] rounded-xl transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 activeView === 'overview' 
-                  ? 'bg-amber-600 text-white shadow-sm' 
-                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+                  ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white shadow-sm shadow-teal-700/25' 
+                  : 'text-slate-600 hover:text-teal-950 hover:bg-teal-50/80'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">dashboard</span>
               <span>{t('National Overview', 'राष्ट्रीय अवलोकन')}</span>
             </button>
 
-            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+            <div className="h-5 w-[1.5px] bg-slate-200 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveView('teleCenters')} 
-              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 font-black text-[13px] rounded-xl transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 activeView === 'teleCenters' 
-                  ? 'bg-amber-600 text-white shadow-sm' 
-                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+                  ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white shadow-sm shadow-teal-700/25' 
+                  : 'text-slate-600 hover:text-teal-950 hover:bg-teal-50/80'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">domain</span>
               <span>{t('Tele-Health Centers', 'टेली-हेल्थ केंद्र')}</span>
-              <span className="bg-amber-100 text-amber-900 text-[10px] font-black px-1.5 py-0.2 rounded-full border border-amber-300">
+              <span className={`text-[10px] font-black px-1.5 py-0.2 rounded-full border ${
+                activeView === 'teleCenters' ? 'bg-white/20 text-white border-white/30' : 'bg-teal-50 text-teal-900 border-teal-200'
+              }`}>
                 {facilities.length || 5}
               </span>
             </button>
 
-            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+            <div className="h-5 w-[1.5px] bg-slate-200 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveView('fieldForce')} 
-              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 font-black text-[13px] rounded-xl transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 activeView === 'fieldForce' 
-                  ? 'bg-amber-600 text-white shadow-sm' 
-                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+                  ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white shadow-sm shadow-teal-700/25' 
+                  : 'text-slate-600 hover:text-teal-950 hover:bg-teal-50/80'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">diversity_1</span>
               <span>{t('Field Force Tracking', 'फील्ड फोर्स ट्रैकिंग')}</span>
             </button>
 
-            <div className="h-6 w-[2px] bg-slate-300 rounded-full shrink-0"></div>
+            <div className="h-5 w-[1.5px] bg-slate-200 rounded-full shrink-0"></div>
 
             <button 
               onClick={() => setActiveView('inventory')} 
-              className={`px-3.5 py-2 font-extrabold text-sm rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 font-black text-[13px] rounded-xl transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 activeView === 'inventory' 
-                  ? 'bg-amber-600 text-white shadow-sm' 
-                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/70'
+                  ? 'bg-gradient-to-r from-teal-700 to-teal-600 text-white shadow-sm shadow-teal-700/25' 
+                  : 'text-slate-600 hover:text-teal-950 hover:bg-teal-50/80'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">medication</span>
@@ -322,14 +320,14 @@ export default function AdminDashboard() {
           </nav>
 
           {/* Right Controls */}
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="h-8 w-[2px] bg-slate-300 rounded-full hidden lg:block mr-1"></div>
+          <div className="flex items-center gap-2.5 shrink-0 whitespace-nowrap ml-auto lg:ml-0">
+            <div className="h-6 w-[1.5px] bg-slate-200 rounded-full hidden lg:block mr-1"></div>
 
             <LanguageSelector />
 
             <button 
               onClick={() => { if (window.confirm('Are you sure you want to logout from Admin Console?')) logout(); }} 
-              className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 border border-slate-200 flex items-center justify-center transition-all shadow-xs cursor-pointer" 
+              className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 border border-slate-200 flex items-center justify-center transition-all shadow-2xs cursor-pointer active:scale-95" 
               title="Logout"
             >
               <span className="material-symbols-outlined text-[18px]">logout</span>
@@ -339,17 +337,17 @@ export default function AdminDashboard() {
       </header>
 
       {/* MAIN CONTAINER */}
-      <main className="w-full bg-[#fbfaf7] px-6 lg:px-12 xl:px-16 pt-28 pb-16 animate-fadeIn min-h-[85vh]">
-        {/* Active Emergency Directive Banner (if broadcasted) */}
+      <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 animate-fadeIn min-h-[85vh] max-w-7xl mx-auto">
+        {/* Active Emergency Directive Banner */}
         {activeDirective && (
-          <div className="mb-6 p-4 sm:p-5 bg-rose-50 border-2 border-rose-400 rounded-3xl flex items-start justify-between gap-4 shadow-sm animate-fadeIn">
+          <div className="mb-6 p-4 sm:p-5 bg-rose-50 border border-rose-300 rounded-3xl flex items-start justify-between gap-4 shadow-sm animate-fadeIn">
             <div className="flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-2xl bg-rose-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-rose-600/30">
                 <span className="material-symbols-outlined text-[24px]">campaign</span>
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="bg-rose-600 text-white text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded">
+                  <span className="bg-rose-600 text-white text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full">
                     ACTIVE STATE DIRECTIVE • {activeDirective.priority}
                   </span>
                   <span className="text-xs text-rose-800 font-bold">Issued at {activeDirective.time}</span>
@@ -360,35 +358,35 @@ export default function AdminDashboard() {
             </div>
             <button
               onClick={() => setActiveDirective(null)}
-              className="text-rose-700 hover:text-rose-900 font-bold text-xs"
+              className="text-rose-700 hover:text-rose-900 font-bold text-xs cursor-pointer"
             >
               Dismiss
             </button>
           </div>
         )}
 
-        {/* Top Header & Export / Filter Toolbar */}
-        <div className="w-full flex flex-col md:flex-row md:items-end justify-between gap-4 py-5 border-b border-slate-200 mb-6">
+        {/* Top Header & Toolbar */}
+        <div className="w-full flex flex-col md:flex-row md:items-end justify-between gap-4 py-4 border-b border-slate-200 mb-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="inline-flex items-center justify-center w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-xs text-slate-500 uppercase tracking-wider font-extrabold">National Digital Health Mission • Live Telemetry</span>
+              <span className="inline-flex items-center justify-center w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-[11px] text-slate-400 uppercase tracking-wider font-black">National Digital Health Mission • Live Telemetry</span>
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              {activeView === 'overview' && t('National Health MIS Dashboard', 'राष्ट्रीय स्वास्थ्य अवलोकन')}
+            <h1 className="font-heading text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              {activeView === 'overview' && t('National Health MIS Command Center', 'राष्ट्रीय स्वास्थ्य अवलोकन')}
               {activeView === 'teleCenters' && t('Tele-Health Centers Network', 'टेली-हेल्थ केंद्र नेटवर्क')}
               {activeView === 'fieldForce' && t('Field Force Tracking', 'फील्ड फोर्स ट्रैकिंग')}
               {activeView === 'inventory' && t('Central Drug Inventory', 'दवा सूची प्रबंधन')}
             </h1>
-            <p className="text-sm text-slate-600 font-semibold mt-1">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
               {t('Central Tele-Health Surveillance, Public Resource Allocation & District Healthcare Framework', 'ग्रामीण टेली-हेल्थ मिशन - केंद्रीय निगरानी और जिला वितरण ढांचा')}
             </p>
           </div>
           
           {/* Action Toolbar */}
           <div className="flex flex-wrap items-center gap-2.5">
-            <div className="inline-flex items-center gap-2 px-3.5 py-2 bg-white border-2 border-slate-200 rounded-xl shadow-2xs">
-              <span className="material-symbols-outlined text-amber-600 text-[18px]">calendar_today</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 rounded-xl shadow-2xs">
+              <span className="material-symbols-outlined text-teal-600 text-[18px]">calendar_today</span>
               <span className="text-xs font-black text-slate-800">
                 {new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
               </span>
@@ -396,19 +394,19 @@ export default function AdminDashboard() {
 
             <button 
               onClick={() => setActiveModal('districtFilter')} 
-              className="h-11 px-4 flex items-center gap-1.5 bg-white border-2 border-slate-200 hover:border-amber-400 hover:bg-slate-50 text-slate-800 rounded-xl text-xs font-black transition-all shadow-2xs cursor-pointer" 
+              className="h-10 px-4 flex items-center gap-1.5 bg-white border border-slate-200 hover:border-teal-400 hover:bg-slate-50 text-slate-800 rounded-xl text-xs font-black transition-all shadow-2xs cursor-pointer" 
               type="button"
             >
-              <span className="material-symbols-outlined text-amber-600 text-[18px]">tune</span>
+              <span className="material-symbols-outlined text-teal-600 text-[18px]">tune</span>
               <span>{selectedDistrict.split(' ')[0]}</span>
             </button>
 
             <button 
               onClick={handleExport} 
-              className="h-11 px-5 flex items-center gap-2 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-black rounded-xl shadow-xs transition-all cursor-pointer" 
+              className="h-10 px-5 flex items-center gap-2 bg-teal-700 hover:bg-teal-800 text-white text-xs font-black rounded-xl shadow-md shadow-teal-700/20 transition-all cursor-pointer active:scale-98" 
               type="button"
             >
-              <span className="material-symbols-outlined text-[18px]">download</span>
+              <span className="material-symbols-outlined text-[17px]">download</span>
               <span>{t('Export MIS Report', 'MIS निर्यात करें')}</span>
             </button>
           </div>
@@ -418,21 +416,23 @@ export default function AdminDashboard() {
         {activeView === 'overview' && (
           <div className="animate-fadeIn">
             {/* Live Node Callout */}
-            <div className="w-full p-5 sm:p-6 bg-gradient-to-r from-amber-500/15 via-amber-100/40 to-transparent border-2 border-amber-300 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm mb-8">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-white border-2 border-amber-400 flex items-center justify-center text-amber-700 shrink-0 shadow-xs">
+            <div className="w-full p-6 sm:p-7 bg-gradient-to-r from-teal-950 via-teal-900 to-slate-900 text-white border border-teal-500/30 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl mb-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              
+              <div className="relative z-10 flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-teal-300 shrink-0 shadow-sm">
                   <span className="material-symbols-outlined text-[30px] animate-pulse">hub</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-slate-900 tracking-tight font-heading">
+                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight font-heading">
                     {t('State Central Tele-Health Node Synchronized', 'राज्य केंद्रीय नोड सिंक्रनाइज़')}
                   </h3>
-                  <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-0.5">
+                  <p className="text-xs sm:text-sm font-medium text-slate-300 mt-0.5">
                     142 Primary Health Centres &amp; Sub-Centres connected. Satellite uplink latency: 28ms. Zero packet loss.
                   </p>
                 </div>
               </div>
-              <span className="text-xs font-black px-4 py-2 bg-white text-amber-950 rounded-xl border border-amber-300 shadow-2xs whitespace-nowrap">
+              <span className="relative z-10 text-xs font-black px-4 py-2 bg-white/10 backdrop-blur-md text-teal-200 rounded-xl border border-white/20 shadow-2xs whitespace-nowrap">
                 NODE UPTIME: 99.98%
               </span>
             </div>
@@ -445,7 +445,7 @@ export default function AdminDashboard() {
                   value: (data?.totalPatients || 12).toLocaleString(), 
                   sub: 'ABDM Verified Profiles',
                   icon: 'groups', 
-                  color: 'amber' 
+                  color: 'teal' 
                 },
                 { 
                   label: 'OPD Consultations', 
@@ -466,29 +466,29 @@ export default function AdminDashboard() {
                   value: '14 Signed', 
                   sub: '98.4% Fulfillment Rate',
                   icon: 'local_pharmacy', 
-                  color: 'purple' 
+                  color: 'indigo' 
                 },
               ].map(kpi => (
-                <div key={kpi.label} className="bg-white rounded-3xl p-6 border-2 border-slate-200 hover:border-amber-400 shadow-sm transition-all">
+                <div key={kpi.label} className="bg-white rounded-3xl p-6 border border-slate-200 hover:border-teal-400 shadow-2xs hover:shadow-md transition-all">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs uppercase font-black tracking-wider text-slate-500">{kpi.label}</span>
-                    <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-[22px]">{kpi.icon}</span>
+                    <span className="text-[10px] uppercase font-black tracking-wider text-slate-400">{kpi.label}</span>
+                    <div className="w-10 h-10 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center">
+                      <span className="material-symbols-outlined text-[20px]">{kpi.icon}</span>
                     </div>
                   </div>
-                  <div className="text-3xl font-black text-slate-900 tracking-tight font-heading">{kpi.value}</div>
-                  <div className="text-xs font-semibold text-slate-500 mt-1">{kpi.sub}</div>
+                  <div className="text-3xl font-black text-slate-900 tracking-tight font-mono">{kpi.value}</div>
+                  <div className="text-xs font-medium text-slate-500 mt-1">{kpi.sub}</div>
                 </div>
               ))}
             </div>
 
-            {/* Clinical Escalation Alerts */}
+            {/* Critical Field Escalations */}
             <section className="mb-8">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-rose-600 text-[24px]">crisis_alert</span>
                   <h3 className="text-xl font-black text-slate-900 font-heading">Critical Field Escalations</h3>
-                  <span className="bg-rose-100 text-rose-900 text-xs font-black px-2 py-0.5 rounded-full border border-rose-300">
+                  <span className="bg-rose-50 text-rose-900 text-xs font-black px-2.5 py-0.5 rounded-full border border-rose-200">
                     {alerts.length} Pending
                   </span>
                 </div>
@@ -498,18 +498,18 @@ export default function AdminDashboard() {
                 {alerts.map(al => (
                   <div 
                     key={al.id}
-                    className="p-5 bg-white border-2 border-slate-200 hover:border-rose-300 rounded-3xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all"
+                    className="p-5 bg-white border border-slate-200 hover:border-rose-300 rounded-3xl shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all"
                   >
                     <div className="flex items-start gap-3.5">
-                      <div className="w-12 h-12 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-700 flex items-center justify-center shrink-0">
-                        <span className="material-symbols-outlined text-[26px]">{al.icon}</span>
+                      <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined text-[24px]">{al.icon}</span>
                       </div>
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="bg-rose-100 text-rose-900 text-[10px] font-black px-2 py-0.5 rounded uppercase">
+                          <span className="bg-rose-50 text-rose-900 text-[10px] font-black px-2 py-0.5 rounded border border-rose-200 uppercase">
                             {al.category}
                           </span>
-                          <span className="text-xs text-slate-500 font-bold">• {al.source}</span>
+                          <span className="text-xs text-slate-400 font-bold">• {al.source}</span>
                         </div>
                         <h4 className="text-base font-black text-slate-900">{al.title}</h4>
                         <p className="text-xs text-slate-600 font-medium mt-0.5">{al.detail}</p>
@@ -526,14 +526,14 @@ export default function AdminDashboard() {
                             dismissAlert(al.id);
                           }
                         }}
-                        className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black shadow-xs transition-all cursor-pointer"
+                        className="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-xl text-xs font-black shadow-2xs transition-all cursor-pointer active:scale-98"
                       >
                         {al.action}
                       </button>
                       <button
                         type="button"
                         onClick={() => dismissAlert(al.id)}
-                        className="p-2 text-slate-400 hover:text-slate-700 rounded-lg"
+                        className="p-2 text-slate-400 hover:text-slate-700 rounded-lg cursor-pointer"
                         title="Dismiss alert"
                       >
                         ✕
@@ -545,9 +545,9 @@ export default function AdminDashboard() {
             </section>
 
             {/* Command Center Dock */}
-            <section className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border-b-4 border-amber-500 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-xl">
+            <section className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border-b-2 border-teal-500 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-xl">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-amber-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <div className="w-14 h-14 rounded-2xl bg-teal-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-teal-600/30">
                   <span className="material-symbols-outlined text-[32px]">admin_panel_settings</span>
                 </div>
                 <div>
@@ -561,16 +561,16 @@ export default function AdminDashboard() {
               <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                 <button 
                   onClick={() => setActiveModal('shiftRoster')} 
-                  className="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-black border border-slate-700 shadow-sm transition-all cursor-pointer" 
+                  className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-black border border-slate-700 shadow-sm transition-all cursor-pointer active:scale-98" 
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-[16px] inline mr-1 text-amber-400">group</span>
+                  <span className="material-symbols-outlined text-[16px] inline mr-1 text-teal-400">group</span>
                   <span>Doctor Shift Roster</span>
                 </button>
 
                 <button 
                   onClick={() => setActiveModal('issueDirective')} 
-                  className="px-5 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-black shadow-sm transition-all cursor-pointer" 
+                  className="px-5 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-black shadow-md shadow-teal-700/20 transition-all cursor-pointer active:scale-98" 
                   type="button"
                 >
                   <span className="material-symbols-outlined text-[16px] inline mr-1">campaign</span>
@@ -599,21 +599,21 @@ export default function AdminDashboard() {
                 { _id: '4', name: 'Sitapur Ward 4 Health Post', type: 'sub_centre', capacity: { beds: 4, opdRooms: 1 }, contactPhone: '05862-246108', timing: '9:00 AM – 4:00 PM' },
                 { _id: '5', name: 'State Medical College Tele-Hub', type: 'tertiary', capacity: { beds: 500, opdRooms: 40 }, contactPhone: '05862-248108', timing: '24x7 Emergency' },
               ]).map((fac, i) => (
-                <div key={fac._id || i} className="bg-white border-2 border-slate-200 hover:border-amber-400 rounded-3xl p-6 shadow-sm transition-all flex flex-col justify-between">
+                <div key={fac._id || i} className="bg-white border border-slate-200 hover:border-teal-400 rounded-3xl p-6 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
                   <div>
                     <div className="flex items-start justify-between gap-3 mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0">
                           <span className="material-symbols-outlined text-[26px]">domain</span>
                         </div>
                         <div>
                           <h4 className="font-black text-slate-900 text-base">{fac.name}</h4>
-                          <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-teal-900 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
                             {fac.type?.replace('_', ' ') || 'Health Post'}
                           </span>
                         </div>
                       </div>
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-900 border border-emerald-300">
                         Online
                       </span>
                     </div>
@@ -621,15 +621,15 @@ export default function AdminDashboard() {
                     <div className="space-y-2 text-xs bg-slate-50 p-3.5 rounded-2xl border border-slate-200 mb-4">
                       <div className="flex justify-between">
                         <span className="text-slate-500 font-semibold">Total Bed Capacity:</span>
-                        <strong className="text-slate-900 font-black">{fac.capacity?.beds || 20} Beds</strong>
+                        <strong className="text-slate-900 font-mono font-black">{fac.capacity?.beds || 20} Beds</strong>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-500 font-semibold">OPD Tele-Rooms:</span>
-                        <strong className="text-slate-900 font-black">{fac.capacity?.opdRooms || 4} Rooms</strong>
+                        <strong className="text-slate-900 font-mono font-black">{fac.capacity?.opdRooms || 4} Rooms</strong>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-500 font-semibold">Helpdesk Phone:</span>
-                        <strong className="text-slate-900 font-black">{fac.contactPhone || '05862-242108'}</strong>
+                        <strong className="text-slate-900 font-mono font-black">{fac.contactPhone || '05862-242108'}</strong>
                       </div>
                     </div>
                   </div>
@@ -641,17 +641,17 @@ export default function AdminDashboard() {
                         setSelectedFacility(fac);
                         setActiveModal('viewFacility');
                       }}
-                      className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1"
+                      className="flex-1 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1 active:scale-98"
                     >
-                      <span className="material-symbols-outlined text-[16px] text-amber-400">monitoring</span>
+                      <span className="material-symbols-outlined text-[16px] text-teal-400">monitoring</span>
                       <span>Live Telemetry</span>
                     </button>
                     <a
                       href={`tel:${fac.contactPhone || '05862-242108'}`}
-                      className="px-3 py-2.5 border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 rounded-xl text-xs font-bold transition-all shadow-2xs"
+                      className="px-3 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 rounded-xl text-xs font-bold transition-all shadow-2xs"
                       title="Call facility"
                     >
-                      <span className="material-symbols-outlined text-[16px] text-amber-700">call</span>
+                      <span className="material-symbols-outlined text-[16px] text-teal-700">call</span>
                     </a>
                   </div>
                 </div>
@@ -670,24 +670,24 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="bg-white border-2 border-slate-200/90 rounded-3xl overflow-hidden shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[700px] text-left border-collapse text-xs">
-                  <thead className="bg-slate-50 border-b-2 border-slate-100">
+                  <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500">
                     <tr>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider whitespace-nowrap">Worker Details</th>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider whitespace-nowrap">Assigned Ward</th>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider whitespace-nowrap">Households Covered</th>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider whitespace-nowrap">Today's Visits</th>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider whitespace-nowrap">High-Risk Cases</th>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider text-right whitespace-nowrap">Action</th>
+                      <th className="p-4 font-black uppercase tracking-wider whitespace-nowrap text-[11px]">Worker Details</th>
+                      <th className="p-4 font-black uppercase tracking-wider whitespace-nowrap text-[11px]">Assigned Ward</th>
+                      <th className="p-4 font-black uppercase tracking-wider whitespace-nowrap text-[11px]">Households Covered</th>
+                      <th className="p-4 font-black uppercase tracking-wider whitespace-nowrap text-[11px]">Today's Visits</th>
+                      <th className="p-4 font-black uppercase tracking-wider whitespace-nowrap text-[11px]">High-Risk Cases</th>
+                      <th className="p-4 font-black uppercase tracking-wider text-right whitespace-nowrap text-[11px]">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {ASHA_FORCE.map(a => (
                       <tr key={a.id} className="hover:bg-slate-50 transition-colors">
                         <td className="p-4 font-black text-slate-900 flex items-center gap-3 whitespace-nowrap">
-                          <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center font-black">
+                          <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-200 text-teal-900 flex items-center justify-center font-black">
                             {a.name.replace('ASHA ', '').charAt(0)}
                           </div>
                           <div>
@@ -697,10 +697,10 @@ export default function AdminDashboard() {
                         </td>
                         <td className="p-4 font-bold text-slate-700 whitespace-nowrap">{a.ward}</td>
                         <td className="p-4 font-bold text-slate-900 whitespace-nowrap">{a.households} Households</td>
-                        <td className="p-4 font-black text-amber-950 whitespace-nowrap">{a.todayVisits} Completed</td>
+                        <td className="p-4 font-black text-teal-950 whitespace-nowrap font-mono">{a.todayVisits} Completed</td>
                         <td className="p-4 whitespace-nowrap">
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black whitespace-nowrap ${
-                            a.highRisk.includes('Flagged') ? 'bg-rose-100 text-rose-900 border border-rose-300' : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black whitespace-nowrap border ${
+                            a.highRisk.includes('Flagged') ? 'bg-rose-50 text-rose-900 border-rose-300' : 'bg-emerald-50 text-emerald-900 border-emerald-300'
                           }`}>
                             {a.highRisk}
                           </span>
@@ -708,7 +708,7 @@ export default function AdminDashboard() {
                         <td className="p-4 text-right whitespace-nowrap">
                           <a 
                             href={`tel:${a.phone}`}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-black transition-colors"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 rounded-xl text-xs font-black transition-colors"
                           >
                             <span className="material-symbols-outlined text-[15px]">call</span>
                             <span>Call</span>
@@ -735,24 +735,24 @@ export default function AdminDashboard() {
               <button
                 type="button"
                 onClick={() => setActiveModal('addStock')}
-                className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 transition-all cursor-pointer self-start sm:self-auto"
+                className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white rounded-xl text-xs font-black shadow-md shadow-teal-700/20 flex items-center gap-1.5 transition-all cursor-pointer self-start sm:self-auto active:scale-98"
               >
                 <span className="material-symbols-outlined text-[18px]">add_circle</span>
                 <span>Replenish / Add Drug Stock</span>
               </button>
             </div>
 
-            <div className="bg-white border-2 border-slate-200/90 rounded-3xl overflow-hidden shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[750px] text-left border-collapse text-xs">
-                  <thead className="bg-slate-50 border-b-2 border-slate-100">
+                  <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500">
                     <tr>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider whitespace-nowrap">Generic Drug Name</th>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider whitespace-nowrap">Facility Allocation</th>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider whitespace-nowrap">Available Stock</th>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider whitespace-nowrap">Buffer Threshold</th>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider whitespace-nowrap">Stock Status</th>
-                      <th className="p-4 font-black text-slate-500 uppercase tracking-wider text-right whitespace-nowrap">Action</th>
+                      <th className="p-4 font-black uppercase tracking-wider whitespace-nowrap text-[11px]">Generic Formulation</th>
+                      <th className="p-4 font-black uppercase tracking-wider whitespace-nowrap text-[11px]">Facility Allocation</th>
+                      <th className="p-4 font-black uppercase tracking-wider whitespace-nowrap text-[11px]">Available Stock</th>
+                      <th className="p-4 font-black uppercase tracking-wider whitespace-nowrap text-[11px]">Buffer Threshold</th>
+                      <th className="p-4 font-black uppercase tracking-wider whitespace-nowrap text-[11px]">Stock Status</th>
+                      <th className="p-4 font-black uppercase tracking-wider text-right whitespace-nowrap text-[11px]">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -762,18 +762,18 @@ export default function AdminDashboard() {
                         <tr key={drug.id} className="hover:bg-slate-50 transition-colors">
                           <td className="p-4 font-black text-slate-900 whitespace-nowrap">
                             <span>{drug.name}</span>
-                            <span className="font-mono text-[10px] text-amber-900 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200 block mt-0.5 w-fit">
+                            <span className="font-mono text-[10px] text-teal-900 bg-teal-50 px-1.5 py-0.2 rounded border border-teal-200 block mt-0.5 w-fit">
                               {drug.jasCode}
                             </span>
                           </td>
                           <td className="p-4 font-semibold text-slate-600 whitespace-nowrap">{drug.facility}</td>
-                          <td className="p-4 font-black text-slate-900 text-sm whitespace-nowrap">
-                            {Number(drug.quantity).toLocaleString()} <span className="text-xs font-medium text-slate-500">{drug.unit}</span>
+                          <td className="p-4 font-black text-slate-900 text-sm whitespace-nowrap font-mono">
+                            {Number(drug.quantity).toLocaleString()} <span className="text-xs font-medium text-slate-500 font-sans">{drug.unit}</span>
                           </td>
                           <td className="p-4 font-mono font-bold text-slate-500 whitespace-nowrap">{Number(drug.threshold).toLocaleString()}</td>
                           <td className="p-4 whitespace-nowrap">
-                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap ${
-                              isLow ? 'bg-rose-100 text-rose-900 border border-rose-300' : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap border ${
+                              isLow ? 'bg-rose-50 text-rose-900 border-rose-300' : 'bg-emerald-50 text-emerald-900 border-emerald-300'
                             }`}>
                               {isLow ? 'Critical / Buffer Low' : 'Adequate Supply'}
                             </span>
@@ -782,7 +782,7 @@ export default function AdminDashboard() {
                             <button
                               type="button"
                               onClick={() => handleAutoRequisition(drug.id)}
-                              className="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl font-black text-xs transition-colors cursor-pointer shadow-2xs whitespace-nowrap"
+                              className="px-3.5 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 rounded-xl font-black text-xs transition-colors cursor-pointer shadow-2xs whitespace-nowrap active:scale-98"
                             >
                               Auto-Requisition
                             </button>
@@ -800,35 +800,35 @@ export default function AdminDashboard() {
 
       {/* MODAL 1: EXPORT PROGRESS */}
       {activeModal === 'exportProgress' && (
-        <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-3xl border-2 border-amber-300 shadow-2xl w-full max-w-sm overflow-hidden p-8 text-center">
+        <div className="fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-sm overflow-hidden p-8 text-center">
             <div className="mb-4 flex justify-center">
-              <span className="material-symbols-outlined text-amber-600 text-[48px] animate-bounce">cloud_download</span>
+              <span className="material-symbols-outlined text-teal-600 text-[48px] animate-bounce">cloud_download</span>
             </div>
-            <h3 className="text-lg font-black text-slate-900 mb-1">Exporting MIS Telemetry Report</h3>
+            <h3 className="text-lg font-black text-slate-900 mb-1 font-heading">Exporting MIS Telemetry Report</h3>
             <p className="text-xs text-slate-500 font-semibold mb-5">Compiling state health database and generating validated JSON report...</p>
             <div className="w-full bg-slate-100 rounded-full h-3 mb-2 overflow-hidden border border-slate-200">
-              <div className="bg-amber-600 h-3 rounded-full transition-all duration-300" style={{ width: `${exportProgress}%` }}></div>
+              <div className="bg-teal-700 h-3 rounded-full transition-all duration-300" style={{ width: `${exportProgress}%` }}></div>
             </div>
-            <span className="text-sm font-black text-amber-900 font-mono">{exportProgress}% Completed</span>
+            <span className="text-sm font-black text-teal-950 font-mono">{exportProgress}% Completed</span>
           </div>
         </div>
       )}
 
       {/* MODAL 2: DISTRICT FILTER */}
       {activeModal === 'districtFilter' && (
-        <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-3xl border-2 border-amber-400 shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
-            <div className="p-6 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
-              <h3 className="text-lg font-black text-white flex items-center gap-2">
-                <span className="material-symbols-outlined text-amber-400">tune</span>
+        <div className="fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
+            <div className="p-6 bg-gradient-to-r from-slate-900 to-teal-950 text-white flex items-center justify-between border-b-2 border-teal-500">
+              <h3 className="text-base font-black text-white flex items-center gap-2 font-heading">
+                <span className="material-symbols-outlined text-teal-400 text-[20px]">tune</span>
                 <span>Select District Telemetry Hub</span>
               </h3>
               <button 
                 onClick={() => setActiveModal(null)} 
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 transition-colors cursor-pointer shadow-sm"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+                <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
             </div>
 
@@ -843,11 +843,11 @@ export default function AdminDashboard() {
                     setActiveModal(null);
                   }}
                   className={`w-full p-3.5 rounded-2xl border text-left font-bold transition-all cursor-pointer flex items-center justify-between ${
-                    selectedDistrict === d ? 'bg-amber-100 border-amber-400 text-amber-950 font-black' : 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-slate-100'
+                    selectedDistrict === d ? 'bg-teal-50 border-teal-400 text-teal-950 font-black' : 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-slate-100'
                   }`}
                 >
                   <span>{d}</span>
-                  {selectedDistrict === d && <span className="material-symbols-outlined text-amber-700">check_circle</span>}
+                  {selectedDistrict === d && <span className="material-symbols-outlined text-teal-700 text-[18px]">check_circle</span>}
                 </button>
               ))}
             </div>
@@ -857,45 +857,45 @@ export default function AdminDashboard() {
 
       {/* MODAL 3: SHIFT ROSTER */}
       {activeModal === 'shiftRoster' && (
-        <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
-          <div className="bg-white rounded-3xl border-2 border-amber-400 shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[92vh]">
-            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+        <div className="fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[92vh]">
+            <div className="px-6 py-5 bg-gradient-to-r from-slate-900 to-teal-950 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold shadow-xs">
                   <span className="material-symbols-outlined text-[22px]">group</span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-white font-heading">Doctor Tele-OPD Shift Roster</h3>
-                  <p className="text-xs text-amber-300/80 font-bold">Manage medical officer rotations across CHCs and hospitals</p>
+                  <h3 className="text-base font-black text-white font-heading">Doctor Tele-OPD Shift Roster</h3>
+                  <p className="text-xs text-teal-300 font-bold">Manage medical officer rotations across CHCs and hospitals</p>
                 </div>
               </div>
               <button 
                 onClick={() => setActiveModal(null)} 
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 transition-colors cursor-pointer shadow-sm"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
                 title="Close"
               >
-                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+                <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
             </div>
 
             <div className="p-4 sm:p-6 text-xs">
               <table className="w-full text-left border-collapse">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-slate-50 border-b border-slate-200 text-slate-500">
                   <tr>
-                    <th className="py-3 px-4 font-black text-slate-500 uppercase">Specialist Doctor</th>
-                    <th className="py-3 px-4 font-black text-slate-500 uppercase">Assigned Facility</th>
-                    <th className="py-3 px-4 font-black text-slate-500 uppercase">Shift Timing</th>
-                    <th className="py-3 px-4 font-black text-slate-500 uppercase text-right">Duty Status</th>
+                    <th className="py-3 px-4 font-black uppercase text-[11px]">Specialist Doctor</th>
+                    <th className="py-3 px-4 font-black uppercase text-[11px]">Assigned Facility</th>
+                    <th className="py-3 px-4 font-black uppercase text-[11px]">Shift Timing</th>
+                    <th className="py-3 px-4 font-black uppercase text-[11px] text-right">Duty Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {doctorRoster.map(doc => (
-                    <tr key={doc.id} className="hover:bg-slate-50/80 transition-colors">
+                    <tr key={doc.id} className="hover:bg-slate-50 transition-colors">
                       <td className="py-3 px-4">
-                        <span className="font-black text-slate-900 text-sm block">{doc.name}</span>
+                        <span className="font-black text-slate-900 text-sm block leading-snug">{doc.name}</span>
                         <span className="text-[11px] text-slate-500 font-semibold">{doc.spec}</span>
                       </td>
-                      <td className="py-3 px-4 font-bold text-amber-950">
+                      <td className="py-3 px-4 font-bold text-teal-950">
                         {doc.facility}
                       </td>
                       <td className="py-3 px-4 font-mono text-slate-700">
@@ -904,7 +904,7 @@ export default function AdminDashboard() {
                         </span>
                       </td>
                       <td className="py-3 px-4 text-right">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-900 border border-emerald-300 whitespace-nowrap shadow-2xs">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-50 text-emerald-900 border border-emerald-300 whitespace-nowrap shadow-2xs">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
                           <span>{doc.status}</span>
                         </span>
@@ -917,7 +917,7 @@ export default function AdminDashboard() {
 
             <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-3">
               <button onClick={() => setActiveModal(null)} className="px-5 py-2 text-xs font-bold text-slate-700 cursor-pointer">Close</button>
-              <button onClick={handleSaveRoster} className="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black shadow-xs cursor-pointer">
+              <button onClick={handleSaveRoster} className="px-5 py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-xl text-xs font-black shadow-xs cursor-pointer active:scale-98">
                 Confirm &amp; Sync Shift Roster
               </button>
             </div>
@@ -927,23 +927,23 @@ export default function AdminDashboard() {
 
       {/* MODAL 4: ISSUE STATE DIRECTIVE */}
       {activeModal === 'issueDirective' && (
-        <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-3xl border-2 border-amber-400 shadow-2xl w-full max-w-lg overflow-hidden flex flex-col">
-            <div className="p-6 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+        <div className="fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-lg overflow-hidden flex flex-col">
+            <div className="p-6 bg-gradient-to-r from-slate-900 to-teal-950 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[22px]">campaign</span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-white font-heading">Broadcast State Public Health Directive</h3>
-                  <p className="text-xs text-amber-300/80 font-bold">Dispatch live instruction to all district tele-health centres</p>
+                  <h3 className="text-base font-black text-white font-heading">Broadcast State Public Health Directive</h3>
+                  <p className="text-xs text-teal-300 font-bold">Dispatch live instruction to all district tele-health centres</p>
                 </div>
               </div>
               <button 
                 onClick={() => setActiveModal(null)} 
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 transition-colors cursor-pointer shadow-sm"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+                <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
             </div>
 
@@ -956,7 +956,7 @@ export default function AdminDashboard() {
                   value={directiveForm.title}
                   onChange={e => setDirectiveForm({...directiveForm, title: e.target.value})}
                   placeholder="e.g. Mandatory Malaria Screening in High-Risk Wards"
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                 />
               </div>
 
@@ -965,7 +965,7 @@ export default function AdminDashboard() {
                 <select
                   value={directiveForm.priority}
                   onChange={e => setDirectiveForm({...directiveForm, priority: e.target.value})}
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                 >
                   <option value="high">High - Immediate Action Required</option>
                   <option value="medium">Medium - Action within 24 Hours</option>
@@ -981,13 +981,13 @@ export default function AdminDashboard() {
                   value={directiveForm.message}
                   onChange={e => setDirectiveForm({...directiveForm, message: e.target.value})}
                   placeholder="Detail exact SOPs for medical officers, ANMs, and ASHA workers..."
-                  className="w-full bg-slate-50 px-3.5 py-2 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-teal-600 resize-none"
                 ></textarea>
               </div>
 
-              <div className="pt-2 flex justify-end gap-2">
-                <button type="button" onClick={() => setActiveModal(null)} className="px-4 py-2 text-xs font-bold text-slate-700">Cancel</button>
-                <button type="submit" className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5">
+              <div className="pt-2 flex justify-end gap-2.5">
+                <button type="button" onClick={() => setActiveModal(null)} className="px-4 py-2 text-xs font-bold text-slate-700 cursor-pointer">Cancel</button>
+                <button type="submit" className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5 active:scale-98">
                   <span className="material-symbols-outlined text-[16px]">send</span>
                   <span>Broadcast Across State Grid</span>
                 </button>
@@ -999,23 +999,23 @@ export default function AdminDashboard() {
 
       {/* MODAL 5: ADD DRUG STOCK */}
       {activeModal === 'addStock' && (
-        <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-3xl border-2 border-amber-400 shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
-            <div className="p-6 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+        <div className="fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
+            <div className="p-6 bg-gradient-to-r from-slate-900 to-teal-950 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[22px]">medication</span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-white font-heading">Replenish Jan Aushadhi Stock</h3>
-                  <p className="text-xs text-amber-300/80 font-bold">Central warehouse delivery dispatch</p>
+                  <h3 className="text-base font-black text-white font-heading">Replenish Jan Aushadhi Stock</h3>
+                  <p className="text-xs text-teal-300 font-bold">Central warehouse delivery dispatch</p>
                 </div>
               </div>
               <button 
                 onClick={() => setActiveModal(null)} 
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 transition-colors cursor-pointer shadow-sm"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+                <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
             </div>
 
@@ -1027,7 +1027,7 @@ export default function AdminDashboard() {
                   required
                   value={newStockForm.name}
                   onChange={e => setNewStockForm({...newStockForm, name: e.target.value})}
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                 />
               </div>
 
@@ -1036,7 +1036,7 @@ export default function AdminDashboard() {
                 <select
                   value={newStockForm.facility}
                   onChange={e => setNewStockForm({...newStockForm, facility: e.target.value})}
-                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                 >
                   <option value="CHC Sitapur Central">CHC Sitapur Central</option>
                   <option value="District Hospital Sitapur">District Hospital Sitapur</option>
@@ -1053,7 +1053,7 @@ export default function AdminDashboard() {
                     type="number"
                     value={newStockForm.quantity}
                     onChange={e => setNewStockForm({...newStockForm, quantity: e.target.value})}
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600 font-mono"
                   />
                 </div>
                 <div>
@@ -1061,7 +1061,7 @@ export default function AdminDashboard() {
                   <select
                     value={newStockForm.unit}
                     onChange={e => setNewStockForm({...newStockForm, unit: e.target.value})}
-                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-teal-600"
                   >
                     <option value="Tablets">Tablets</option>
                     <option value="Capsules">Capsules</option>
@@ -1071,9 +1071,9 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="pt-2 flex justify-end gap-2">
-                <button type="button" onClick={() => setActiveModal(null)} className="px-4 py-2 text-xs font-bold text-slate-700">Cancel</button>
-                <button type="submit" className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer">
+              <div className="pt-2 flex justify-end gap-2.5">
+                <button type="button" onClick={() => setActiveModal(null)} className="px-4 py-2 text-xs font-bold text-slate-700 cursor-pointer">Cancel</button>
+                <button type="submit" className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer active:scale-98">
                   Confirm Stock Dispatch
                 </button>
               </div>
@@ -1084,50 +1084,50 @@ export default function AdminDashboard() {
 
       {/* MODAL 6: VIEW FACILITY TELEMETRY */}
       {activeModal === 'viewFacility' && selectedFacility && (
-        <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-3xl border-2 border-amber-400 shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-6 bg-slate-900 text-white flex items-center justify-between border-b-4 border-amber-500">
+        <div className="fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-6 bg-gradient-to-r from-slate-900 to-teal-950 text-white flex items-center justify-between border-b-2 border-teal-500">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[22px]">domain</span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-white font-heading">{selectedFacility.name}</h3>
-                  <p className="text-xs text-amber-300/80 font-bold">Live Telemetry &amp; Bed Occupancy Node</p>
+                  <h3 className="text-base font-black text-white font-heading">{selectedFacility.name}</h3>
+                  <p className="text-xs text-teal-300 font-bold">Live Telemetry &amp; Bed Occupancy Node</p>
                 </div>
               </div>
               <button 
                 onClick={() => setActiveModal(null)} 
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 transition-colors cursor-pointer shadow-sm"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                title="Close"
               >
-                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+                <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
             </div>
 
             <div className="p-6 space-y-4 text-xs overflow-y-auto">
-              <div className="bg-amber-50/70 p-4 rounded-2xl border border-amber-200 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">Facility Type</span>
+                  <span className="text-[10px] text-slate-400 font-black uppercase block">Facility Type</span>
                   <strong className="text-slate-900 font-black">{selectedFacility.type?.replace('_', ' ')}</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">Total Beds</span>
-                  <strong className="text-slate-900 font-black">{selectedFacility.capacity?.beds || 20} Beds</strong>
+                  <span className="text-[10px] text-slate-400 font-black uppercase block">Total Beds</span>
+                  <strong className="text-slate-900 font-mono font-black">{selectedFacility.capacity?.beds || 20} Beds</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">OPD Rooms</span>
-                  <strong className="text-slate-900 font-black">{selectedFacility.capacity?.opdRooms || 4} Rooms</strong>
+                  <span className="text-[10px] text-slate-400 font-black uppercase block">OPD Rooms</span>
+                  <strong className="text-slate-900 font-mono font-black">{selectedFacility.capacity?.opdRooms || 4} Rooms</strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase block">Network Status</span>
+                  <span className="text-[10px] text-slate-400 font-black uppercase block">Network Status</span>
                   <strong className="text-emerald-700 font-black">99.9% Online</strong>
                 </div>
               </div>
 
-              {/* Services */}
               {selectedFacility.services && selectedFacility.services.length > 0 && (
                 <div>
-                  <span className="font-black text-slate-900 block mb-1.5">Accredited Clinical Services:</span>
+                  <span className="font-black text-slate-900 block mb-2">Accredited Clinical Services:</span>
                   <div className="flex flex-wrap gap-1.5">
                     {selectedFacility.services.map((s, idx) => (
                       <span key={idx} className="px-2.5 py-1 bg-slate-100 rounded-lg text-slate-800 font-bold">
@@ -1139,14 +1139,17 @@ export default function AdminDashboard() {
               )}
 
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                <span className="text-[10px] uppercase font-black text-slate-500 block mb-1">Facility Contact Desk</span>
-                <p className="text-sm font-black text-slate-900">Phone: {selectedFacility.contactPhone || '05862-242108'}</p>
+                <span className="text-[10px] uppercase font-black text-slate-400 block mb-1">Facility Contact Desk</span>
+                <p className="text-sm font-black text-slate-900 font-mono">Phone: {selectedFacility.contactPhone || '05862-242108'}</p>
                 <p className="text-xs text-slate-500 mt-0.5">Sitapur District Public Health Network, Uttar Pradesh</p>
               </div>
             </div>
 
             <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
-              <button onClick={() => setActiveModal(null)} className="px-5 py-2 bg-slate-900 text-white rounded-xl text-xs font-black">
+              <button 
+                onClick={() => setActiveModal(null)} 
+                className="px-6 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black cursor-pointer"
+              >
                 Close Telemetry
               </button>
             </div>
@@ -1156,26 +1159,26 @@ export default function AdminDashboard() {
 
       {/* FOOTER */}
       <footer className="w-full bg-white border-t border-slate-200 mt-12">
-        <div className="w-full px-6 lg:px-12 xl:px-16 py-8">
+        <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 py-8 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div className="md:col-span-2 flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-amber-600 text-[28px]">verified</span>
-                <span className="text-lg text-slate-900 font-extrabold">Ministry of Health &amp; Family Welfare</span>
+                <span className="material-symbols-outlined text-teal-600 text-[26px]">verified</span>
+                <span className="text-base text-slate-900 font-black">Ministry of Health &amp; Family Welfare</span>
               </div>
-              <p className="text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
-                <span className="notranslate" translate="no">SehatSaarthi</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
+              <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl leading-relaxed">
+                <span className="notranslate font-bold text-slate-900" translate="no">SehatSaarthi</span> delivers verified public clinical connectivity across rural dispensaries, district hospitals, and tertiary research institutes under the National Digital Health Framework.
               </p>
             </div>
-            <div className="flex flex-col gap-1.5 justify-center md:items-end">
-              <span className="text-xs text-slate-500 uppercase font-extrabold tracking-wider">National Emergency Helplines</span>
-              <span className="text-xl font-black text-rose-700">Toll-Free 1075 / 108</span>
+            <div className="flex flex-col gap-1 justify-center md:items-end">
+              <span className="text-[10px] text-slate-400 uppercase font-black tracking-wider">National Emergency Helplines</span>
+              <span className="text-xl font-black text-rose-700 font-mono">Toll-Free 1075 / 108</span>
               <span className="text-xs text-slate-500 font-semibold">24x7 Tele-Consult &amp; Ambulance Dispatch</span>
             </div>
           </div>
-          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-medium">
+          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 font-medium">
             <p>© 2026 Government Public Healthcare Infrastructure. All citizen rights reserved.</p>
-            <p className="text-amber-900 font-bold">Radical Clarity &amp; Rural Accessibility Compliant</p>
+            <p className="text-teal-900 font-bold">State Public Health Mission MIS Compliant</p>
           </div>
         </div>
       </footer>
