@@ -53,39 +53,51 @@ export default function TreatmentAdvisor() {
       <PatientNavbar />
       
       <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-[96px] pb-16 max-w-7xl mx-auto">
-        {/* Jewel Royal Teal & Luminous Frosted Glass Hero Banner */}
-        <div className="w-full mb-8 bg-gradient-to-r from-teal-800 via-teal-700 to-emerald-800 text-white p-6 sm:p-8 rounded-3xl shadow-xl shadow-teal-950/15 border border-teal-600/40 relative overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
-          
+        {/* Navigation Breadcrumb */}
+        <div className="mb-4">
+          <Link 
+            to="/patient" 
+            className="inline-flex items-center gap-1.5 text-slate-500 hover:text-teal-700 text-xs font-bold transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+            <span>Back to Patient Console</span>
+          </Link>
+        </div>
+
+        {/* Vibrant Luminous Clinical Hero Banner */}
+        <div className="w-full mb-8 rounded-3xl bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white p-6 sm:p-8 shadow-xl shadow-teal-700/20 relative overflow-hidden">
+          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none"></div>
+
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-teal-100 text-xs font-black mb-3 shadow-2xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Clinical Decision Support Engine • Ayushman Bharat Digital Mission</span>
+            <div className="flex items-start gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                <span className="material-symbols-outlined text-[30px]">psychology</span>
               </div>
-              <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight flex items-center gap-3">
-                <span className="material-symbols-outlined text-teal-200 text-[36px]">psychology</span>
-                <span>AI Treatment &amp; Triage Advisor</span>
-              </h1>
-              <p className="text-xs sm:text-sm lg:text-base text-teal-100/90 font-medium mt-2 leading-relaxed">
-                Enter your physiological telemetry &amp; chief complaints. Our AI evaluates risk severity, provides verified home therapies, and flags critical clinical escalations.
-              </p>
+
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-black mb-2 shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                  <span>Clinical Decision Support Engine • Ayushman Bharat</span>
+                </div>
+
+                <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+                  AI Treatment &amp; Triage Advisor
+                </h1>
+                <p className="text-xs sm:text-sm lg:text-base text-teal-50 font-medium mt-1.5 max-w-2xl leading-relaxed opacity-95">
+                  Enter your physiological telemetry &amp; chief complaints. Our AI evaluates risk severity, provides verified home therapies, and flags critical clinical escalations.
+                </p>
+              </div>
             </div>
 
-            <div className="bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-4 sm:p-5 text-white flex flex-col justify-between shadow-lg shrink-0 self-start lg:self-auto min-w-[240px]">
-              <div className="flex items-center justify-between gap-3 mb-2">
-                <span className="text-[11px] font-black uppercase tracking-wider text-teal-200">Clinical AI Model</span>
-                <span className="px-2.5 py-0.5 rounded-full bg-emerald-400 text-slate-950 text-[10px] font-black">
-                  Active Verified
-                </span>
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0 self-start lg:self-auto">
+              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[120px] shadow-sm">
+                <span className="text-[10px] font-black uppercase tracking-wider text-teal-100 block">AI Triage Core</span>
+                <span className="text-base font-black text-white font-mono mt-0.5 block">Gemini 3.6</span>
               </div>
-              <div className="text-2xl font-black font-mono tracking-tight text-white">
-                Gemini 3.6 <span className="text-xs font-sans text-teal-200 font-bold">Flash</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-teal-100 font-semibold mt-2 pt-2 border-t border-white/15">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>NEML &amp; ICMR Protocols</span>
+              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[120px] shadow-sm">
+                <span className="text-[10px] font-black uppercase tracking-wider text-teal-100 block">Protocols</span>
+                <span className="text-base font-black text-emerald-300 font-mono mt-0.5 block">ICMR Verified</span>
               </div>
             </div>
           </div>

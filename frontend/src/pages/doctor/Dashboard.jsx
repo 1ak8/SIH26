@@ -184,44 +184,40 @@ export default function DoctorDashboard() {
       )}
 
       <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
-        {/* Jewel Royal Teal & Luminous Frosted Glass Hero Banner */}
-        <div className="w-full mb-8 bg-gradient-to-r from-teal-800 via-teal-700 to-emerald-800 text-white p-6 sm:p-8 rounded-3xl shadow-xl shadow-teal-950/15 border border-teal-600/40 relative overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
-          
+        {/* Vibrant Luminous Clinical Hero Banner */}
+        <div className="w-full mb-8 rounded-3xl bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white p-6 sm:p-8 shadow-xl shadow-teal-700/20 relative overflow-hidden">
+          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none"></div>
+
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-teal-100 text-xs font-black mb-3 shadow-2xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>National Tele-Consultation Mission • E-Sanjeevani Grid</span>
+            <div className="flex items-start gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                <span className="material-symbols-outlined text-[30px]">stethoscope</span>
               </div>
-              <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-                Tele-OPD Doctor Console
-              </h1>
-              <p className="text-xs sm:text-sm lg:text-base text-teal-100/90 font-medium mt-2 leading-relaxed">
-                Attending Specialist: <strong className="text-white notranslate" translate="no">{user?.name || 'Dr. Rajesh Sharma, MD'}</strong> • CHC Sitapur Central • Active Tele-OPD Bay 04
-              </p>
+
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-black mb-2 shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                  <span>National Tele-Consultation Mission • E-Sanjeevani Grid</span>
+                </div>
+
+                <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+                  Tele-OPD Doctor Console
+                </h1>
+                <p className="text-xs sm:text-sm lg:text-base text-teal-50 font-medium mt-1.5 max-w-2xl leading-relaxed opacity-95">
+                  Attending Specialist: <strong className="text-white notranslate" translate="no">{user?.name || 'Dr. Rajesh Sharma, MD'}</strong> • CHC Sitapur Central • Active Tele-OPD Bay 04
+                </p>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 shrink-0 self-start lg:self-auto">
-              <div className="bg-white/15 backdrop-blur-xl border border-white/25 px-4 py-3 rounded-2xl shadow-lg flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[20px]">timer</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-teal-200 uppercase font-black tracking-wider">Live OPD Session</span>
-                  <span className="text-base font-black text-white font-mono leading-tight">{formatTime(sessionSeconds)}</span>
-                </div>
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0 self-start lg:self-auto">
+              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[125px] shadow-sm">
+                <span className="text-[10px] font-black uppercase tracking-wider text-teal-100 block">Live OPD Time</span>
+                <span className="text-lg font-black text-white font-mono mt-0.5 block">{formatTime(sessionSeconds)}</span>
               </div>
-
-              <div className="bg-white/15 backdrop-blur-xl border border-white/25 px-4 py-3 rounded-2xl shadow-lg flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-400/30 text-emerald-300 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[20px]">how_to_reg</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-teal-200 uppercase font-black tracking-wider">Treated Today</span>
-                  <span className="text-base font-black text-white font-mono leading-tight">{data?.completedToday || 19} Citizens</span>
-                </div>
+              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[125px] shadow-sm">
+                <span className="text-[10px] font-black uppercase tracking-wider text-teal-100 block">Treated Today</span>
+                <span className="text-lg font-black text-emerald-300 font-mono mt-0.5 block">{data?.completedToday || 19} Citizens</span>
               </div>
             </div>
           </div>

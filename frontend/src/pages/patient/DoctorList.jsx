@@ -107,48 +107,51 @@ export default function DoctorList() {
 
       <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
         {/* Navigation Breadcrumb */}
-        <div className="mb-5">
+        {/* Navigation Breadcrumb */}
+        <div className="mb-4">
           <Link 
             to="/patient" 
-            className="inline-flex items-center gap-2 text-slate-600 hover:text-teal-800 bg-white px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold shadow-2xs hover:border-teal-300 transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-slate-500 hover:text-teal-700 text-xs font-bold transition-colors cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[17px]">arrow_back</span>
+            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
             <span>Back to Patient Console</span>
           </Link>
         </div>
 
-        {/* Jewel Royal Teal & Luminous Frosted Glass Hero Banner */}
-        <div className="w-full mb-8 bg-gradient-to-r from-teal-800 via-teal-700 to-emerald-800 text-white p-6 sm:p-8 rounded-3xl shadow-xl shadow-teal-950/15 border border-teal-600/40 relative overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
-          
+        {/* Vibrant Luminous Clinical Hero Banner */}
+        <div className="w-full mb-8 rounded-3xl bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white p-6 sm:p-8 shadow-xl shadow-teal-700/20 relative overflow-hidden">
+          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none"></div>
+
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-teal-100 text-xs font-black mb-3 shadow-2xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>National Health Mission • E-Sanjeevani Tele-OPD</span>
+            <div className="flex items-start gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                <span className="material-symbols-outlined text-[30px]">stethoscope</span>
               </div>
-              <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-                Government Tele-Consultation Doctors
-              </h1>
-              <p className="text-xs sm:text-sm lg:text-base text-teal-100/90 font-medium mt-2 leading-relaxed">
-                Consult district hospital specialists and medical college physicians from your village PHC or mobile phone at zero cost.
-              </p>
+
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-black mb-2 shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                  <span>National Health Mission • E-Sanjeevani Tele-OPD</span>
+                </div>
+
+                <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+                  Government Tele-Consultation Doctors
+                </h1>
+                <p className="text-xs sm:text-sm lg:text-base text-teal-50 font-medium mt-1.5 max-w-2xl leading-relaxed opacity-95">
+                  Consult district hospital specialists and medical college physicians from your village PHC or mobile phone at zero cost.
+                </p>
+              </div>
             </div>
 
-            <div className="bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-4 sm:p-5 text-white flex flex-col justify-between shadow-lg shrink-0 self-start lg:self-auto min-w-[240px]">
-              <div className="flex items-center justify-between gap-3 mb-2">
-                <span className="text-[11px] font-black uppercase tracking-wider text-teal-200">Consultation Fee</span>
-                <span className="px-2.5 py-0.5 rounded-full bg-emerald-400 text-slate-950 text-[10px] font-black">
-                  100% FREE
-                </span>
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0 self-start lg:self-auto">
+              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[120px] shadow-sm">
+                <span className="text-[10px] font-black uppercase tracking-wider text-teal-100 block">Consultation Fee</span>
+                <span className="text-lg font-black text-white font-mono mt-0.5 block">100% FREE</span>
               </div>
-              <div className="text-3xl font-black font-mono tracking-tight text-white">
-                ₹0 <span className="text-xs font-sans text-teal-200 font-bold">/ Session</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-teal-100 font-semibold mt-2 pt-2 border-t border-white/15">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>42 Specialists Active Online</span>
+              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[120px] shadow-sm">
+                <span className="text-[10px] font-black uppercase tracking-wider text-teal-100 block">Doctors Active</span>
+                <span className="text-lg font-black text-emerald-300 font-mono mt-0.5 block">42 Specialists</span>
               </div>
             </div>
           </div>

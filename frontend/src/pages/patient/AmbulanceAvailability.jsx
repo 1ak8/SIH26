@@ -192,44 +192,54 @@ export default function AmbulanceAvailability() {
       <PatientNavbar />
 
       <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
-        {/* Breadcrumb navigation */}
-        <div className="flex items-center gap-2 text-xs text-slate-500 font-semibold mb-4">
-          <Link to="/patient" className="hover:text-teal-700 transition-colors">Dashboard</Link>
-          <span>/</span>
-          <span className="text-slate-800 font-bold">108 Emergency Ambulance Grid</span>
+        {/* Navigation Breadcrumb */}
+        <div className="mb-4">
+          <Link 
+            to="/patient" 
+            className="inline-flex items-center gap-1.5 text-slate-500 hover:text-teal-700 text-xs font-bold transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+            <span>Back to Patient Console</span>
+          </Link>
         </div>
 
-        {/* Jewel Royal Carmine & Luminous Frosted Glass Hero Banner */}
-        <div className="w-full mb-8 bg-gradient-to-r from-rose-900 via-rose-800 to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl shadow-rose-950/20 border border-rose-500/40 relative overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
-          
+        {/* Vibrant Luminous Emergency Hero Banner */}
+        <div className="w-full mb-8 rounded-3xl bg-gradient-to-r from-rose-700 via-rose-600 to-amber-600 text-white p-6 sm:p-8 shadow-xl shadow-rose-700/20 relative overflow-hidden">
+          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-400/20 rounded-full blur-2xl pointer-events-none"></div>
+
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-rose-100 text-xs font-black mb-3 shadow-2xs">
-                <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span>
-                <span>National Emergency Medical Service (EMS 108) • Live GPS Telemetry</span>
+            <div className="flex items-start gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                <span className="material-symbols-outlined text-[30px] animate-pulse">airport_shuttle</span>
               </div>
-              <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-                108 Emergency Ambulance Telemetry &amp; Dispatch
-              </h1>
-              <p className="text-xs sm:text-sm lg:text-base text-rose-100/90 font-medium mt-2 leading-relaxed">
-                Real-time GPS tracking for Advanced Life Support (ALS ICU) and Basic Life Support (BLS) units in Sitapur Rural Sector. Guaranteed Golden-Hour protocol.
-              </p>
+
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-black mb-2 shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse"></span>
+                  <span>National Emergency Medical Service (EMS 108) • Live Sector Telemetry</span>
+                </div>
+
+                <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+                  108 Emergency Ambulance Telemetry &amp; Dispatch
+                </h1>
+                <p className="text-xs sm:text-sm lg:text-base text-rose-50 font-medium mt-1.5 max-w-2xl leading-relaxed opacity-95">
+                  Real-time GPS telemetry for ALS ICU &amp; BLS Emergency ambulances in Sitapur Rural Sector. Guaranteed Golden-Hour protocol.
+                </p>
+              </div>
             </div>
 
-            {/* Direct SOS Box */}
-            <div className="bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-4 sm:p-5 text-white flex items-center gap-4 shrink-0 self-start lg:self-auto min-w-[240px] shadow-lg">
-              <div className="w-12 h-12 rounded-xl bg-white/20 text-white flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-[28px] animate-pulse">call</span>
-              </div>
-              <div>
-                <span className="text-[10px] uppercase font-black tracking-wider text-rose-200 block">Critical SOS Helpline</span>
-                <a href="tel:108" className="text-2xl sm:text-3xl font-black text-white hover:text-rose-200 tracking-tight flex items-center gap-1 font-mono">
-                  <span>108 Toll-Free</span>
-                  <span className="material-symbols-outlined text-[20px]">north_east</span>
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0 self-start lg:self-auto">
+              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-5 py-3 rounded-2xl text-center min-w-[130px] shadow-sm">
+                <span className="text-[10px] font-black uppercase tracking-wider text-rose-100 block">Direct SOS</span>
+                <a href="tel:108" className="text-2xl font-black text-white hover:text-amber-200 font-mono mt-0.5 flex items-center justify-center gap-1">
+                  <span>108</span>
+                  <span className="material-symbols-outlined text-[18px]">call</span>
                 </a>
-                <span className="text-[11px] text-rose-100 font-semibold block mt-0.5">6 Units Ready in Sector</span>
+              </div>
+              <div className="bg-white/15 backdrop-blur-md border border-white/25 px-4 py-3 rounded-2xl text-center min-w-[120px] shadow-sm">
+                <span className="text-[10px] font-black uppercase tracking-wider text-rose-100 block">Sector Fleet</span>
+                <span className="text-lg font-black text-amber-300 font-mono mt-0.5 block">6 Units Ready</span>
               </div>
             </div>
           </div>
