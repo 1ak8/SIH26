@@ -87,13 +87,7 @@ export default function PatientNavbar({ activeTab, setActiveTab, setActiveModal 
 
           <Link 
             to="/patient/lab-reports" 
-            onClick={(e) => {
-              if (isDashboard && setActiveModal) {
-                e.preventDefault();
-                setActiveModal('lab-tests');
-              }
-            }}
-            className={navItemClass((isDashboard && activeTab === 'lab-tests') || location.pathname === '/patient/lab-reports')}
+            className={navItemClass(location.pathname === '/patient/lab-reports')}
           >
             <span className="material-symbols-outlined text-[18px]">science</span>
             <span>Lab Reports</span>

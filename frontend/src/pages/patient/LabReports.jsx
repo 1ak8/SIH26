@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import PatientNavbar from '../../components/PatientNavbar';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
@@ -79,32 +80,83 @@ export default function LabReports() {
   return (
     <div className="min-h-screen bg-slate-50 selection:bg-teal-100 selection:text-teal-900">
       <PatientNavbar />
-      <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-[96px] pb-16 max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <div>
-            <div className="flex items-center gap-2.5 mb-1">
-              <div className="w-10 h-10 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center">
-                <span className="material-symbols-outlined text-[22px]">science</span>
+      <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
+        {/* Navigation Breadcrumb */}
+        <div className="mb-4">
+          <Link 
+            to="/patient" 
+            className="inline-flex items-center gap-1.5 text-slate-500 hover:text-teal-700 text-xs font-bold transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+            <span>Back to Patient Console</span>
+          </Link>
+        </div>
+
+        {/* Distinct Greyish Clinical Health Card Header */}
+        <div className="w-full mb-8 bg-slate-200/90 p-6 sm:p-7 rounded-3xl border border-slate-300 shadow-sm relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="space-y-2.5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-300 text-teal-800 text-xs font-black shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>National Health Mission • NABL Verified Pathology Grid</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Diagnostic Lab Reports</h1>
+              
+              <div>
+                <h1 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-slate-900 flex items-center gap-2.5">
+                  <span>Diagnostic Lab Tests &amp; Reports</span>
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-700 font-medium mt-1 max-w-xl">
+                  Access certified pathology investigations, blood profiles, and digital lab results directly linked to your ABHA health registry.
+                </p>
+              </div>
+
+              {/* Status Chips */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <span className="material-symbols-outlined text-teal-600 text-[16px]">science</span>
+                  <span className="text-slate-600">Reports:</span>
+                  <strong className="text-slate-900 font-black">{labReports.length} Investigations</strong>
+                </div>
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <span className="material-symbols-outlined text-emerald-600 text-[16px]">verified</span>
+                  <span className="text-slate-600">Accreditation:</span>
+                  <strong className="text-emerald-700 font-black">NABL ISO-15189</strong>
+                </div>
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <span className="material-symbols-outlined text-sky-600 text-[16px]">domain</span>
+                  <span className="text-slate-600">Hub:</span>
+                  <strong className="text-slate-900 font-black">CHC Sitapur Central</strong>
+                </div>
+              </div>
             </div>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium">Certified pathology records linked to your ABHA health registry.</p>
-          </div>
-          <div className="flex bg-white rounded-2xl p-1 border border-slate-200 shadow-2xs">
-            {['All', 'Completed', 'Pending'].map(f => (
-              <button 
-                key={f} 
-                type="button" 
-                onClick={() => setLabFilter(f)}
-                className={`px-4 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                  labFilter === f 
-                    ? 'bg-teal-700 text-white shadow-2xs' 
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                {f}
-              </button>
-            ))}
+
+            {/* Right Side Filter Tabs & Registry Chip */}
+            <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
+              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-300 shadow-xs text-xs">
+                <span className="material-symbols-outlined text-emerald-600 text-[18px]">verified_user</span>
+                <div>
+                  <span className="text-[10px] text-slate-500 font-black uppercase block leading-tight">ABDM Laboratory</span>
+                  <strong className="text-slate-800 font-mono font-bold leading-tight">NABL-UP-84920</strong>
+                </div>
+              </div>
+
+              <div className="flex bg-white rounded-2xl p-1 border border-slate-300 shadow-xs">
+                {['All', 'Completed', 'Pending'].map(f => (
+                  <button 
+                    key={f} 
+                    type="button" 
+                    onClick={() => setLabFilter(f)}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                      labFilter === f 
+                        ? 'bg-teal-700 text-white shadow-xs' 
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -256,11 +308,19 @@ export default function LabReports() {
               return (
                 <div 
                   key={report._id} 
-                  className="p-5 rounded-3xl border border-slate-200 bg-white hover:border-teal-400 hover:shadow-md transition-all duration-200"
+                  className={`p-5 rounded-2xl border-2 transition-all ${
+                    isCompleted 
+                      ? 'bg-white border-emerald-200/90 hover:border-emerald-400 hover:shadow-md' 
+                      : 'bg-slate-50/70 border-slate-200 hover:border-teal-300'
+                  }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 mb-2.5">
                     <div className="flex items-start gap-3.5">
-                      <div className="w-11 h-11 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0">
+                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-2xs border ${
+                        isCompleted
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-teal-50 text-teal-700 border-teal-200'
+                      }`}>
                         <span className="material-symbols-outlined text-[22px]">
                           {report.category?.includes('Hema') ? 'bloodtype' : 'science'}
                         </span>
@@ -268,7 +328,7 @@ export default function LabReports() {
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
                           <h4 className="font-black text-slate-900 text-sm">{report.testName}</h4>
-                          <span className="font-mono text-[10px] font-bold text-teal-900 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200">{report.orderId}</span>
+                          <span className="font-mono text-[10px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">{report.orderId}</span>
                         </div>
                         <p className="text-xs text-slate-600 font-medium mt-0.5">
                           Prescribed by <strong className="text-slate-900 font-bold">{report.doctorName}</strong> • {dateFormatted}
@@ -278,17 +338,17 @@ export default function LabReports() {
                     </div>
                     <div className="self-start sm:self-auto shrink-0">
                       {isCompleted ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-900 border border-emerald-300 text-xs font-black">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-black shadow-2xs">
                           <span className="material-symbols-outlined text-[15px] text-emerald-700">check_circle</span>
                           Report Ready
                         </span>
                       ) : isProcessing ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 text-sky-900 border border-sky-300 text-xs font-black">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 text-sky-900 border border-sky-200 text-xs font-black shadow-2xs">
                           <span className="material-symbols-outlined text-[15px] text-sky-600 animate-spin">sync</span>
                           {report.status === 'sample_collected' ? 'Sample Dispatched' : 'Under Testing'}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-300 text-xs font-black">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200 text-xs font-black shadow-2xs">
                           <span className="material-symbols-outlined text-[15px] text-amber-700">schedule</span>
                           Pending Sample
                         </span>
@@ -297,9 +357,9 @@ export default function LabReports() {
                   </div>
 
                   {report.fastingRequired && (
-                    <div className="mt-2 text-xs bg-amber-50 border border-amber-200 p-2.5 rounded-xl text-amber-950 flex items-center gap-2 font-medium">
-                      <span className="material-symbols-outlined text-[16px] text-amber-600">info</span>
-                      <span>Fasting Required: 8 to 12 hours overnight fasting before giving blood sample.</span>
+                    <div className="mt-2 text-xs bg-teal-50/80 border border-teal-200 p-2.5 rounded-xl text-teal-950 flex items-center gap-2 font-medium">
+                      <span className="material-symbols-outlined text-[16px] text-teal-700">info</span>
+                      <span><strong>Fasting Required:</strong> 8 to 12 hours overnight fasting before giving blood sample.</span>
                     </div>
                   )}
 
@@ -309,14 +369,15 @@ export default function LabReports() {
                       <button 
                         type="button" 
                         onClick={() => setSelectedReport(report)}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white text-xs font-black rounded-xl shadow-xs transition-all cursor-pointer active:scale-98"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white text-xs font-black rounded-xl shadow-md shadow-teal-700/20 transition-all cursor-pointer active:scale-98"
                       >
                         <span className="material-symbols-outlined text-[16px]">visibility</span>
                         <span>View Verified Report</span>
                       </button>
                     ) : (
-                      <span className="text-xs font-bold text-teal-800 bg-teal-50 px-3 py-1.5 rounded-xl border border-teal-200">
-                        ASHA / PHC Sample Collection Scheduled
+                      <span className="text-xs font-bold text-slate-700 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs inline-flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>ASHA / PHC Sample Collection Scheduled</span>
                       </span>
                     )}
                   </div>
