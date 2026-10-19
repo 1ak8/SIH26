@@ -1296,12 +1296,12 @@ export default function PatientDashboard() {
                 : activeModal === 'vitals-notes'
                 ? 'bg-teal-50/90 border-teal-200 text-slate-900'
                 : activeModal === 'lab-tests'
-                ? 'bg-gradient-to-r from-slate-900 to-teal-950 border-slate-800 text-white'
+                ? 'bg-white border-slate-200 text-slate-900'
                 : activeModal === 'find-phc'
-                ? 'bg-gradient-to-r from-slate-900 to-teal-950 border-slate-800 text-white'
-                : 'bg-slate-50 border-slate-200'
+                ? 'bg-white border-slate-200 text-slate-900'
+                : 'bg-white border-slate-200 text-slate-900'
             }`}>
-              <h3 className="text-base sm:text-lg font-black flex items-center gap-2">
+              <h3 className="text-base sm:text-lg font-black flex items-center gap-2.5">
                 {activeModal === 'teleconsult-room' && (
                   <>
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
@@ -1316,16 +1316,26 @@ export default function PatientDashboard() {
                 )}
                 {activeModal === 'request-visit' && 'Request ASHA Home Visit (गृह-भ्रमण अनुरोध)'}
                 {activeModal === 'lab-tests' && (
-                  <>
-                    <span className="material-symbols-outlined text-teal-400 text-[24px]">biotech</span>
-                    <span>Diagnostic Lab Tests &amp; Reports (जांच रिपोर्ट)</span>
-                  </>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center shrink-0 shadow-2xs">
+                      <span className="material-symbols-outlined text-[22px]">biotech</span>
+                    </div>
+                    <div>
+                      <span className="text-base sm:text-lg font-black text-slate-900 block leading-tight">Diagnostic Lab Tests &amp; Reports</span>
+                      <span className="text-xs text-slate-500 font-medium">जांच रिपोर्ट • NABL Verified Pathology</span>
+                    </div>
+                  </div>
                 )}
                 {activeModal === 'find-phc' && (
-                  <>
-                    <span className="material-symbols-outlined text-teal-400 text-[24px]">local_hospital</span>
-                    <span>Find Nearest PHC, CHC &amp; Health Kiosks (निकटतम स्वास्थ्य केंद्र)</span>
-                  </>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-700 border border-sky-200 flex items-center justify-center shrink-0 shadow-2xs">
+                      <span className="material-symbols-outlined text-[22px]">local_hospital</span>
+                    </div>
+                    <div>
+                      <span className="text-base sm:text-lg font-black text-slate-900 block leading-tight">Find Nearest PHC, CHC &amp; Health Kiosks</span>
+                      <span className="text-xs text-slate-500 font-medium">निकटतम स्वास्थ्य केंद्र • Sitapur Sector Grid</span>
+                    </div>
+                  </div>
                 )}
                 {activeModal === 'edit-profile' && 'Edit Profile Information'}
               </h3>
@@ -1340,10 +1350,14 @@ export default function PatientDashboard() {
                     setActiveModal(null);
                   }
                 }} 
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-slate-100 active:bg-slate-200 text-slate-900 shadow-sm border border-slate-200 transition-all cursor-pointer shrink-0"
+                className={`w-9 h-9 flex items-center justify-center rounded-full transition-all cursor-pointer shrink-0 ${
+                  activeModal === 'teleconsult-room'
+                    ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
+                    : 'bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 hover:text-slate-900 border border-slate-200'
+                }`}
                 title="Close"
               >
-                <span className="material-symbols-outlined text-[20px] font-bold text-slate-900">close</span>
+                <span className="material-symbols-outlined text-[20px] font-bold">close</span>
               </button>
             </div>
             {/* Modal Body */}
@@ -2051,7 +2065,7 @@ export default function PatientDashboard() {
                           <button
                             type="button"
                             onClick={() => setSelectedLabReport(null)}
-                            className="inline-flex items-center gap-1.5 text-xs font-black text-amber-800 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-xl border border-amber-300 transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 px-3.5 py-2 rounded-xl border border-slate-200 transition-colors cursor-pointer"
                           >
                             <span className="material-symbols-outlined text-[16px]">arrow_back</span>
                             <span>Back to All Reports</span>
@@ -2060,7 +2074,7 @@ export default function PatientDashboard() {
                           <button
                             type="button"
                             onClick={() => printDiagnosticReport(selectedLabReport)}
-                            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 text-xs font-black text-white bg-teal-700 hover:bg-teal-800 px-4 py-2 rounded-xl shadow-md shadow-teal-700/20 transition-colors cursor-pointer"
                           >
                             <span className="material-symbols-outlined text-[16px]">print</span>
                             <span>Print Report</span>
@@ -2068,28 +2082,28 @@ export default function PatientDashboard() {
                         </div>
 
                         {/* Official Header */}
-                        <div className="bg-slate-900 text-white p-4 rounded-2xl mb-3 border-b-4 border-amber-500">
+                        <div className="bg-gradient-to-r from-teal-800 via-teal-700 to-emerald-800 text-white p-4 rounded-2xl mb-3 border border-teal-600/30 shadow-md">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0">
-                              <span className="material-symbols-outlined text-[24px]">biotech</span>
+                            <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0">
+                              <span className="material-symbols-outlined text-[26px]">biotech</span>
                             </div>
                             <div>
-                              <span className="text-[10px] uppercase font-black tracking-wider text-amber-300 block">Ministry of Health &amp; Family Welfare</span>
+                              <span className="text-[10px] uppercase font-black tracking-wider text-teal-200 block">Ministry of Health &amp; Family Welfare</span>
                               <h4 className="text-base font-black text-white">{selectedLabReport.facility || 'CHC Sitapur Central Pathology Lab'}</h4>
-                              <p className="text-[11px] text-slate-300">NABL Accredited ISO 15189 • National Digital Health Grid</p>
+                              <p className="text-[11px] text-teal-100/90 font-medium">NABL Accredited ISO 15189 • National Digital Health Grid</p>
                             </div>
                           </div>
                         </div>
 
                         {/* Patient & Order Details Strip */}
-                        <div className="bg-amber-50/80 p-3.5 rounded-xl border border-amber-200 grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs mb-3">
+                        <div className="bg-slate-100/90 p-3.5 rounded-xl border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs mb-3">
                           <div>
                             <span className="text-[10px] text-slate-500 font-bold uppercase block">Citizen Name</span>
                             <strong className="text-slate-900 font-black">{selectedLabReport.patientName || user?.name}</strong>
                           </div>
                           <div>
                             <span className="text-[10px] text-slate-500 font-bold uppercase block">Barcode / Order ID</span>
-                            <strong className="font-mono text-amber-950 font-black">{selectedLabReport.orderId}</strong>
+                            <strong className="font-mono text-teal-900 font-black">{selectedLabReport.orderId}</strong>
                           </div>
                           <div>
                             <span className="text-[10px] text-slate-500 font-bold uppercase block">Prescribed By</span>
@@ -2106,7 +2120,7 @@ export default function PatientDashboard() {
                         {/* Investigation Title */}
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="text-base font-black text-slate-900">{selectedLabReport.testName}</h4>
-                          <span className="text-xs font-black text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-md border border-amber-300">
+                          <span className="text-xs font-black text-teal-900 bg-teal-50 px-2.5 py-0.5 rounded-md border border-teal-200">
                             {selectedLabReport.category}
                           </span>
                         </div>
@@ -2127,8 +2141,8 @@ export default function PatientDashboard() {
                                 {selectedLabReport.results.map((res, i) => (
                                   <tr key={i} className="hover:bg-slate-50">
                                     <td className="px-3 py-2 font-extrabold text-slate-900">{res.parameter}</td>
-                                    <td className="px-3 py-2 font-black text-amber-950">
-                                      {res.value} <span className="text-slate-500 text-[11px] font-medium">{res.unit}</span>
+                                    <td className="px-3 py-2 font-black text-teal-950 font-mono">
+                                      {res.value} <span className="text-slate-500 text-[11px] font-sans font-medium">{res.unit}</span>
                                     </td>
                                     <td className="px-3 py-2 text-slate-600 font-mono text-[11px]">{res.normalRange}</td>
                                     <td className="px-3 py-2 text-right">
@@ -2147,7 +2161,7 @@ export default function PatientDashboard() {
                           </div>
                         ) : (
                           <div className="p-5 text-center bg-slate-50 rounded-2xl border border-slate-200 mb-3 text-xs text-slate-500">
-                            <span className="material-symbols-outlined text-2xl text-amber-600 animate-spin block mb-1">sync</span>
+                            <span className="material-symbols-outlined text-2xl text-teal-600 animate-spin block mb-1">sync</span>
                             Sample collected and in laboratory queue. Results will be uploaded once verified by pathologist.
                           </div>
                         )}
@@ -2189,7 +2203,7 @@ export default function PatientDashboard() {
                                 onClick={() => setLabFilter(f)}
                                 className={`px-3 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
                                   labFilter === f 
-                                    ? 'bg-amber-600 text-white shadow-xs' 
+                                    ? 'bg-teal-700 text-white shadow-xs' 
                                     : 'text-slate-600 hover:text-slate-900'
                                 }`}
                               >
@@ -2201,7 +2215,7 @@ export default function PatientDashboard() {
 
                         {loadingLabs ? (
                           <div className="p-8 text-center text-slate-500 font-bold text-xs">
-                            <span className="material-symbols-outlined text-3xl text-amber-500 animate-spin block mx-auto mb-1">sync</span>
+                            <span className="material-symbols-outlined text-3xl text-teal-600 animate-spin block mx-auto mb-1">sync</span>
                             Synchronizing lab investigations with hospital pathology system...
                           </div>
                         ) : labReports.length === 0 ? (
@@ -2213,7 +2227,7 @@ export default function PatientDashboard() {
                             </p>
                           </div>
                         ) : (
-                          <div className="space-y-3">
+                          <div className="space-y-3.5">
                             {labReports
                               .filter(rep => {
                                 if (labFilter === 'Completed') return rep.status === 'completed';
@@ -2230,23 +2244,27 @@ export default function PatientDashboard() {
                                 return (
                                   <div 
                                     key={report._id} 
-                                    className={`p-4 rounded-2xl border-2 transition-all ${
+                                    className={`p-5 rounded-2xl border-2 transition-all ${
                                       isCompleted 
-                                        ? 'bg-white border-amber-200 hover:border-amber-400 hover:shadow-sm' 
-                                        : 'bg-amber-50/30 border-amber-300/80'
+                                        ? 'bg-white border-emerald-200/90 hover:border-emerald-400 hover:shadow-md' 
+                                        : 'bg-slate-50/70 border-slate-200 hover:border-teal-300'
                                     }`}
                                   >
                                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                                       <div className="flex items-start gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center shrink-0">
-                                          <span className="material-symbols-outlined text-[20px]">
+                                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-2xs border ${
+                                          isCompleted
+                                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                            : 'bg-teal-50 text-teal-700 border-teal-200'
+                                        }`}>
+                                          <span className="material-symbols-outlined text-[22px]">
                                             {report.category?.includes('Hema') ? 'bloodtype' : 'science'}
                                           </span>
                                         </div>
                                         <div>
                                           <div className="flex flex-wrap items-center gap-2">
                                             <h4 className="font-black text-slate-900 text-sm">{report.testName}</h4>
-                                            <span className="font-mono text-[10px] font-bold text-amber-900 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                                            <span className="font-mono text-[10px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
                                               {report.orderId}
                                             </span>
                                           </div>
@@ -2260,17 +2278,17 @@ export default function PatientDashboard() {
                                       {/* Status Badge */}
                                       <div className="self-start sm:self-auto shrink-0">
                                         {isCompleted ? (
-                                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-black shadow-2xs">
+                                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-black shadow-2xs">
                                             <span className="material-symbols-outlined text-[15px] text-emerald-700">check_circle</span>
                                             Report Available
                                           </span>
                                         ) : isProcessing ? (
-                                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-900 border border-sky-300 text-xs font-black shadow-2xs">
+                                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 text-sky-900 border border-sky-200 text-xs font-black shadow-2xs">
                                             <span className="material-symbols-outlined text-[15px] text-sky-600 animate-spin">sync</span>
                                             {report.status === 'sample_collected' ? 'Sample Dispatched' : 'Under Testing'}
                                           </span>
                                         ) : (
-                                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-xs font-black shadow-2xs">
+                                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200 text-xs font-black shadow-2xs">
                                             <span className="material-symbols-outlined text-[15px] text-amber-700">schedule</span>
                                             Pending Sample
                                           </span>
@@ -2280,17 +2298,18 @@ export default function PatientDashboard() {
 
                                     {/* Fasting Notice */}
                                     {report.fastingRequired && (
-                                      <div className="mt-2 text-xs bg-amber-100/70 border border-amber-300 p-2 rounded-xl text-amber-950 flex items-center gap-2 font-medium">
-                                        <span className="material-symbols-outlined text-[16px] text-amber-700">info</span>
-                                        <span>Fasting Required: 8 to 12 hours overnight fasting before giving blood sample.</span>
+                                      <div className="mt-2.5 text-xs bg-teal-50/80 border border-teal-200 p-2.5 rounded-xl text-teal-950 flex items-center gap-2 font-medium">
+                                        <span className="material-symbols-outlined text-[17px] text-teal-700 shrink-0">info</span>
+                                        <span><strong>Fasting Required:</strong> 8 to 12 hours overnight fasting before giving blood sample.</span>
                                       </div>
                                     )}
 
                                     {/* Doctor Clinical Notes */}
                                     {report.clinicalNotes && (
-                                      <p className="mt-2 text-xs text-slate-600 bg-slate-50 p-2 rounded-xl border border-slate-200 italic font-medium">
-                                        "{report.clinicalNotes}"
-                                      </p>
+                                      <div className="mt-2.5 text-xs text-slate-600 bg-white p-2.5 rounded-xl border border-slate-200 font-medium flex items-start gap-2">
+                                        <span className="material-symbols-outlined text-[16px] text-slate-400 shrink-0 mt-0.5">format_quote</span>
+                                        <span>{report.clinicalNotes}</span>
+                                      </div>
                                     )}
 
                                     {/* Actions */}
@@ -2303,14 +2322,15 @@ export default function PatientDashboard() {
                                         <button
                                           type="button"
                                           onClick={() => setSelectedLabReport(report)}
-                                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-black rounded-xl shadow-xs transition-all cursor-pointer"
+                                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-700 hover:bg-teal-800 active:bg-teal-900 text-white text-xs font-black rounded-xl shadow-md shadow-teal-700/20 transition-all cursor-pointer"
                                         >
                                           <span className="material-symbols-outlined text-[16px]">visibility</span>
                                           <span>View Verified Report (जांच रिपोर्ट)</span>
                                         </button>
                                       ) : (
-                                        <span className="text-xs font-extrabold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
-                                          ASHA / PHC Sample Collection Scheduled
+                                        <span className="text-xs font-bold text-slate-700 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs inline-flex items-center gap-1.5">
+                                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                          <span>ASHA / PHC Sample Collection Scheduled</span>
                                         </span>
                                       )}
                                     </div>
@@ -2332,13 +2352,13 @@ export default function PatientDashboard() {
                 {activeModal === 'find-phc' && (
                   <div className="flex flex-col gap-4 max-h-[75vh] overflow-y-auto pr-1">
                     {/* Location Bar & GPS Button */}
-                    <div className="bg-amber-50/80 p-3.5 rounded-2xl border border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="bg-sky-50/70 p-3.5 rounded-2xl border border-sky-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-amber-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                        <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
                           <span className="material-symbols-outlined text-[20px]">near_me</span>
                         </div>
                         <div>
-                          <span className="text-[10px] font-black uppercase tracking-wider text-amber-950 block">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-sky-950 block">
                             {userLocationCoords.isGps ? 'Live GPS Triangulation Active' : '📍 Sitapur Central Hub (Default Radius)'}
                           </span>
                           <span className="text-xs text-slate-700 font-bold">
@@ -2351,9 +2371,9 @@ export default function PatientDashboard() {
                         type="button"
                         onClick={handleGetGpsLocation}
                         disabled={locatingGps}
-                        className="px-3.5 py-2 rounded-xl bg-white hover:bg-amber-100 text-amber-950 font-black text-xs border border-amber-300 flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer self-start sm:self-auto disabled:opacity-60"
+                        className="px-3.5 py-2 rounded-xl bg-white hover:bg-sky-100 text-sky-950 font-black text-xs border border-sky-200 flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer self-start sm:self-auto disabled:opacity-60"
                       >
-                        <span className={`material-symbols-outlined text-[16px] text-amber-700 ${locatingGps ? 'animate-spin' : ''}`}>
+                        <span className={`material-symbols-outlined text-[16px] text-sky-700 ${locatingGps ? 'animate-spin' : ''}`}>
                           {locatingGps ? 'sync' : 'my_location'}
                         </span>
                         <span>{locatingGps ? 'Detecting Location...' : 'Use My Live GPS'}</span>
@@ -2371,7 +2391,7 @@ export default function PatientDashboard() {
                             setPhcSearchTerm(e.target.value);
                             fetchFacilities(userLocationCoords.lat, userLocationCoords.lng, e.target.value, phcTypeFilter);
                           }}
-                          className="w-full bg-slate-50 pl-10 pr-8 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-bold focus:outline-none focus:border-amber-500 placeholder:text-slate-400 shadow-2xs" 
+                          className="w-full bg-slate-50 pl-10 pr-8 py-2.5 rounded-xl border-2 border-slate-200 text-slate-900 text-xs font-bold focus:outline-none focus:border-teal-500 placeholder:text-slate-400 shadow-2xs" 
                           placeholder="Search by Pincode, Village, Facility Name, or Specialty..." 
                         />
                         {phcSearchTerm && (
@@ -2405,7 +2425,7 @@ export default function PatientDashboard() {
                             }}
                             className={`px-3 py-1 rounded-lg text-[11px] font-black transition-all cursor-pointer whitespace-nowrap ${
                               phcTypeFilter === f.key 
-                                ? 'bg-amber-600 text-white shadow-xs' 
+                                ? 'bg-teal-700 text-white shadow-xs' 
                                 : 'text-slate-600 hover:text-slate-900'
                             }`}
                           >
@@ -2418,7 +2438,7 @@ export default function PatientDashboard() {
                     {/* Facilities List from MongoDB */}
                     {loadingFacilities ? (
                       <div className="p-8 text-center text-slate-500 font-bold text-xs">
-                        <span className="material-symbols-outlined text-3xl text-amber-500 animate-spin block mx-auto mb-1">sync</span>
+                        <span className="material-symbols-outlined text-3xl text-teal-600 animate-spin block mx-auto mb-1">sync</span>
                         Searching registered public health facilities in your sector...
                       </div>
                     ) : facilities.length === 0 ? (
@@ -2433,7 +2453,7 @@ export default function PatientDashboard() {
                             setPhcTypeFilter('ALL');
                             fetchFacilities(userLocationCoords.lat, userLocationCoords.lng, '', 'ALL');
                           }}
-                          className="mt-3 px-4 py-1.5 rounded-xl bg-amber-600 text-white text-xs font-bold"
+                          className="mt-3 px-4 py-1.5 rounded-xl bg-teal-700 text-white text-xs font-bold shadow-xs cursor-pointer"
                         >
                           Reset Filters
                         </button>
@@ -2463,25 +2483,25 @@ export default function PatientDashboard() {
                             fac.type === 'tertiary' ? 'State Medical College Tele-Hub' : 'Primary Health Centre (PHC)';
 
                           const typeBadgeBg = 
-                            fac.type === 'CHC' ? 'bg-amber-100 text-amber-900 border-amber-300' :
-                            fac.type === 'sub_centre' ? 'bg-amber-50 text-amber-950 border-amber-300' :
+                            fac.type === 'CHC' ? 'bg-teal-50 text-teal-900 border-teal-200' :
+                            fac.type === 'sub_centre' ? 'bg-sky-50 text-sky-900 border-sky-200' :
                             fac.type === 'district_hospital' ? 'bg-slate-100 text-slate-900 border-slate-300' :
-                            'bg-amber-100/60 text-amber-950 border-amber-300';
+                            'bg-emerald-50 text-emerald-900 border-emerald-200';
 
                           return (
                             <div 
                               key={fac._id} 
                               className={`p-4 sm:p-5 rounded-2xl border-2 transition-all shadow-xs ${
                                 isNearest 
-                                  ? 'bg-amber-50/50 border-amber-400 ring-2 ring-amber-300/40' 
-                                  : 'bg-white border-slate-200 hover:border-amber-300'
+                                  ? 'bg-teal-50/40 border-teal-300 ring-2 ring-teal-200/50' 
+                                  : 'bg-white border-slate-200 hover:border-teal-300'
                               }`}
                             >
                               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-2.5">
                                 <div className="flex items-start gap-3">
                                   <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${
                                     isNearest 
-                                      ? 'bg-amber-600 text-white border-amber-700 shadow-xs' 
+                                      ? 'bg-teal-700 text-white border-teal-800 shadow-xs' 
                                       : 'bg-slate-100 text-slate-700 border-slate-200'
                                   }`}>
                                     <span className="material-symbols-outlined text-[24px]">local_hospital</span>
@@ -2493,7 +2513,7 @@ export default function PatientDashboard() {
                                         {typeLabel}
                                       </span>
                                       {isNearest && (
-                                        <span className="bg-amber-700 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 shadow-2xs">
+                                        <span className="bg-teal-700 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 shadow-2xs">
                                           <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
                                           Nearest Kiosk
                                         </span>
@@ -2501,7 +2521,7 @@ export default function PatientDashboard() {
                                     </div>
 
                                     <p className="text-xs text-slate-600 font-semibold mt-1 flex items-center gap-1">
-                                      <span className="material-symbols-outlined text-[15px] text-amber-700">pin_drop</span>
+                                      <span className="material-symbols-outlined text-[15px] text-teal-700">pin_drop</span>
                                       <span>
                                         {fac.address?.line1 ? `${fac.address.line1}, ` : ''}{fac.address?.city || 'Sitapur'}, {fac.address?.district || 'Sitapur'}, UP - {fac.address?.pincode || '261001'}
                                       </span>
@@ -2510,9 +2530,9 @@ export default function PatientDashboard() {
                                 </div>
 
                                 {/* Distance Highlight Badge */}
-                                <div className="self-start sm:self-auto shrink-0 flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-amber-200 shadow-2xs">
-                                  <span className="material-symbols-outlined text-[18px] text-amber-700 font-bold">directions_walk</span>
-                                  <span className="text-sm font-black text-slate-900">{fac.distanceKm} km</span>
+                                <div className="self-start sm:self-auto shrink-0 flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs">
+                                  <span className="material-symbols-outlined text-[18px] text-teal-700 font-bold">directions_walk</span>
+                                  <span className="text-sm font-black text-slate-900 font-mono">{fac.distanceKm} km</span>
                                   <span className="text-[10px] text-slate-400 font-semibold">away</span>
                                 </div>
                               </div>
@@ -2520,7 +2540,7 @@ export default function PatientDashboard() {
                               {/* Capacity & Timing Strip */}
                               <div className="flex flex-wrap items-center gap-2 text-xs mb-3">
                                 <span className="inline-flex items-center gap-1 font-bold text-slate-700 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200">
-                                  <span className="material-symbols-outlined text-[15px] text-amber-600">schedule</span>
+                                  <span className="material-symbols-outlined text-[15px] text-teal-700">schedule</span>
                                   <span>{fac.timing}</span>
                                 </span>
 
@@ -2532,8 +2552,8 @@ export default function PatientDashboard() {
                                 )}
 
                                 {fac.doctors?.length > 0 && (
-                                  <span className="inline-flex items-center gap-1 font-bold text-amber-950 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
-                                    <span className="material-symbols-outlined text-[15px] text-amber-700">stethoscope</span>
+                                  <span className="inline-flex items-center gap-1 font-bold text-teal-950 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200">
+                                    <span className="material-symbols-outlined text-[15px] text-teal-700">stethoscope</span>
                                     <span>Doctor On Duty: <strong>{fac.doctors[0].name}</strong></span>
                                   </span>
                                 )}
@@ -2558,9 +2578,9 @@ export default function PatientDashboard() {
                               <div className="pt-2.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
                                 <a 
                                   href={`tel:${fac.contactPhone}`}
-                                  className="inline-flex items-center gap-1.5 text-xs font-black text-slate-700 hover:text-amber-800 bg-slate-50 hover:bg-amber-50 px-3.5 py-2 rounded-xl border border-slate-200 transition-colors"
+                                  className="inline-flex items-center gap-1.5 text-xs font-black text-slate-700 hover:text-teal-900 bg-slate-50 hover:bg-teal-50 px-3.5 py-2 rounded-xl border border-slate-200 transition-colors"
                                 >
-                                  <span className="material-symbols-outlined text-[16px] text-amber-700">call</span>
+                                  <span className="material-symbols-outlined text-[16px] text-teal-700">call</span>
                                   <span>Helpline: {fac.contactPhone}</span>
                                 </a>
 
@@ -2571,7 +2591,7 @@ export default function PatientDashboard() {
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-1.5 text-xs font-black text-white bg-slate-900 hover:bg-slate-800 px-4 py-2 rounded-xl transition-all shadow-2xs"
                                   >
-                                    <span className="material-symbols-outlined text-[16px] text-amber-400">directions</span>
+                                    <span className="material-symbols-outlined text-[16px] text-teal-400">directions</span>
                                     <span>Get Directions</span>
                                   </a>
 
@@ -2581,7 +2601,7 @@ export default function PatientDashboard() {
                                       setActiveModal(null);
                                       navigate('/patient/doctors');
                                     }}
-                                    className="inline-flex items-center gap-1 text-xs font-black text-amber-950 bg-amber-100 hover:bg-amber-200 border border-amber-300 px-3.5 py-2 rounded-xl transition-colors cursor-pointer"
+                                    className="inline-flex items-center gap-1 text-xs font-black text-white bg-teal-700 hover:bg-teal-800 px-4 py-2 rounded-xl shadow-md shadow-teal-700/20 transition-all cursor-pointer"
                                   >
                                     <span className="material-symbols-outlined text-[16px]">calendar_add_on</span>
                                     <span>Book OPD</span>
@@ -2595,7 +2615,7 @@ export default function PatientDashboard() {
                     )}
 
                     <div className="mt-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 flex items-center gap-2 font-medium">
-                      <span className="material-symbols-outlined text-amber-600 text-[18px]">verified</span>
+                      <span className="material-symbols-outlined text-teal-700 text-[18px]">verified</span>
                       <span>Coordinates &amp; emergency casualty status synchronized with UP State Health Resource Centre (SHRC).</span>
                     </div>
                   </div>
