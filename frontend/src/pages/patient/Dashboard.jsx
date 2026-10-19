@@ -769,11 +769,11 @@ export default function PatientDashboard() {
                   <button 
                     key={card.title} 
                     onClick={card.action} 
-                    className={`group text-left bg-white hover:bg-slate-50/80 p-6 rounded-3xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between focus:outline-none focus:ring-4 focus:ring-teal-500/20 relative overflow-hidden ${
-                      card.color === 'teal' ? 'hover:border-teal-500' :
-                      card.color === 'rose' ? 'hover:border-rose-500' :
-                      card.color === 'emerald' ? 'hover:border-emerald-500' :
-                      'hover:border-sky-500'
+                    className={`group text-left bg-white hover:bg-slate-50/80 p-6 rounded-3xl border-2 shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between focus:outline-none focus:ring-4 relative overflow-hidden ${
+                      card.color === 'teal' ? 'border-teal-300 hover:border-teal-500 focus:ring-teal-500/20 hover:shadow-teal-600/10' :
+                      card.color === 'rose' ? 'border-rose-300 hover:border-rose-500 focus:ring-rose-500/20 hover:shadow-rose-600/10' :
+                      card.color === 'sky' ? 'border-sky-300 hover:border-sky-500 focus:ring-sky-500/20 hover:shadow-sky-600/10' :
+                      'border-emerald-300 hover:border-emerald-500 focus:ring-emerald-500/20 hover:shadow-emerald-600/10'
                     }`} 
                     type="button"
                   >
@@ -786,21 +786,38 @@ export default function PatientDashboard() {
                       }`}>
                         <span className="material-symbols-outlined text-[30px]">{card.icon}</span>
                       </div>
-                      <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-white group-hover:bg-teal-600 group-hover:border-teal-600 transition-all shadow-2xs">
+                      <div className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all shadow-2xs ${
+                        card.color === 'teal' ? 'bg-teal-50/80 border-teal-200 text-teal-700 group-hover:text-white group-hover:bg-teal-600 group-hover:border-teal-600' :
+                        card.color === 'rose' ? 'bg-rose-50/80 border-rose-200 text-rose-700 group-hover:text-white group-hover:bg-rose-600 group-hover:border-rose-600' :
+                        card.color === 'sky' ? 'bg-sky-50/80 border-sky-200 text-sky-700 group-hover:text-white group-hover:bg-sky-600 group-hover:border-sky-600' :
+                        'bg-emerald-50/80 border-emerald-200 text-emerald-700 group-hover:text-white group-hover:bg-emerald-600 group-hover:border-emerald-600'
+                      }`}>
                         <span className="material-symbols-outlined text-[19px] font-bold group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
                       </div>
                     </div>
                     <div>
-                      <span className="text-lg font-black text-slate-900 group-hover:text-teal-700 transition-colors block mb-1.5 leading-snug">{card.title}</span>
+                      <span className={`text-lg font-black text-slate-900 transition-colors block mb-1.5 leading-snug ${
+                        card.color === 'teal' ? 'group-hover:text-teal-700' :
+                        card.color === 'rose' ? 'group-hover:text-rose-700' :
+                        card.color === 'sky' ? 'group-hover:text-sky-700' :
+                        'group-hover:text-emerald-700'
+                      }`}>{card.title}</span>
                       <p className="text-xs text-slate-600 font-medium leading-relaxed mb-4">{card.desc}</p>
                       <span className={`inline-flex items-center gap-1.5 text-[11px] font-black px-3 py-1 rounded-full border shadow-2xs ${
                         card.color === 'rose'
                           ? 'bg-rose-50 text-rose-900 border-rose-200'
                           : card.color === 'teal'
                           ? 'bg-teal-50 text-teal-900 border-teal-200'
+                          : card.color === 'sky'
+                          ? 'bg-sky-50 text-sky-900 border-sky-200'
                           : 'bg-emerald-50 text-emerald-900 border-emerald-200'
                       }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${card.color === 'rose' ? 'bg-rose-600 animate-pulse' : 'bg-teal-600'}`}></span>
+                        <span className={`w-1.5 h-1.5 rounded-full ${
+                          card.color === 'rose' ? 'bg-rose-600 animate-pulse' :
+                          card.color === 'sky' ? 'bg-sky-600' :
+                          card.color === 'teal' ? 'bg-teal-600' :
+                          'bg-emerald-600'
+                        }`}></span>
                         {card.badge}
                       </span>
                     </div>
