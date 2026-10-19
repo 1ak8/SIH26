@@ -184,11 +184,11 @@ export default function DoctorDashboard() {
       )}
 
       <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
-        {/* Greyish Clinical Health Card Header */}
-        <div className="w-full mb-8 bg-slate-100/85 p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs relative overflow-hidden">
+        {/* Distinct Greyish Clinical Health Card Header */}
+        <div className="w-full mb-8 bg-slate-200/90 p-6 sm:p-7 rounded-3xl border border-slate-300 shadow-sm relative overflow-hidden">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-2.5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-teal-800 text-xs font-black shadow-2xs">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-300 text-teal-800 text-xs font-black shadow-xs">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span>National Tele-Consultation Mission • E-Sanjeevani Grid</span>
               </div>
@@ -197,26 +197,26 @@ export default function DoctorDashboard() {
                 <h1 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-slate-900 flex items-center gap-2.5">
                   <span>Tele-OPD Doctor Console</span>
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1 max-w-xl">
+                <p className="text-xs sm:text-sm text-slate-700 font-medium mt-1 max-w-xl">
                   Attending Specialist: <strong className="text-slate-900 notranslate" translate="no">{user?.name || 'Dr. Rajesh Sharma, MD'}</strong> • CHC Sitapur Central • Active Tele-OPD Bay 04
                 </p>
               </div>
 
               {/* Status Chips */}
               <div className="flex flex-wrap items-center gap-2 pt-1">
-                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
                   <span className="material-symbols-outlined text-teal-600 text-[16px]">stethoscope</span>
-                  <span className="text-slate-500">Bay:</span>
+                  <span className="text-slate-600">Bay:</span>
                   <strong className="text-slate-900 font-black">OPD Bay 04</strong>
                 </div>
-                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
                   <span className="material-symbols-outlined text-emerald-600 text-[16px]">timer</span>
-                  <span className="text-slate-500">Live Session:</span>
+                  <span className="text-slate-600">Live Session:</span>
                   <strong className="text-emerald-700 font-black font-mono">{formatTime(sessionSeconds)}</strong>
                 </div>
-                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
                   <span className="material-symbols-outlined text-sky-600 text-[16px]">how_to_reg</span>
-                  <span className="text-slate-500">Treated Today:</span>
+                  <span className="text-slate-600">Treated Today:</span>
                   <strong className="text-slate-900 font-black font-mono">{data?.completedToday || 19} Citizens</strong>
                 </div>
               </div>
@@ -224,10 +224,10 @@ export default function DoctorDashboard() {
 
             {/* Right Side Doctor ABHA & Queue Link */}
             <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
-              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-200 shadow-2xs text-xs">
+              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-300 shadow-xs text-xs">
                 <span className="material-symbols-outlined text-emerald-600 text-[18px]">verified_user</span>
                 <div>
-                  <span className="text-[10px] text-slate-400 font-black uppercase block leading-tight">NMC Medical Reg</span>
+                  <span className="text-[10px] text-slate-500 font-black uppercase block leading-tight">NMC Medical Reg</span>
                   <strong className="text-slate-800 font-mono font-bold leading-tight">MCI-92841-DL</strong>
                 </div>
               </div>

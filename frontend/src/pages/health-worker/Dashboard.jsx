@@ -1001,11 +1001,11 @@ export default function HealthWorkerDashboard() {
 
       {/* MAIN CONTENT AREA */}
       <main className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto">
-        {/* Greyish Clinical Health Card Header */}
-        <div className="w-full mb-8 bg-slate-100/85 p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs relative overflow-hidden">
+        {/* Distinct Greyish Clinical Health Card Header */}
+        <div className="w-full mb-8 bg-slate-200/90 p-6 sm:p-7 rounded-3xl border border-slate-300 shadow-sm relative overflow-hidden">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-2.5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-teal-800 text-xs font-black shadow-2xs">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-300 text-teal-800 text-xs font-black shadow-xs">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span>National Health Mission • Primary Healthcare Field Supervision</span>
               </div>
@@ -1014,26 +1014,26 @@ export default function HealthWorkerDashboard() {
                 <h1 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-slate-900 flex items-center gap-2.5">
                   <span>Community Health Worker (ANM / CHO) Console</span>
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1 max-w-xl">
+                <p className="text-xs sm:text-sm text-slate-700 font-medium mt-1 max-w-xl">
                   Health Supervisor: <strong className="text-slate-900 notranslate" translate="no">{user?.name || 'Rekha Rani (Senior ANM / CHO)'}</strong> • Supervising 8 Grassroot ASHA Workers across 1,200 Rural Households
                 </p>
               </div>
 
               {/* Status Chips */}
               <div className="flex flex-wrap items-center gap-2 pt-1">
-                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
                   <span className="material-symbols-outlined text-teal-600 text-[16px]">groups</span>
-                  <span className="text-slate-500">Supervision:</span>
+                  <span className="text-slate-600">Supervision:</span>
                   <strong className="text-slate-900 font-black">8 ASHAs Active</strong>
                 </div>
-                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
                   <span className="material-symbols-outlined text-emerald-600 text-[16px]">home_health</span>
-                  <span className="text-slate-500">Households:</span>
+                  <span className="text-slate-600">Households:</span>
                   <strong className="text-emerald-700 font-black">1,200 Families</strong>
                 </div>
-                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
                   <span className="material-symbols-outlined text-sky-600 text-[16px]">domain</span>
-                  <span className="text-slate-500">Sector:</span>
+                  <span className="text-slate-600">Sector:</span>
                   <strong className="text-slate-900 font-black">Sitapur PHC Hub</strong>
                 </div>
               </div>
@@ -1041,10 +1041,10 @@ export default function HealthWorkerDashboard() {
 
             {/* Right Side Supervisory Accreditation & Register Action */}
             <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
-              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-200 shadow-2xs text-xs">
+              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-300 shadow-xs text-xs">
                 <span className="material-symbols-outlined text-emerald-600 text-[18px]">verified_user</span>
                 <div>
-                  <span className="text-[10px] text-slate-400 font-black uppercase block leading-tight">NHM Field Pass</span>
+                  <span className="text-[10px] text-slate-500 font-black uppercase block leading-tight">NHM Field Pass</span>
                   <strong className="text-slate-800 font-mono font-bold leading-tight">ANM-UP-84920</strong>
                 </div>
               </div>

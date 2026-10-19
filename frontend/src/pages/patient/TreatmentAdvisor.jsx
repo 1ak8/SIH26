@@ -64,11 +64,11 @@ export default function TreatmentAdvisor() {
           </Link>
         </div>
 
-        {/* Greyish Clinical Health Card Header */}
-        <div className="w-full mb-8 bg-slate-100/85 p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs relative overflow-hidden">
+        {/* Distinct Greyish Clinical Health Card Header */}
+        <div className="w-full mb-8 bg-slate-200/90 p-6 sm:p-7 rounded-3xl border border-slate-300 shadow-sm relative overflow-hidden">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-2.5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-teal-800 text-xs font-black shadow-2xs">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-300 text-teal-800 text-xs font-black shadow-xs">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span>Clinical Decision Support Engine • Ayushman Bharat</span>
               </div>
@@ -77,26 +77,26 @@ export default function TreatmentAdvisor() {
                 <h1 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-slate-900 flex items-center gap-2.5">
                   <span>AI Treatment &amp; Triage Advisor</span>
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1 max-w-xl">
+                <p className="text-xs sm:text-sm text-slate-700 font-medium mt-1 max-w-xl">
                   Enter your physiological telemetry &amp; chief complaints. Our AI evaluates risk severity, provides verified home therapies, and flags critical clinical escalations.
                 </p>
               </div>
 
               {/* Status Chips */}
               <div className="flex flex-wrap items-center gap-2 pt-1">
-                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
                   <span className="material-symbols-outlined text-teal-600 text-[16px]">psychology</span>
-                  <span className="text-slate-500">Engine:</span>
+                  <span className="text-slate-600">Engine:</span>
                   <strong className="text-slate-900 font-black">Gemini 3.6</strong>
                 </div>
-                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
                   <span className="material-symbols-outlined text-emerald-600 text-[16px]">verified</span>
-                  <span className="text-slate-500">Protocols:</span>
+                  <span className="text-slate-600">Protocols:</span>
                   <strong className="text-emerald-700 font-black">ICMR &amp; NEML</strong>
                 </div>
-                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                <div className="bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700">
                   <span className="material-symbols-outlined text-sky-600 text-[16px]">offline_bolt</span>
-                  <span className="text-slate-500">Latency:</span>
+                  <span className="text-slate-600">Latency:</span>
                   <strong className="text-slate-900 font-black">Real-Time</strong>
                 </div>
               </div>
@@ -104,10 +104,10 @@ export default function TreatmentAdvisor() {
 
             {/* Right Side Clinical Model Chip & Action */}
             <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
-              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-200 shadow-2xs text-xs">
+              <div className="inline-flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-300 shadow-xs text-xs">
                 <span className="material-symbols-outlined text-emerald-600 text-[18px]">verified_user</span>
                 <div>
-                  <span className="text-[10px] text-slate-400 font-black uppercase block leading-tight">Safety Protocol</span>
+                  <span className="text-[10px] text-slate-500 font-black uppercase block leading-tight">Safety Protocol</span>
                   <strong className="text-slate-800 font-mono font-bold leading-tight">ACTIVE TRIAGE</strong>
                 </div>
               </div>
